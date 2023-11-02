@@ -18,5 +18,6 @@
 - List the Java classes you modified from the provided code base. Describe the changes you made and explain why these modifications were necessary.
 
 ## Unexpected Problems: 
-- Communicate any unexpected challenges or issues you encountered during the assignment. Describe how you addressed or attempted to
+Communicate any unexpected challenges or issues you encountered during the assignment. Describe how you addressed or attempted to
 resolve them.
+- Collision Detection is completely messed up in this game. We are still attempting to solve it.
