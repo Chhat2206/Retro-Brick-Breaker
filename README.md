@@ -21,3 +21,4 @@
 Communicate any unexpected challenges or issues you encountered during the assignment. Describe how you addressed or attempted to
 resolve them.
 - Collision Detection is completely messed up in this game. We are still attempting to solve it.
+- The default error logging is terrible, so we must fix that

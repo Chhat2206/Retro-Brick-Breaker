@@ -493,6 +493,43 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                     outputStream.writeBoolean(colideToTopBlock);
 
                     ArrayList<BlockSerializable> blockSerializables = new ArrayList<BlockSerializable>();
+                    // figure out error listed below
+                    /*
+                    * Exception in thread "JavaFX Application Thread" java.lang.IndexOutOfBoundsException: Index -1 out of bounds for length 7296
+    at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:100)
+    at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:106)
+    at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:302)
+    at java.base/java.util.Objects.checkIndex(Objects.java:385)
+    at java.base/java.util.ArrayList.get(ArrayList.java:427)
+    at javafx.graphics@21.0.1/javafx.scene.Parent.updateCachedBounds(Parent.java:1705)
+    at javafx.graphics@21.0.1/javafx.scene.Parent.recomputeBounds(Parent.java:1649)
+    at javafx.graphics@21.0.1/javafx.scene.Parent.doComputeGeomBounds(Parent.java:1502)
+    at javafx.graphics@21.0.1/javafx.scene.Parent$1.doComputeGeomBounds(Parent.java:115)
+    at javafx.graphics@21.0.1/com.sun.javafx.scene.ParentHelper.computeGeomBoundsImpl(ParentHelper.java:84)
+    at javafx.graphics@21.0.1/com.sun.javafx.scene.layout.RegionHelper.superComputeGeomBoundsImpl(RegionHelper.java:78)
+    at javafx.graphics@21.0.1/com.sun.javafx.scene.layout.RegionHelper.superComputeGeomBounds(RegionHelper.java:62)
+    at javafx.graphics@21.0.1/javafx.scene.layout.Region.doComputeGeomBounds(Region.java:3301)
+    at javafx.graphics@21.0.1/javafx.scene.layout.Region$1.doComputeGeomBounds(Region.java:166)
+    at javafx.graphics@21.0.1/com.sun.javafx.scene.layout.RegionHelper.computeGeomBoundsImpl(RegionHelper.java:89)
+    at javafx.graphics@21.0.1/com.sun.javafx.scene.NodeHelper.computeGeomBounds(NodeHelper.java:117)
+    at javafx.graphics@21.0.1/javafx.scene.Node.updateGeomBounds(Node.java:3812)
+    at javafx.graphics@21.0.1/javafx.scene.Node.getGeomBounds(Node.java:3774)
+    at
+javafx.graphics@21.0.1/javafx.scene.Node.updateBounds(Node.java:781)
+    at javafx.graphics@21.0.1/javafx.scene.Parent.updateBounds(Parent.java:1836)
+    at javafx.graphics@21.0.1/javafx.scene.Scene$ScenePulseListener.pulse(Scene.java:2615)
+    at javafx.graphics@21.0.1/com.sun.javafx.tk.Toolkit.lambda$runPulse$2(Toolkit.java:401)
+    at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+    at javafx.graphics@21.0.1/com.sun.javafx.tk.Toolkit.runPulse(Toolkit.java:400)
+    at javafx.graphics@21.0.1/com.sun.javafx.tk.Toolkit.firePulse(Toolkit.java:430)
+    at javafx.graphics@21.0.1/com.sun.javafx.tk.quantum.QuantumToolkit.pulse(QuantumToolkit.java:592)
+    at javafx.graphics@21.0.1/com.sun.javafx.tk.quantum.QuantumToolkit.pulse(QuantumToolkit.java:572)
+    at javafx.graphics@21.0.1/com.sun.javafx.tk.quantum.QuantumToolkit.pulseFromQueue(QuantumToolkit.java:565)
+    at javafx.graphics@21.0.1/com.sun.javafx.tk.quantum.QuantumToolkit.lambda$runToolkit$11(QuantumToolkit.java:352)
+    at javafx.graphics@21.0.1/com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+    at javafx.graphics@21.0.1/com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+    at javafx.graphics@21.0.1/com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+    at java.base/java.lang.Thread.run(Thread.java:1589)*/
                     for (Block block : blocks) {
                         if (block.isDestroyed) {
                             continue;
@@ -509,6 +546,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    // figure better logging system
                 } finally {
                     try {
                         outputStream.flush();
