@@ -22,3 +22,4 @@ Communicate any unexpected challenges or issues you encountered during the assig
 resolve them.
 - Collision Detection is completely messed up in this game. We are still attempting to solve it.
 - The default error logging is terrible, so we must fix that
+- two threads accessing array at the same time so it gives a concurrent error, that is what breaks the game after lvl 1
