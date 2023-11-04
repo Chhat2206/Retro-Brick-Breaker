@@ -72,9 +72,9 @@ public class GameEngine {
     public void stop() {
         if (!isStopped) {
             isStopped = true;
-            updateThread.interrupt();
-            physicsThread.interrupt();
-            timeThread.interrupt();
+            updateThread.stop();
+            physicsThread.stop();
+            timeThread.stop();
         }
     }
 

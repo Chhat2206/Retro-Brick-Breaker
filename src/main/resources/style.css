@@ -1,14 +1,13 @@
 .root {
-    -fx-background-color: #355c7d;
+    -fx-background-color: #1d1d1d;
 }
 
 .goldRoot {
-    -fx-background-color: #F8B195;
+    -fx-background-color: #4b4a08;
 }
 
 .label {
     -fx-text-fill: #FFF;
     -fx-label-padding: 8px;
     -fx-font-size: 15px;
-    -fx-font-family: "Lucida Console";
 }
