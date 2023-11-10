@@ -86,7 +86,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             if (level >1){
                 new Score().showMessage("Level Up :)", this);
             }
-            if (level == 18) {
+            if (level == 10) {
                 new Score().showWin(this);
                 return;
             }
@@ -656,7 +656,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                         goldTime = time;
                         ball.setFill(new ImagePattern(new Image("goldball.png")));
                         System.out.println("gold ball");
-                        root.getStyleClass().add("goldRoot");
+//                        root.getStyleClass().add("goldRoot");
                         isGoldStatus = true;
                     }
 
@@ -696,7 +696,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
         if (time - goldTime > 5000) {
             ball.setFill(new ImagePattern(new Image("ball.png")));
-            root.getStyleClass().remove("goldRoot");
+//            root.getStyleClass().remove("goldRoot");
             isGoldStatus = false;
         }
 
