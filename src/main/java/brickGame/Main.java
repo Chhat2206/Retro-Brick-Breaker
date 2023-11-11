@@ -240,17 +240,22 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public void handle(KeyEvent event) {
         switch (event.getCode()) {
             case LEFT:
+            case A:
                 move(LEFT);
                 break;
+            case D:
             case RIGHT:
-
                 move(RIGHT);
                 break;
             case DOWN:
+            case S:
                 //setPhysicsToBall();
                 break;
-            case S:
+            case K:
                 saveGame();
+                break;
+            case ESCAPE:
+                PauseMenu.display();
                 break;
         }
     }
@@ -284,8 +289,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 }
             }
         }).start();
-
-
     }
 
 
@@ -729,7 +732,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
         if (time - goldTime > 5000) {
             ball.setFill(new ImagePattern(new Image("ball.png")));
-            root.getStyleClass().remove("goldRoot");
             isGoldStatus = false;
         }
 
