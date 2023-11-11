@@ -255,9 +255,13 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 saveGame();
                 break;
             case ESCAPE:
-                PauseMenu.display();
+                PauseMenu.display(getGameEngine());
                 break;
         }
+    }
+
+    private GameEngine getGameEngine() {
+        return engine;
     }
 
     private void move(final int direction) {

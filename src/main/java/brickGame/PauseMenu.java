@@ -7,9 +7,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class PauseMenu {
+public class PauseMenu extends Main{
 
-    public static void display() {
+    public static void display(GameEngine engine) {
         Stage pauseStage = new Stage();
         pauseStage.initModality(Modality.APPLICATION_MODAL);
         pauseStage.initStyle(StageStyle.UNDECORATED);
@@ -19,11 +19,14 @@ public class PauseMenu {
         Button saveButton = new Button("Save Game");
         Button quitButton = new Button("Quit");
 
-        resumeButton.setOnAction(e -> pauseStage.close());
+        resumeButton.setOnAction(e -> {
+            engine.start();
+            pauseStage.close();
+        });
+
         saveButton.setOnAction(e -> {
             // Add your save game logic here
             System.out.println("Game Saved");
-            pauseStage.close();
         });
 
         quitButton.setOnAction(e -> {
@@ -36,6 +39,8 @@ public class PauseMenu {
 
         Scene scene = new Scene(pauseLayout, 200, 200);
         pauseStage.setScene(scene);
+        engine.stop(); // Stop the engine when the pause menu is displayed
+        pauseStage.setOnCloseRequest(event -> engine.start()); // Resume the engine when the pause menu is closed
         pauseStage.showAndWait();
     }
 }
