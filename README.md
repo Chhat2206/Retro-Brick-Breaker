@@ -18,13 +18,19 @@
 - List the Java classes you modified from the provided code base. Describe the changes you made and explain why these modifications were necessary.
 
 ## Unexpected Problems:
-Communicate any unexpected challenges or issues you encountered during the assignment. Describe how you addressed or attempted to
-resolve them.
 - Collision Detection is completely messed up in this game. We have currently fixed half the problem:
 
 Adding the ball radius to the 'checkHitToBlock' function allows every block to detect and dissapear when the ball collides with the block.
 
 The next issue to solve is making the ball bounce when it hits with the object
+
+- Added pause menu
+
+Main menu implementation required passing the main and engine functions. Access Modifier must be changed from private to protected to give access in the same package.
+When loading game, menu should be automatically closed. 
+
+- Loading game changed blocks, speeds up ball velocity & does not progress level 
+
 
 - Game engine runs after every life for no reason. This makes it so the pause menu is completely broken when the user loses a heart. 
 - two threads accessing array at the same time so it gives a concurrent error, that is what breaks the game after lvl 1

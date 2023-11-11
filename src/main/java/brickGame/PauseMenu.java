@@ -7,9 +7,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class PauseMenu extends Main{
+public class PauseMenu {
 
-    public static void display(GameEngine engine) {
+    public static void display(Main main, GameEngine engine) {
         Stage pauseStage = new Stage();
         pauseStage.initModality(Modality.APPLICATION_MODAL);
         pauseStage.initStyle(StageStyle.UNDECORATED);
@@ -17,6 +17,7 @@ public class PauseMenu extends Main{
         VBox pauseLayout = new VBox(10);
         Button resumeButton = new Button("Resume");
         Button saveButton = new Button("Save Game");
+        Button loadButton = new Button("Load Game");
         Button quitButton = new Button("Quit");
 
         resumeButton.setOnAction(e -> {
@@ -25,22 +26,29 @@ public class PauseMenu extends Main{
         });
 
         saveButton.setOnAction(e -> {
-            // Add your save game logic here
+            main.saveGame();
             System.out.println("Game Saved");
         });
 
+        loadButton.setOnAction(e -> {
+            main.loadGame();
+            System.out.println("Game Loaded");
+        });
+
         quitButton.setOnAction(e -> {
-            // Add your quit game logic here
             System.out.println("Game Quit");
             System.exit(0);
         });
 
-        pauseLayout.getChildren().addAll(resumeButton, saveButton, quitButton);
+        pauseLayout.getChildren().addAll(resumeButton, saveButton, loadButton, quitButton);
 
         Scene scene = new Scene(pauseLayout, 200, 200);
         pauseStage.setScene(scene);
-        engine.stop(); // Stop the engine when the pause menu is displayed
-        pauseStage.setOnCloseRequest(event -> engine.start()); // Resume the engine when the pause menu is closed
+        engine.stop();
+        pauseStage.setOnCloseRequest(event -> {
+            engine.start();
+            pauseStage.close();
+        });
         pauseStage.showAndWait();
     }
 }

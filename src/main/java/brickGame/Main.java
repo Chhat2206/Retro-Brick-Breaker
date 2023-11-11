@@ -80,6 +80,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     Button load = null;
     Button newGame = null;
 
+    protected GameEngine getGameEngine() {
+        return engine;
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
@@ -232,9 +236,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 
     @Override
     public void handle(KeyEvent event) {
@@ -254,15 +255,16 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             case K:
                 saveGame();
                 break;
+            case L:
+                loadGame();
+                break;
             case ESCAPE:
-                PauseMenu.display(getGameEngine());
+                PauseMenu.display(this, getGameEngine());
                 break;
         }
     }
 
-    private GameEngine getGameEngine() {
-        return engine;
-    }
+
 
     private void move(final int direction) {
         new Thread(new Runnable() {
@@ -468,7 +470,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }
     }
 
-    private void saveGame() {
+    protected void saveGame() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -537,7 +539,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     }
 
-    private void loadGame() {
+    protected void loadGame() {
 
         LoadSave loadSave = new LoadSave();
         loadSave.read();
