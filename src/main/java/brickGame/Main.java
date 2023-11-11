@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -108,8 +109,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         scoreLabel = new Label("Score: " + score);
         Label levelLabel = new Label("Level: " + level);
         levelLabel.setTranslateY(20);
-        heartLabel = new Label("Heart : " + heart);
-        heartLabel.setTranslateX(sceneWidth - 70);
+        Image heartImage = new Image("heart.png");
+        ImageView heartImageView = new ImageView(heartImage);
+        heartImageView.setFitHeight(20); // Adjust the height as needed
+        heartImageView.setFitWidth(20);  // Adjust the width as needed
+        heartLabel = new Label("Heart: " + heart, heartImageView);
+        heartLabel.setTranslateX(sceneWidth - 90);
         if (!loadFromSave) {
             root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel, newGame);
         } else {
@@ -628,7 +633,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
         if (yBall >= Block.getPaddingTop() && yBall <= (Block.getHeight() * (level + 1)) + Block.getPaddingTop()) {
             for (final Block block : blocks) {
-                int hitCode = block.checkHitToBlock(xBall, yBall);
+                int hitCode = block.checkHitToBlock(xBall, yBall, ballRadius);
                 if (hitCode != Block.NO_HIT) {
                     score += 1;
 
@@ -696,7 +701,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
         if (time - goldTime > 5000) {
             ball.setFill(new ImagePattern(new Image("ball.png")));
-//            root.getStyleClass().remove("goldRoot");
+            root.getStyleClass().remove("goldRoot");
             isGoldStatus = false;
         }
 

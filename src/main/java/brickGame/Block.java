@@ -80,30 +80,34 @@ public class Block implements Serializable {
     }
 
 
-    public int checkHitToBlock(double xBall, double yBall) {
-
+    public int checkHitToBlock(double xBall, double yBall, double ballRadius) {
         if (isDestroyed) {
             return NO_HIT;
         }
 
-        if (xBall >= x && xBall <= x + width && yBall == y + height) {
+        // Check if the bottom edge of the ball hits the top edge of the block
+        if (xBall >= x && xBall <= x + width && yBall + ballRadius >= y && yBall + ballRadius <= y + height) {
             return HIT_BOTTOM;
         }
 
-        if (xBall >= x && xBall <= x + width && yBall == y) {
+        // Check if the top edge of the ball hits the bottom edge of the block
+        if (xBall >= x && xBall <= x + width && yBall <= y + height && yBall >= y) {
             return HIT_TOP;
         }
 
-        if (yBall >= y && yBall <= y + height && xBall == x + width) {
+        // Check if the right edge of the ball hits the left edge of the block
+        if (yBall >= y && yBall <= y + height && xBall + ballRadius >= x && xBall + ballRadius <= x + width) {
             return HIT_RIGHT;
         }
 
-        if (yBall >= y && yBall <= y + height && xBall == x) {
+        // Check if the left edge of the ball hits the right edge of the block
+        if (yBall >= y && yBall <= y + height && xBall <= x + width && xBall >= x) {
             return HIT_LEFT;
         }
 
         return NO_HIT;
     }
+
 
     public static int getPaddingTop() {
         return block.paddingTop;
