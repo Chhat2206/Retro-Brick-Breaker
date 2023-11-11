@@ -75,9 +75,11 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private Label            scoreLabel;
     private Label            heartLabel;
     private boolean loadFromSave = false;
+    private boolean isGameRunning = true;
     Stage  primaryStage;
     Button load = null;
     Button newGame = null;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
@@ -109,17 +111,43 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         scoreLabel = new Label("Score: " + score);
         Label levelLabel = new Label("Level: " + level);
         levelLabel.setTranslateY(20);
+
+        // Hearts
         Image heartImage = new Image("heart.png");
         ImageView heartImageView = new ImageView(heartImage);
-        heartImageView.setFitHeight(20); // Adjust the height as needed
-        heartImageView.setFitWidth(20);  // Adjust the width as needed
+        heartImageView.setFitHeight(20);
+        heartImageView.setFitWidth(20);
         heartLabel = new Label("Heart: " + heart, heartImageView);
         heartLabel.setTranslateX(sceneWidth - 90);
+
+        // Pause Button
+        Image pauseImage = new Image("pause.png");
+        ImageView pauseImageView = new ImageView(pauseImage);
+        pauseImageView.setFitHeight(20);
+        pauseImageView.setFitWidth(20);
+        pauseImageView.setTranslateX(sceneWidth - 110);
+        pauseImageView.setOnMouseClicked(event -> {
+            // Toggle between starting and stopping the game engine
+            if (isGameRunning) {
+                engine.stop();
+            } else {
+                engine.start();
+            }
+            // Update the game state flag
+            isGameRunning = !isGameRunning;
+
+            // You can add more actions or display messages if needed
+        });
+
+
         if (!loadFromSave) {
-            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel, newGame);
+            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel, newGame, pauseImageView);
+            //root.getChildren().add(ball);
+
         } else {
-            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel);
+            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel, pauseImageView);
         }
+
         for (Block block : blocks) {
             root.getChildren().add(block.rect);
         }
@@ -127,7 +155,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         scene.getStylesheets().add("style.css");
         scene.setOnKeyPressed(this);
 
-        primaryStage.setTitle("Game");
+        primaryStage.setTitle("The Incredible Block Breaker Game");
+        primaryStage.getIcons().add(new Image("favicon.png"));
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -261,12 +290,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
 
     private void initBall() {
-        Random random = new Random();
-        xBall = random.nextInt(sceneWidth) + 1;
-        yBall = random.nextInt(sceneHeight - 200) + ((level + 1) * Block.getHeight()) + 15;
+        xBall = sceneWidth / 2.0;
+        yBall = sceneHeight / 2.0;
         ball = new Circle();
         ball.setRadius(ballRadius);
         ball.setFill(new ImagePattern(new Image("ball.png")));
+//        ball.setVisible(false);
     }
 
     private void initBreak() {
@@ -618,7 +647,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
                 scoreLabel.setText("Score: " + score);
                 heartLabel.setText("Heart : " + heart);
-
                 rect.setX(xBreak);
                 rect.setY(yBreak);
                 ball.setCenterX(xBall);

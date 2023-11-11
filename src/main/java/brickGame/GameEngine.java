@@ -4,7 +4,7 @@ package brickGame;
 public class GameEngine {
 
     private OnAction onAction;
-    private int fps = 15;
+    private int fps = 120;
     private Thread updateThread;
     private Thread physicsThread;
     public boolean isStopped = true;
