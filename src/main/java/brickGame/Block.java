@@ -85,23 +85,23 @@ public class Block implements Serializable {
             return NO_HIT;
         }
 
-        // Check if the bottom edge of the ball hits the top edge of the block
-        if (xBall >= x && xBall <= x + width && yBall + ballRadius >= y && yBall + ballRadius <= y + height) {
+        // Check collision with the bottom of the block
+        if (xBall >= x && xBall <= x + width && yBall - ballRadius <= y + height && yBall + ballRadius > y + height) {
             return HIT_BOTTOM;
         }
 
-        // Check if the top edge of the ball hits the bottom edge of the block
-        if (xBall >= x && xBall <= x + width && yBall <= y + height && yBall >= y) {
+        // Check collision with the top of the block
+        if (xBall >= x && xBall <= x + width && yBall + ballRadius >= y && yBall - ballRadius < y) {
             return HIT_TOP;
         }
 
-        // Check if the right edge of the ball hits the left edge of the block
-        if (yBall >= y && yBall <= y + height && xBall + ballRadius >= x && xBall + ballRadius <= x + width) {
+        // Check collision with the right side of the block
+        if (yBall >= y && yBall <= y + height && xBall - ballRadius <= x + width && xBall + ballRadius > x + width) {
             return HIT_RIGHT;
         }
 
-        // Check if the left edge of the ball hits the right edge of the block
-        if (yBall >= y && yBall <= y + height && xBall <= x + width && xBall >= x) {
+        // Check collision with the left side of the block
+        if (yBall >= y && yBall <= y + height && xBall + ballRadius >= x && xBall - ballRadius < x) {
             return HIT_LEFT;
         }
 

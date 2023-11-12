@@ -20,9 +20,7 @@
 ## Unexpected Problems:
 - Collision Detection is completely messed up in this game. We have currently fixed half the problem:
 
-Adding the ball radius to the 'checkHitToBlock' function allows every block to detect and dissapear when the ball collides with the block.
-
-The next issue to solve is making the ball bounce when it hits with the object
+Adding the ball radius to the 'checkHitToBlock' function allows every block to detect and disappear when the ball collides with the block.
 
 - Added pause menu
 

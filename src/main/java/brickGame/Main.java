@@ -152,6 +152,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel, pauseImageView);
         }
 
+        // Error around here, creates index out of bound exception
         for (Block block : blocks) {
             root.getChildren().add(block.rect);
         }
@@ -263,8 +264,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 break;
         }
     }
-
-
 
     private void move(final int direction) {
         new Thread(new Runnable() {
