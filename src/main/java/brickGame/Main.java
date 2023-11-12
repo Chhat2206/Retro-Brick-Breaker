@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -159,11 +160,16 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         Scene scene = new Scene(root, sceneWidth, sceneHeight);
         scene.getStylesheets().add("style.css");
         scene.setOnKeyPressed(this);
+        // When in full screen, the main-menu stage takes you out of full screen.
+//       primaryStage.setFullScreen(true);
 
         primaryStage.setTitle("The Incredible Block Breaker Game");
         primaryStage.getIcons().add(new Image("favicon.png"));
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        // Works on displaying the temp 'main menu' created
+//        MainMenu.display(primaryStage);
 
         if (!loadFromSave) {
             if (level > 1 && level < 18) {
@@ -188,6 +194,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             newGame.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
+                    primaryStage.getScene().setCursor(Cursor.NONE);
                     engine = new GameEngine();
                     engine.setOnAction(Main.this);
                     engine.setFps(120);
@@ -260,12 +267,15 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 loadGame();
                 break;
             case ESCAPE:
+            case J:
                 PauseMenu.display(this, getGameEngine());
                 break;
         }
     }
 
+    // Not properly synchronizing to variable
     private void move(final int direction) {
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -283,6 +293,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                         xBreak--;
                     }
                     centerBreakX = xBreak + halfBreakWidth;
+
+                    // Controlling frame rate. Code looks awful so will fix
                     try {
                         Thread.sleep(sleepTime);
                     } catch (InterruptedException e) {
@@ -408,13 +420,15 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             }
         }
 
-        if (xBall >= sceneWidth) {
+        // Collision with right wall
+        if (xBall + ballRadius >= sceneWidth) {
             resetCollideFlags();
             //vX = 1.000;
             collideToRightWall = true;
         }
 
-        if (xBall <= 0) {
+        // Collision with left wall
+        if (xBall - ballRadius <= 0) {
             resetCollideFlags();
             //vX = 1.000;
             collideToLeftWall = true;

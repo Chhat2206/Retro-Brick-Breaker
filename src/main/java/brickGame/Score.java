@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 //import sun.plugin2.message.Message;
 
+// Score class has issue where loading breaks
 public class Score {
     public void show(final double x, final double y, int score, final Main main) {
         String sign;

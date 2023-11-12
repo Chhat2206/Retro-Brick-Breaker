@@ -12,7 +12,7 @@ public class PauseMenu {
     public static void display(Main main, GameEngine engine) {
         Stage pauseStage = new Stage();
         pauseStage.initModality(Modality.APPLICATION_MODAL);
-        pauseStage.initStyle(StageStyle.UNDECORATED);
+        pauseStage.initStyle(StageStyle.TRANSPARENT);
 
         VBox pauseLayout = new VBox(10);
         Button resumeButton = new Button("Resume");
@@ -33,6 +33,7 @@ public class PauseMenu {
         loadButton.setOnAction(e -> {
             main.loadGame();
             System.out.println("Game Loaded");
+            pauseStage.close();
         });
 
         quitButton.setOnAction(e -> {
