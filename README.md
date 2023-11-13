@@ -32,3 +32,13 @@ When loading game, menu should be automatically closed.
 
 - Game engine runs after every life for no reason. This makes it so the pause menu is completely broken when the user loses a heart. 
 - two threads accessing array at the same time so it gives a concurrent error, that is what breaks the game after lvl 1
+
+# Credits:
+Background Music:
+Song: Alaina Cross - Karma [NCS Release]
+Music provided by NoCopyrightSounds
+Free Download/Stream: http://ncs.io/karma
+Watch: http://ncs.lnk.to/karmaAT/youtube
+
+Ball:
+<a href="https://www.freepik.com/free-vector/variety-balls-with-unique-patterns_1164446.htm#query=ball%20game&position=0&from_view=keyword&track=ais">Image by brgfx</a> on Freepik

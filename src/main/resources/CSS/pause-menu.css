@@ -1,0 +1,16 @@
+/* styles.css */
+
+.vbox-background {
+    -fx-background-color: lightgray;
+}
+
+.button-style {
+    -fx-font-size: 14pt;
+    -fx-padding: 10px;
+    -fx-background-color: #4CAF50; /* Green background color */
+    -fx-text-fill: white;
+}
+
+.button-style:hover {
+    -fx-background-color: #45a049; /* Dark green on hover */
+}

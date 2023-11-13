@@ -44,6 +44,8 @@ public class PauseMenu {
         pauseLayout.getChildren().addAll(resumeButton, saveButton, loadButton, quitButton);
 
         Scene scene = new Scene(pauseLayout, 200, 200);
+        scene.getStylesheets().add("/css/pause-menu.css");
+
         pauseStage.setScene(scene);
         engine.stop();
         pauseStage.setOnCloseRequest(event -> {

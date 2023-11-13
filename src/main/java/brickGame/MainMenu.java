@@ -1,6 +1,5 @@
 package brickGame;
 
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -8,32 +7,33 @@ import javafx.stage.Stage;
 
 public class MainMenu {
 
-    public static Scene createMainMenu(Stage primaryStage) {
+    public static void display(Stage primaryStage) {
         VBox menuLayout = new VBox(10);
-        menuLayout.setStyle("-fx-background-color: lightblue;");
+        Scene menuScene = new Scene(menuLayout, 300, 200);
 
         Button startButton = new Button("Start New Game");
         Button loadButton = new Button("Load Game");
         Button exitButton = new Button("Exit");
 
         startButton.setOnAction(e -> {
-            // Start a new game
-            primaryStage.setScene(createGameScene(primaryStage));
+            try {
+                // Start a new game
+                new Main().start(primaryStage);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
         });
 
         loadButton.setOnAction(e -> {
-            // Load a saved game
-            // Implement your load game logic here
+            // Load game logic here
+            System.out.println("Load Game");
         });
 
-        exitButton.setOnAction(e -> Platform.exit());
+        exitButton.setOnAction(e -> primaryStage.close());
 
         menuLayout.getChildren().addAll(startButton, loadButton, exitButton);
 
-        return new Scene(menuLayout, 300, 200);
-    }
-
-    private static Scene createGameScene(Stage primaryStage) {
-        return null;
+        primaryStage.setScene(menuScene);
+        primaryStage.show();
     }
 }
