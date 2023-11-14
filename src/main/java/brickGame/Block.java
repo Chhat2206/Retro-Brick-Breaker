@@ -2,10 +2,13 @@ package brickGame;
 
 
 import javafx.scene.image.Image;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
+import java.io.File;
 import java.io.Serializable;
 
 public class Block implements Serializable {
@@ -81,33 +84,37 @@ public class Block implements Serializable {
 
 
     public int checkHitToBlock(double xBall, double yBall, double ballRadius) {
+
         if (isDestroyed) {
             return NO_HIT;
         }
 
         // Check collision with the bottom of the block
         if (xBall >= x && xBall <= x + width && yBall - ballRadius <= y + height && yBall + ballRadius > y + height) {
+            blockHit();
             return HIT_BOTTOM;
         }
 
         // Check collision with the top of the block
         if (xBall >= x && xBall <= x + width && yBall + ballRadius >= y && yBall - ballRadius < y) {
+            blockHit();
             return HIT_TOP;
         }
 
         // Check collision with the right side of the block
         if (yBall >= y && yBall <= y + height && xBall - ballRadius <= x + width && xBall + ballRadius > x + width) {
+            blockHit();
             return HIT_RIGHT;
         }
 
         // Check collision with the left side of the block
         if (yBall >= y && yBall <= y + height && xBall + ballRadius >= x && xBall - ballRadius < x) {
+            blockHit();
             return HIT_LEFT;
         }
 
         return NO_HIT;
     }
-
 
     public static int getPaddingTop() {
         return block.paddingTop;
@@ -125,4 +132,13 @@ public class Block implements Serializable {
         return block.width;
     }
 
+    private static void blockHit() {
+        // Playing the background music
+        String musicFile = "src/main/resources/Sound Effects/block-hit.mp3";
+        Media sound = new Media(new File(musicFile).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setVolume(0.57);
+        mediaPlayer.setCycleCount(1);
+        mediaPlayer.play();
+    }
 }

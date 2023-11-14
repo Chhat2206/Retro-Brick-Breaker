@@ -12,17 +12,13 @@
     import javafx.scene.image.ImageView;
     import javafx.scene.input.KeyEvent;
     import javafx.scene.layout.Pane;
+    import javafx.scene.media.Media;
+    import javafx.scene.media.MediaPlayer;
     import javafx.scene.paint.Color;
     import javafx.scene.paint.ImagePattern;
     import javafx.scene.shape.Circle;
     import javafx.scene.shape.Rectangle;
     import javafx.stage.Stage;
-
-    import javafx.animation.KeyFrame;
-    import javafx.animation.Timeline;
-    import javafx.event.ActionEvent;
-    import javafx.event.EventHandler;
-    import javafx.util.Duration;
 
 
     import java.io.*;
@@ -30,13 +26,14 @@
     import java.util.Random;
 
     public class Main extends Application implements EventHandler<KeyEvent>, GameEngine.OnAction {
+        private MediaPlayer mediaPlayer;
         private int level = 0;
-        private double xBreak = 0.0f;
+        private double Paddle_Move_X = 0.0f;
         private double centerBreakX;
-        private double yBreak = 640.0f;
-        private final int breakWidth = 130;
-        private final int breakHeight = 30;
-        private final int halfBreakWidth = breakWidth / 2;
+        private double Paddle_Move_Y = 640.0f;
+        private final int paddleWidth = 130;
+        private final int paddleHeight = 30;
+        private final int halfBreakWidth = paddleWidth / 2;
         private final int sceneWidth = 500;
         private final int sceneHeight = 700;
         private static final int LEFT  = 1;
@@ -84,6 +81,8 @@
         Button load = null;
         Button newGame = null;
 
+        private boolean isMuted = false;
+
         protected GameEngine getGameEngine() {
             return engine;
         }
@@ -103,7 +102,7 @@
                 }
 
                 initializeBall();
-                Paddle();
+                createPaddle();
                 setupGameBoard();
 
                 load = new Button("Load Game");
@@ -128,38 +127,12 @@
             heartLabel = new Label("Heart: " + heart, heartImageView);
             heartLabel.setTranslateX(sceneWidth - 90);
 
-            // Pause Button
-            Image pauseImage = new Image("pause.png");
-            ImageView pauseImageView = new ImageView(pauseImage);
-            pauseImageView.setFitHeight(20);
-            pauseImageView.setFitWidth(20);
-            pauseImageView.setTranslateX(sceneWidth - 110);
-            pauseImageView.setOnMouseClicked(event -> {
-                // Toggle between starting and stopping the game engine
-                if (isGameRunning) {
-                    engine.stop();
-                } else {
-                    engine.start();
-                }
-                // Update the game state flag
-                isGameRunning = !isGameRunning;
-            });
-
-            // Playing the background music
-    //        String musicFile = "src/main/resources/Sound Effects/background-music.mp3";
-    //        Media sound = new Media(new File(musicFile).toURI().toString());
-    //        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-    //        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-    //        mediaPlayer.play();
-
-
-
             if (!loadFromSave) {
-                root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel, newGame, pauseImageView);
+                root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel, newGame);
                 //root.getChildren().add(ball);
 
             } else {
-                root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel, pauseImageView);
+                root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel);
             }
 
             // Error around here, creates index out of bound exception
@@ -211,6 +184,7 @@
                         engine.setOnAction(Main.this);
                         engine.setFps(120);
                         engine.start();
+                        startBackgroundMusic();
 
                         load.setVisible(false);
                         newGame.setVisible(false);
@@ -280,8 +254,12 @@
                     break;
                 case ESCAPE:
                 case J:
-                    PauseMenu.display(this, getGameEngine());
+                    PauseMenu.display(this, getGameEngine(), primaryStage);
                     break;
+                case M:
+                    toggleMute();
+                    break;
+
             }
         }
 
@@ -290,29 +268,29 @@
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    int sleepTime = 4;
+                    int INITIAL_SLEEP_TIME = 4;
                     for (int i = 0; i < 30; i++) {
-                        if (xBreak == (sceneWidth - breakWidth) && direction == RIGHT) {
+                        if (Paddle_Move_X == (sceneWidth - paddleWidth) && direction == RIGHT) {
                             return;
                         }
-                        if (xBreak == 0 && direction == LEFT) {
+                        if (Paddle_Move_X == 0 && direction == LEFT) {
                             return;
                         }
                         if (direction == RIGHT) {
-                            xBreak++;
+                            Paddle_Move_X++;
                         } else {
-                            xBreak--;
+                            Paddle_Move_X--;
                         }
-                        centerBreakX = xBreak + halfBreakWidth;
+                        centerBreakX = Paddle_Move_X + halfBreakWidth;
 
                         // Controlling frame rate. Code looks awful so will fix
                         try {
-                            Thread.sleep(sleepTime);
+                            Thread.sleep(INITIAL_SLEEP_TIME);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                         if (i >= 20) {
-                            sleepTime = i;
+                            INITIAL_SLEEP_TIME = i;
                         }
                     }
                 }
@@ -329,12 +307,12 @@
     //        ball.setVisible(false);
         }
 
-        private void Paddle() {
+        private void createPaddle() {
             rect = new Rectangle();
-            rect.setWidth(breakWidth);
-            rect.setHeight(breakHeight);
-            rect.setX(xBreak);
-            rect.setY(yBreak);
+            rect.setWidth(paddleWidth);
+            rect.setHeight(paddleHeight);
+            rect.setX(Paddle_Move_X);
+            rect.setY(Paddle_Move_Y);
             ImagePattern pattern = new ImagePattern(new Image("block.jpg"));
             rect.setFill(pattern);
         }
@@ -351,6 +329,7 @@
         private boolean collideToLeftBlock = false;
         private boolean collideToTopBlock = false;
         private double vX = 1.000;
+
 
         private void resetCollideFlags() {
 
@@ -403,15 +382,15 @@
                 //return;
             }
 
-            if (yBall >= yBreak - ballRadius) {
+            if (yBall >= Paddle_Move_Y - ballRadius) {
                 //System.out.println("Colide1");
-                if (xBall >= xBreak && xBall <= xBreak + breakWidth) {
+                if (xBall >= Paddle_Move_X && xBall <= Paddle_Move_X + paddleWidth) {
                     hitTime = time;
                     resetCollideFlags();
                     collideToBreak = true;
                     goDownBall = false;
 
-                    double relation = (xBall - centerBreakX) / ((double) breakWidth / 2);
+                    double relation = (xBall - centerBreakX) / ((double) paddleWidth / 2);
 
                     if (Math.abs(relation) <= 0.3) {
                         //vX = 0;
@@ -479,6 +458,12 @@
                 goDownBall = true;
             }
 
+            // Collision with paddle
+            if (yBall + ballRadius >= Paddle_Move_Y && yBall - ballRadius <= Paddle_Move_Y + paddleHeight) {
+                if (xBall + ballRadius >= Paddle_Move_X && xBall - ballRadius <= Paddle_Move_X + paddleWidth) {
+                    paddleBounceSound();
+                }
+            }
         }
 
 
@@ -509,8 +494,8 @@
 
                         outputStream.writeDouble(xBall);
                         outputStream.writeDouble(yBall);
-                        outputStream.writeDouble(xBreak);
-                        outputStream.writeDouble(yBreak);
+                        outputStream.writeDouble(Paddle_Move_X);
+                        outputStream.writeDouble(Paddle_Move_Y);
                         outputStream.writeDouble(centerBreakX);
                         outputStream.writeLong(time);
                         outputStream.writeLong(goldTime);
@@ -559,12 +544,39 @@
             }).start();
 
         }
+        private void startBackgroundMusic() {
+            // Playing the background music
+            String musicFile = "src/main/resources/Sound Effects/background-music.mp3";
+            Media sound = new Media(new File(musicFile).toURI().toString());
+            mediaPlayer = new MediaPlayer(sound);
+
+            // Set initial volume to 50%
+            mediaPlayer.setVolume(0.07);
+
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            mediaPlayer.play();
+        }
+
+        protected void pauseBackgroundMusic() {
+            if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+                mediaPlayer.pause();
+            } }
+
+        public void resumeBackgroundMusic() {
+            if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PAUSED) {
+                mediaPlayer.play();
+            }}
+
+        private void toggleMute() {
+            if (mediaPlayer != null) {
+                mediaPlayer.setMute(!mediaPlayer.isMute());
+            }
+        }
 
         protected void loadGame() {
 
             LoadSave loadSave = new LoadSave();
             loadSave.read();
-
 
             isExistHeartBlock = loadSave.isExistHeartBlock;
             isGoldStatus = loadSave.isGoldStatus;
@@ -584,8 +596,8 @@
             destroyedBlockCount = loadSave.destroyedBlockCount;
             xBall = loadSave.xBall;
             yBall = loadSave.yBall;
-            xBreak = loadSave.xBreak;
-            yBreak = loadSave.yBreak;
+            Paddle_Move_X = loadSave.xBreak;
+            Paddle_Move_Y = loadSave.yBreak;
             centerBreakX = loadSave.centerBreakX;
             time = loadSave.time;
             goldTime = loadSave.goldTime;
@@ -673,8 +685,8 @@
 
                     scoreLabel.setText("Score: " + score);
                     heartLabel.setText("Heart : " + heart);
-                    rect.setX(xBreak);
-                    rect.setY(yBreak);
+                    rect.setX(Paddle_Move_X);
+                    rect.setY(Paddle_Move_Y);
                     ball.setCenterX(xBall);
                     ball.setCenterY(yBall);
 
@@ -762,7 +774,7 @@
                 if (choco.y > sceneHeight || choco.taken) {
                     continue;
                 }
-                if (choco.y >= yBreak && choco.y <= yBreak + breakHeight && choco.x >= xBreak && choco.x <= xBreak + breakWidth) {
+                if (choco.y >= Paddle_Move_Y && choco.y <= Paddle_Move_Y + paddleHeight && choco.x >= Paddle_Move_X && choco.x <= Paddle_Move_X + paddleWidth) {
                     System.out.println("You Got it and +3 score for you");
                     choco.taken = true;
                     choco.choco.setVisible(false);
@@ -779,5 +791,15 @@
         @Override
         public void onTime(long time) {
             this.time = time;
+        }
+
+        private static void paddleBounceSound() {
+            // Playing the background music
+            String musicFile = "src/main/resources/Sound Effects/paddle-bounce.mp3";
+            Media sound = new Media(new File(musicFile).toURI().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.setVolume(0.57);
+            mediaPlayer.setCycleCount(1);
+            mediaPlayer.play();
         }
     }

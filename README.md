@@ -1,7 +1,9 @@
 # Block Breaker Game
 ## Compilation Instructions:
 - Provide a clear, step-by-step guide on how to compile the code to produce the application. Include any dependencies or special settings required.
-
+  
+- src, pom, gitignore
+- 
 ## Implemented and Working Properly:
 - List the features that have been successfully implemented and are functioning as expected. Provide a brief description of each.
 
@@ -33,6 +35,7 @@ When loading game, menu should be automatically closed.
 - Game engine runs after every life for no reason. This makes it so the pause menu is completely broken when the user loses a heart. 
 - two threads accessing array at the same time so it gives a concurrent error, that is what breaks the game after lvl 1
 
+- Falling objects gain extra physics (bounce upwards) when engine is stopped
 # Credits:
 Background Music:
 Song: Alaina Cross - Karma [NCS Release]
@@ -42,3 +45,9 @@ Watch: http://ncs.lnk.to/karmaAT/youtube
 
 Ball:
 <a href="https://www.freepik.com/free-vector/variety-balls-with-unique-patterns_1164446.htm#query=ball%20game&position=0&from_view=keyword&track=ais">Image by brgfx</a> on Freepik
+
+Interface: https://pixabay.com/sound-effects/interface-124464/
+
+button: https://pixabay.com/sound-effects/button-124476/
+
+block-hit: https://pixabay.com/sound-effects/stop-13692/

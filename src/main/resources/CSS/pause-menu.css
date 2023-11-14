@@ -1,16 +1,26 @@
 /* styles.css */
 
-.vbox-background {
-    -fx-background-color: lightgray;
+.pause-menu-box {
+    -fx-border-color: linear-gradient(to right, blue, cyan);
+    -fx-border-width: 5;
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
 }
 
-.button-style {
-    -fx-font-size: 14pt;
-    -fx-padding: 10px;
-    -fx-background-color: #4CAF50; /* Green background color */
-    -fx-text-fill: white;
-}
 
-.button-style:hover {
-    -fx-background-color: #45a049; /* Dark green on hover */
-}
+
+/*.vbox-background {*/
+/*    -fx-background-color: lightgray;*/
+/*}*/
+
+/*.button-style {*/
+/*    -fx-font-size: 14pt;*/
+/*    -fx-padding: 10px;*/
+/*    -fx-background-color: #4CAF50; !* Green background color *!*/
+/*    -fx-text-fill: white;*/
+/*}*/
+
+/*.button-style:hover {*/
+/*    -fx-background-color: #45a049; !* Dark green on hover *!*/
+/*}*/
