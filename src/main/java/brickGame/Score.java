@@ -44,6 +44,36 @@ public class Score {
         }).start();
     }
 
+
+    /*
+    public void show(final double x, final double y, int score, final Main main) {
+    String sign = (score >= 0) ? "+" : "";
+    final Label label = new Label(sign + score);
+    label.setTranslateX(x);
+    label.setTranslateY(y);
+
+    // Use a smaller font size
+    label.setStyle("-fx-font-size: 14px; -fx-text-fill: " + (score >= 0 ? "green" : "red") + ";");
+
+    Platform.runLater(() -> main.root.getChildren().add(label));
+
+    new Thread(() -> {
+        try {
+            double opacity = 1.0;
+            while (opacity > 0) {
+                final double finalOpacity = opacity;
+                Platform.runLater(() -> label.setOpacity(finalOpacity));
+                opacity -= 0.05; // Adjust opacity decrement for subtlety
+                Thread.sleep(15); // Reduce the sleep time to make animation quicker
+            }
+            Platform.runLater(() -> main.root.getChildren().remove(label));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }).start();
+}
+*/
+
     public void showMessage(String message, final Main main) {
         final Label label = new Label(message);
         label.setTranslateX(220);

@@ -38,10 +38,12 @@ When loading game, menu should be automatically closed.
 - Falling objects gain extra physics (bounce upwards) when engine is stopped
 # Credits:
 Background Music:
-Song: Alaina Cross - Karma [NCS Release]
+background-music-soft-piano: https://pixabay.com/sound-effects/soft-piano-100-bpm-121529/
+
+background-music-ncs: Song: Alaina Cross - Karma [NCS Release]
 Music provided by NoCopyrightSounds
 Free Download/Stream: http://ncs.io/karma
-Watch: http://ncs.lnk.to/karmaAT/youtube
+Watch: http://ncs.lnk.to/karmaAT/youtube 
 
 Ball:
 <a href="https://www.freepik.com/free-vector/variety-balls-with-unique-patterns_1164446.htm#query=ball%20game&position=0&from_view=keyword&track=ais">Image by brgfx</a> on Freepik
@@ -51,3 +53,7 @@ Interface: https://pixabay.com/sound-effects/interface-124464/
 button: https://pixabay.com/sound-effects/button-124476/
 
 block-hit: https://pixabay.com/sound-effects/stop-13692/
+
+https://pixabay.com/sound-effects/interface-soft-click-131438/
+
+https://pixabay.com/sound-effects/click-for-game-menu-131903/

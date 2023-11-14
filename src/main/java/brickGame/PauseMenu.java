@@ -13,6 +13,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import javafx.animation.*;
+import javafx.util.Duration;
+
+import javafx.scene.effect.GaussianBlur;
+
 import java.io.File;
 
 public class PauseMenu {
@@ -26,15 +31,18 @@ public class PauseMenu {
 
         addButtonsToLayout(main, engine);
 
-        Scene scene = new Scene(pauseLayout, 200, 300);
+        Scene scene = new Scene(pauseLayout, 200, 400);
         scene.setFill(Color.TRANSPARENT); // Make the scene background transparent
         scene.getStylesheets().add("/css/pause-menu.css");
         pauseStage.setScene(scene);
 
         positionPauseMenuOverGame(primaryStage);
+        initializePauseMenuBlur(primaryStage);
 
         engine.stop();
+        fadeInMenu();
         pauseStage.showAndWait();
+        disablePauseMenuBlur(primaryStage);
     }
 
     private static void initializePauseStage() {
@@ -55,12 +63,26 @@ public class PauseMenu {
             pauseStage.close();
         });
 
-        Button saveButton = createButton("Save Game", e -> {
+
+        Button saveButton = new Button("Save Game");
+        // Initializes the saveButton the action is set
+
+        saveButton.setOnAction(e -> {
             main.saveGame();
-            System.out.println("Game Saved");
+            saveButton.setText("Game Saved");
+            saveButton.setStyle("-fx-background-color: green; -fx-text-fill: white;");
+
+
+            PauseTransition pause = new PauseTransition(Duration.seconds(2));
+            pause.setOnFinished(event -> {
+                saveButton.setText("Save Game");
+                saveButton.setStyle(""); // Reset to original style
+            });
+            pause.play();
         });
 
         Button loadButton = createButton("Load Game", e -> {
+            fadeOutMenu();
             main.loadGame();
             System.out.println("Game Loaded");
             pauseStage.close();
@@ -98,5 +120,38 @@ public class PauseMenu {
         mediaPlayer.setVolume(0.37);
         mediaPlayer.setCycleCount(1);
         mediaPlayer.play();
+    }
+
+    public static void initializePauseMenuBlur(Stage primaryStage) {
+        GaussianBlur blur = new GaussianBlur(4);
+        primaryStage.getScene().getRoot().setEffect(blur);
+    }
+
+    public static void disablePauseMenuBlur(Stage primaryStage) {
+        primaryStage.getScene().getRoot().setEffect(null);
+    }
+
+    private static void fadeInMenu() {
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(500), pauseLayout);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+        fadeIn.play();
+    }
+
+    private static void fadeOutMenu() {
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(500), pauseLayout);
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0);
+        fadeOut.setOnFinished(event -> pauseStage.close());
+        fadeOut.play();
+    }
+
+    private static void animateButtonPress(Button button) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(100), button);
+        st.setToX(0.9);
+        st.setToY(0.9);
+        st.setAutoReverse(true);
+        st.setCycleCount(2);
+        st.play();
     }
 }

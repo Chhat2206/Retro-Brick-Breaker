@@ -23,6 +23,7 @@
 
     import java.io.*;
     import java.util.ArrayList;
+    import java.util.Objects;
     import java.util.Random;
 
     public class Main extends Application implements EventHandler<KeyEvent>, GameEngine.OnAction {
@@ -72,17 +73,13 @@
                 Color.TOMATO,
                 Color.TAN,
         };
-        public  Pane             root;
-        private Label            scoreLabel;
-        private Label            heartLabel;
+        public  Pane root;
+        private Label scoreLabel;
+        private Label heartLabel;
         private boolean loadFromSave = false;
-        private boolean isGameRunning = true;
         Stage  primaryStage;
         Button load = null;
         Button newGame = null;
-
-        private boolean isMuted = false;
-
         protected GameEngine getGameEngine() {
             return engine;
         }
@@ -119,13 +116,9 @@
             Label levelLabel = new Label("Level: " + level);
             levelLabel.setTranslateY(20);
 
-            // Hearts
-            Image heartImage = new Image("heart.png");
-            ImageView heartImageView = new ImageView(heartImage);
-            heartImageView.setFitHeight(20);
-            heartImageView.setFitWidth(20);
-            heartLabel = new Label("Heart: " + heart, heartImageView);
-            heartLabel.setTranslateX(sceneWidth - 90);
+            makeHeartScore();
+            makeBackgroundImage();
+
 
             if (!loadFromSave) {
                 root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel, newGame);
@@ -149,7 +142,7 @@
     //       primaryStage.setFullScreen(true);
 
             primaryStage.setTitle("The Incredible Block Breaker Game");
-            primaryStage.getIcons().add(new Image("favicon.png"));
+            primaryStage.getIcons().add(new Image("/images/favicon.png"));
             primaryStage.setScene(scene);
             primaryStage.show();
 
@@ -169,6 +162,7 @@
                 load.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
+                        buttonClickSound();
                         loadGame();
 
                         load.setVisible(false);
@@ -253,8 +247,8 @@
                     loadGame();
                     break;
                 case ESCAPE:
-                case J:
                     PauseMenu.display(this, getGameEngine(), primaryStage);
+                    event.consume();
                     break;
                 case M:
                     toggleMute();
@@ -303,7 +297,8 @@
             yBall = sceneHeight / 2.0;
             ball = new Circle();
             ball.setRadius(ballRadius);
-            ball.setFill(new ImagePattern(new Image("Ball.png")));
+            ball.setFill(new ImagePattern(new Image("/images/Ball.png")));
+
     //        ball.setVisible(false);
         }
 
@@ -360,13 +355,13 @@
                 xBall -= vX;
             }
 
-            if (yBall <= 0) {
+            if (yBall <= ballRadius) {
                 //vX = 1.000;
                 resetCollideFlags();
                 goDownBall = true;
                 return;
             }
-            if (yBall >= sceneHeight) {
+            if (yBall + ballRadius >= sceneHeight) {
                 goDownBall = false;
                 if (!isGoldStatus) {
                     //TODO gameover
@@ -430,7 +425,7 @@
                 }
             }
 
-            //Wall Colide
+            //Wall Collide
 
             if (collideToRightWall) {
                 goRightBall = false;
@@ -440,7 +435,7 @@
                 goRightBall = true;
             }
 
-            //Block Colide
+            //Block Collide
 
             if (collideToRightBlock) {
                 goRightBall = true;
@@ -546,12 +541,12 @@
         }
         private void startBackgroundMusic() {
             // Playing the background music
-            String musicFile = "src/main/resources/Sound Effects/background-music.mp3";
+            String musicFile = "src/main/resources/Sound Effects/background-music-soft-piano.mp3";
             Media sound = new Media(new File(musicFile).toURI().toString());
             mediaPlayer = new MediaPlayer(sound);
 
             // Set initial volume to 50%
-            mediaPlayer.setVolume(0.07);
+            mediaPlayer.setVolume(0.37);
 
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             mediaPlayer.play();
@@ -575,38 +570,38 @@
 
         protected void loadGame() {
 
-            LoadSave loadSave = new LoadSave();
-            loadSave.read();
+            GameState gameState = new GameState();
+            gameState.read();
 
-            isExistHeartBlock = loadSave.isExistHeartBlock;
-            isGoldStatus = loadSave.isGoldStatus;
-            goDownBall = loadSave.goDownBall;
-            goRightBall = loadSave.goRightBall;
-            collideToBreak = loadSave.collideToBreak;
-            collideToBreakAndMoveToRight = loadSave.collideToBreakAndMoveToRight;
-            collideToRightWall = loadSave.collideToRightWall;
-            collideToLeftWall = loadSave.collideToLeftWall;
-            collideToRightBlock = loadSave.collideToRightBlock;
-            collideToBottomBlock = loadSave.collideToBottomBlock;
-            collideToLeftBlock = loadSave.collideToLeftBlock;
-            collideToTopBlock = loadSave.collideToTopBlock;
-            level = loadSave.level;
-            score = loadSave.score;
-            heart = loadSave.heart;
-            destroyedBlockCount = loadSave.destroyedBlockCount;
-            xBall = loadSave.xBall;
-            yBall = loadSave.yBall;
-            Paddle_Move_X = loadSave.xBreak;
-            Paddle_Move_Y = loadSave.yBreak;
-            centerBreakX = loadSave.centerBreakX;
-            time = loadSave.time;
-            goldTime = loadSave.goldTime;
-            vX = loadSave.vX;
+            isExistHeartBlock = gameState.isExistHeartBlock;
+            isGoldStatus = gameState.isGoldStatus;
+            goDownBall = gameState.goDownBall;
+            goRightBall = gameState.goRightBall;
+            collideToBreak = gameState.collideToBreak;
+            collideToBreakAndMoveToRight = gameState.collideToBreakAndMoveToRight;
+            collideToRightWall = gameState.collideToRightWall;
+            collideToLeftWall = gameState.collideToLeftWall;
+            collideToRightBlock = gameState.collideToRightBlock;
+            collideToBottomBlock = gameState.collideToBottomBlock;
+            collideToLeftBlock = gameState.collideToLeftBlock;
+            collideToTopBlock = gameState.collideToTopBlock;
+            level = gameState.level;
+            score = gameState.score;
+            heart = gameState.heart;
+            destroyedBlockCount = gameState.destroyedBlockCount;
+            xBall = gameState.xBall;
+            yBall = gameState.yBall;
+            Paddle_Move_X = gameState.xBreak;
+            Paddle_Move_Y = gameState.yBreak;
+            centerBreakX = gameState.centerBreakX;
+            time = gameState.time;
+            goldTime = gameState.goldTime;
+            vX = gameState.vX;
 
             blocks.clear();
             chocos.clear();
 
-            for (BlockSerializable ser : loadSave.blocks) {
+            for (BlockSerializable ser : gameState.blocks) {
                 int r = new Random().nextInt(200);
                 blocks.add(new Block(ser.row, ser.j, colors[r % colors.length], ser.type));
             }
@@ -753,12 +748,6 @@
             }
         }
 
-
-        @Override
-        public void onInit() {
-
-        }
-
         @Override
         public void onPhysicsUpdate() {
             checkDestroyedCount();
@@ -766,7 +755,7 @@
 
 
             if (time - goldTime > 5000) {
-                ball.setFill(new ImagePattern(new Image("Ball.png")));
+                ball.setFill(new ImagePattern(new Image("/images/Ball.png")));
                 isGoldStatus = false;
             }
 
@@ -798,8 +787,37 @@
             String musicFile = "src/main/resources/Sound Effects/paddle-bounce.mp3";
             Media sound = new Media(new File(musicFile).toURI().toString());
             MediaPlayer mediaPlayer = new MediaPlayer(sound);
-            mediaPlayer.setVolume(0.57);
+            mediaPlayer.setVolume(1);
             mediaPlayer.setCycleCount(1);
             mediaPlayer.play();
+        }
+
+        private static void buttonClickSound() {
+            String musicFile = "src/main/resources/Sound Effects/buttonClickSound.mp3"; // Path to your sound file
+            Media sound = new Media(new File(musicFile).toURI().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.setVolume(1); // Set the volume as needed
+            mediaPlayer.setCycleCount(1); // Play once
+            mediaPlayer.play();
+        }
+
+        public void makeHeartScore() {
+            Image heartImage = new Image("/images/heart.png");
+            ImageView heartImageView = new ImageView(heartImage);
+            heartImageView.setFitHeight(20);
+            heartImageView.setFitWidth(20);
+
+            heartLabel = new Label("Heart: " + heart, heartImageView);
+            heartLabel.getStyleClass().add("heart-label-gradient");
+            heartLabel.setTranslateX(sceneWidth - 90);
+        }
+
+        public void makeBackgroundImage() {
+            Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/background-image-2.png")));
+            ImageView backgroundView = new ImageView(backgroundImage);
+            backgroundView.setFitWidth(sceneWidth);
+            backgroundView.setFitHeight(sceneHeight);
+            root.getChildren().add(backgroundView);
+
         }
     }

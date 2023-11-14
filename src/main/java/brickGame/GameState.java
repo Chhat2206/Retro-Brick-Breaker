@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-public class LoadSave {
+public class GameState {
     public boolean isExistHeartBlock;
     public boolean isGoldStatus;
     public boolean goDownBall;
