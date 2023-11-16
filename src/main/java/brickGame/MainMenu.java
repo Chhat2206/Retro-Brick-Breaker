@@ -25,7 +25,6 @@ public class MainMenu {
         });
 
         loadButton.setOnAction(e -> {
-            // Load game logic here
             System.out.println("Load Game");
         });
 

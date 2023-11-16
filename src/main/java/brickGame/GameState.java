@@ -36,7 +36,7 @@ public class GameState {
 
     public void read() {
         try {
-            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new File(Main.savePath)));
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new File(Main.SAVE_PATH)));
             level = inputStream.readInt();
             score = inputStream.readInt();
             heart = inputStream.readInt();

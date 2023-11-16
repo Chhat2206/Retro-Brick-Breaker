@@ -21,7 +21,6 @@ import javafx.scene.effect.GaussianBlur;
 import java.io.File;
 
 public class PauseMenu {
-
     private static Stage pauseStage;
     private static VBox pauseLayout;
 
@@ -59,6 +58,7 @@ public class PauseMenu {
 
     private static void addButtonsToLayout(Main main, GameEngine engine) {
         Button resumeButton = createButton("Resume", e -> {
+            SoundManager.buttonClickSound();
             engine.start();
             pauseStage.close();
         });
@@ -68,6 +68,7 @@ public class PauseMenu {
         // Initializes the saveButton the action is set
 
         saveButton.setOnAction(e -> {
+            SoundManager.buttonClickSound();
             main.saveGame();
             saveButton.setText("Game Saved");
             saveButton.setStyle("-fx-background-color: green; -fx-text-fill: white;");
@@ -75,6 +76,7 @@ public class PauseMenu {
 
             PauseTransition pause = new PauseTransition(Duration.seconds(2));
             pause.setOnFinished(event -> {
+                SoundManager.buttonClickSound();
                 saveButton.setText("Save Game");
                 saveButton.setStyle(""); // Reset to original style
             });
@@ -82,24 +84,27 @@ public class PauseMenu {
         });
 
         Button loadButton = createButton("Load Game", e -> {
-            fadeOutMenu();
+//            fadeOutMenu();
+//            SoundManager.buttonClickSound();
             main.loadGame();
             System.out.println("Game Loaded");
             pauseStage.close();
         });
 
         Button restartButton = createButton("Restart Game", e -> {
+            SoundManager.buttonClickSound();
             main.restartGame();
             pauseStage.close();
         });
 
         Button quitButton = createButton("Quit", e -> {
+            SoundManager.buttonClickSound();
             System.out.println("Game Quit");
             System.exit(0);
         });
 
         pauseLayout.getChildren().addAll(resumeButton, saveButton, loadButton, restartButton, quitButton);
-        menuSound();
+        SoundManager.pauseMenuSound();
     }
 
     private static Button createButton(String text, EventHandler<ActionEvent> action) {
@@ -111,15 +116,6 @@ public class PauseMenu {
     private static void positionPauseMenuOverGame(Stage primaryStage) {
         pauseStage.setX(primaryStage.getX() + primaryStage.getWidth() / 3.3 - pauseLayout.getPrefWidth() / 2);
         pauseStage.setY(primaryStage.getY() + primaryStage.getHeight() / 3.3 - pauseLayout.getPrefHeight() / 2);
-    }
-
-    private static void menuSound() {
-        String musicFile = "src/main/resources/Sound Effects/pause-menu.mp3";
-        Media sound = new Media(new File(musicFile).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.setVolume(0.37);
-        mediaPlayer.setCycleCount(1);
-        mediaPlayer.play();
     }
 
     public static void initializePauseMenuBlur(Stage primaryStage) {

@@ -5,7 +5,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-//import sun.plugin2.message.Message;
 
 // Score class has issue where loading breaks
 public class Score {
@@ -43,38 +42,10 @@ public class Score {
             }
         }).start();
     }
-
-
-    /*
-    public void show(final double x, final double y, int score, final Main main) {
-    String sign = (score >= 0) ? "+" : "";
-    final Label label = new Label(sign + score);
-    label.setTranslateX(x);
-    label.setTranslateY(y);
-
-    // Use a smaller font size
-    label.setStyle("-fx-font-size: 14px; -fx-text-fill: " + (score >= 0 ? "green" : "red") + ";");
-
-    Platform.runLater(() -> main.root.getChildren().add(label));
-
-    new Thread(() -> {
-        try {
-            double opacity = 1.0;
-            while (opacity > 0) {
-                final double finalOpacity = opacity;
-                Platform.runLater(() -> label.setOpacity(finalOpacity));
-                opacity -= 0.05; // Adjust opacity decrement for subtlety
-                Thread.sleep(15); // Reduce the sleep time to make animation quicker
-            }
-            Platform.runLater(() -> main.root.getChildren().remove(label));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }).start();
-}
-*/
+    
 
     public void showMessage(String message, final Main main) {
+        SoundManager.levelUp();
         final Label label = new Label(message);
         label.setTranslateX(220);
         label.setTranslateY(340);
@@ -107,6 +78,7 @@ public class Score {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                SoundManager.gameOver();
                 Label label = new Label("Game Over :(");
                 label.setTranslateX(200);
                 label.setTranslateY(250);
@@ -133,13 +105,12 @@ public class Score {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                SoundManager.winSound();
                 Label label = new Label("You Win :)");
                 label.setTranslateX(200);
                 label.setTranslateY(250);
                 label.setScaleX(2);
                 label.setScaleY(2);
-
-
                 main.root.getChildren().addAll(label);
 
             }
