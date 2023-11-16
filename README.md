@@ -12,6 +12,8 @@
 
 ## Features Not Implemented:
 - Identify any features that you were unable to implement and provide a clear explanation for why they were left out.
+a pause button. it was implemented but i wanted to remove mouse cursor to make the game run smoother
+
 
 ## New Java Classes:
 - Enumerate any new Java classes that you introduced for the assignment. Include a brief description of each class's purpose and its location in the code.
@@ -30,7 +32,18 @@ Main menu implementation required passing the main and engine functions. Access 
 When loading game, menu should be automatically closed. 
 
 - Loading game changed blocks, speeds up ball velocity & does not progress level 
+When i minimize my pause menu and open the game back up, it only shows the pause menu and not the entire game
 
+When running any commands to my buttons, they sometimes will fall into a feedback loop of esc working, then pressing esc again quickly closes it, then repeats over and over
+when taking anything out of the main menu into functions, it creates a massive butterfly effect throughout the code
+trying to limit window size broke the pause menu
+sometimes sounds would not work
+
+- pause menu would remain in place when game screen was moved. fixed with the below code
+private static void positionPauseMenuOverGame(Stage primaryStage) {
+  pauseStage.setX(primaryStage.getX() + primaryStage.getWidth() / 3.3 - pauseLayout.getPrefWidth() / 2);
+  pauseStage.setY(primaryStage.getY() + primaryStage.getHeight() / 6 - pauseLayout.getPrefHeight() / 2);
+  }
 
 - Game engine runs after every life for no reason. This makes it so the pause menu is completely broken when the user loses a heart. 
 - two threads accessing array at the same time so it gives a concurrent error, that is what breaks the game after lvl 1
@@ -58,6 +71,7 @@ https://pixabay.com/sound-effects/interface-soft-click-131438/
 
 https://pixabay.com/sound-effects/click-for-game-menu-131903/
 
+muteMusicPauseMenu: https://pixabay.com/sound-effects/click-21156/
 win sound: https://pixabay.com/sound-effects/game-bonus-144751/
 game over: https://pixabay.com/sound-effects/videogame-death-sound-43894/
 level up:https://pixabay.com/sound-effects/level-up-47165/

@@ -39,6 +39,7 @@ public class SoundManager {
         playSound("src/main/resources/Sound Effects/gameOver.mp3");
     }
     public static void winSound() { playSound("src/main/resources/Sound Effects/winSound.mp3"); }
+    public static void muteSoundPauseMenu() { playSound("src/main/resources/Sound Effects/muteSoundPauseMenu.mp3"); }
     public static void startBackgroundMusic(String musicFilePath) {
         try {
             Media sound = new Media(new File(musicFilePath).toURI().toString());
@@ -73,6 +74,19 @@ public class SoundManager {
         if (backgroundMediaPlayer != null) {
             backgroundMediaPlayer.setMute(!backgroundMediaPlayer.isMute());
         }
+    }
+
+    public static void setVolume(double volume) {
+        if (backgroundMediaPlayer != null) {
+            backgroundMediaPlayer.setVolume(volume);
+        }
+    }
+
+    public static double getVolume() {
+        if (backgroundMediaPlayer != null) {
+            return backgroundMediaPlayer.getVolume();
+        }
+        return 0; // Default volume if the player is null
     }
 
 }

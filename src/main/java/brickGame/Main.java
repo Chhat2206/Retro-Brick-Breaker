@@ -238,44 +238,16 @@
             }
         }
 
-
-//        private void setupGameEngine() {
-//            if (level > 1 && level < 18) {
-//                load.setVisible(false);
-//                newGame.setVisible(false);
-//                engine = new GameEngine();
-//                engine.setOnAction(this);
-//                engine.setFps(120);
-//                engine.start();
-//            } else {
-//                engine = new GameEngine();
-//                engine.setOnAction(this);
-//                engine.setFps(120);
-//                engine.start();
-//                loadFromSave = false;
-//            }}
-
-
-//        private void configureStage() {
-//            Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
-//            scene.getStylesheets().add("style.css");
-//            scene.setOnKeyPressed(this);
-//            primaryStage.setTitle("The Incredible Block Breaker Game");
-//            primaryStage.getIcons().add(new Image("/images/favicon.png"));
-//            primaryStage.setScene(scene);
-//            primaryStage.show();
-//        }
-
         @Override
         public void handle(KeyEvent event) {
             switch (event.getCode()) {
                 case LEFT:
                 case A:
-                    move(LEFT);
+                    movePaddleX(LEFT);
                     break;
                 case D:
                 case RIGHT:
-                    move(RIGHT);
+                    movePaddleX(RIGHT);
                     break;
                 case ESCAPE:
                     PauseMenu.display(this, getGameEngine(), primaryStage);
@@ -288,7 +260,7 @@
         }
 
         // Not properly synchronizing to variable
-        private void move(final int direction) {
+        private void movePaddleX(final int direction) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -328,8 +300,6 @@
             ball = new Circle();
             ball.setRadius(BALL_RADIUS);
             ball.setFill(new ImagePattern(new Image("/images/Ball.png")));
-
-    //        ball.setVisible(false);
         }
 
         private void createPaddle() {
@@ -343,12 +313,10 @@
         }
 
         private void resetCollideFlags() {
-
             collideToBreak = false;
             collideToBreakAndMoveToRight = false;
             collideToRightWall = false;
             collideToLeftWall = false;
-
             collideToRightBlock = false;
             collideToBottomBlock = false;
             collideToLeftBlock = false;

@@ -5,6 +5,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -12,6 +13,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.control.Button;
 
 import javafx.animation.*;
 import javafx.util.Duration;
@@ -21,6 +26,7 @@ import javafx.scene.effect.GaussianBlur;
 import java.io.File;
 
 public class PauseMenu {
+    private static boolean isMuted = false;
     private static Stage pauseStage;
     private static VBox pauseLayout;
 
@@ -30,8 +36,8 @@ public class PauseMenu {
 
         addButtonsToLayout(main, engine);
 
-        Scene scene = new Scene(pauseLayout, 200, 400);
-        scene.setFill(Color.TRANSPARENT); // Make the scene background transparent
+        Scene scene = new Scene(pauseLayout, 200, 600);
+        scene.setFill(Color.TRANSPARENT);
         scene.getStylesheets().add("/css/pause-menu.css");
         pauseStage.setScene(scene);
 
@@ -40,6 +46,14 @@ public class PauseMenu {
 
         engine.stop();
         fadeInMenu();
+
+        // Brings the primary stage up when scene is minimized and reopened
+        primaryStage.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue && pauseStage.isShowing()) {
+                pauseStage.toFront();
+            }
+        });
+
         pauseStage.showAndWait();
         disablePauseMenuBlur(primaryStage);
     }
@@ -51,12 +65,18 @@ public class PauseMenu {
     }
 
     private static void configurePauseLayout() {
-        pauseLayout = new VBox(30);
+        pauseLayout = new VBox(20);
         pauseLayout.setAlignment(Pos.CENTER);
         pauseLayout.getStyleClass().add("pause-menu-box");
     }
 
     private static void addButtonsToLayout(Main main, GameEngine engine) {
+        HBox volumeControls = new HBox(10);
+        volumeControls.setAlignment(Pos.CENTER);
+        Slider volumeSlider = createVolumeSlider();
+        Button muteButton = createMuteButton();
+        volumeControls.getChildren().addAll(volumeSlider, muteButton);
+
         Button resumeButton = createButton("Resume", e -> {
             SoundManager.buttonClickSound();
             engine.start();
@@ -103,7 +123,8 @@ public class PauseMenu {
             System.exit(0);
         });
 
-        pauseLayout.getChildren().addAll(resumeButton, saveButton, loadButton, restartButton, quitButton);
+        // Add all elements to pauseLayout
+        pauseLayout.getChildren().addAll(resumeButton, saveButton, loadButton, restartButton, quitButton, volumeControls);
         SoundManager.pauseMenuSound();
     }
 
@@ -115,7 +136,7 @@ public class PauseMenu {
 
     private static void positionPauseMenuOverGame(Stage primaryStage) {
         pauseStage.setX(primaryStage.getX() + primaryStage.getWidth() / 3.3 - pauseLayout.getPrefWidth() / 2);
-        pauseStage.setY(primaryStage.getY() + primaryStage.getHeight() / 3.3 - pauseLayout.getPrefHeight() / 2);
+        pauseStage.setY(primaryStage.getY() + primaryStage.getHeight() / 10 - pauseLayout.getPrefHeight() / 2);
     }
 
     public static void initializePauseMenuBlur(Stage primaryStage) {
@@ -149,5 +170,36 @@ public class PauseMenu {
         st.setAutoReverse(true);
         st.setCycleCount(2);
         st.play();
+    }
+
+    private static Slider createVolumeSlider() {
+        Slider volumeSlider = new Slider(0, 1, SoundManager.getVolume());
+        volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            SoundManager.setVolume(newValue.doubleValue());
+        });
+        return volumeSlider;
+    }
+
+    private static Button createMuteButton() {
+        ImageView muteIcon = new ImageView(new Image("/images/muteMusic.png"));
+        muteIcon.setFitWidth(60);
+        muteIcon.setFitHeight(60);
+        muteIcon.setPreserveRatio(true);
+        Button muteButton = new Button("", muteIcon);
+        muteButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 0;");
+        muteButton.setOnAction(e -> SoundManager.toggleMuteBackgroundMusic());
+        muteButton.setOnAction(e -> {
+            // Toggle the mute state
+            isMuted = !isMuted;
+            SoundManager.toggleMuteBackgroundMusic();
+            SoundManager.muteSoundPauseMenu();
+
+            if (isMuted) {
+                muteIcon.setImage(new Image("/images/playMusic.png"));
+            } else {
+                muteIcon.setImage(new Image("/images/muteMusic.png"));
+            }
+        });
+        return muteButton;
     }
 }
