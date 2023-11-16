@@ -1,0 +1,32 @@
+/* styles.css */
+
+.pause-menu-box {
+    -fx-border-color: linear-gradient(to right, blue, cyan);
+    -fx-border-width: 5;
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-radius: 10;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 10, 0, 5, 5);
+}
+
+.button {
+    -fx-background-color: #7DB1B1; /* Primary color */
+    -fx-text-fill: #18191A;
+    -fx-font-family: 'Consolas', sans-serif;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 20px; /* Rounded corners */
+    -fx-background-radius: 20px;
+    -fx-effect: dropshadow( gaussian, rgba(0,0,0,0.6), 3,0,0,1 );
+}
+
+.button:hover {
+    -fx-background-color: #4169E1; /* Darker shade for hover effect */
+    -fx-cursor: hand; /* Change cursor to hand pointer */
+    -fx-text-fill: white;
+}
+
+.button:pressed {
+    -fx-background-color: green; /* Green background for pressed state */
+    -fx-text-fill: white; /* White text for better readability */
+}

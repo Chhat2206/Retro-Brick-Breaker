@@ -16,8 +16,8 @@ public class Bonus implements Serializable {
     public boolean taken = false;
 
     public Bonus(int row, int column) {
-        x = (column * (Block.getWidth())) + Block.getPaddingH() + (Block.getWidth() / 2) - 15;
-        y = (row * (Block.getHeight())) + Block.getPaddingTop() + (Block.getHeight() / 2) - 15;
+        x = (column * (Block.getWidth())) + Block.getPaddingH() + ((double) Block.getWidth() / 2) - 15;
+        y = (row * (Block.getHeight())) + Block.getPaddingTop() + ((double) Block.getHeight() / 2) - 15;
 
         draw();
     }
@@ -30,11 +30,7 @@ public class Bonus implements Serializable {
         choco.setY(y);
 
         String url;
-        if (new Random().nextInt(20) % 2 == 0) {
-            url = "bonus1.png";
-        } else {
-            url = "bonus2.png";
-        }
+        url = "bonus.png";
 
         choco.setFill(new ImagePattern(new Image(url)));
     }

@@ -4,7 +4,7 @@ package brickGame;
 public class GameEngine {
 
     private OnAction onAction;
-    private int fps = 15;
+    private int fps = 120;
     private Thread updateThread;
     private Thread physicsThread;
     public boolean isStopped = true;
@@ -37,10 +37,6 @@ public class GameEngine {
         updateThread.start();
     }
 
-    private void Initialize() {
-        onAction.onInit();
-    }
-
     private synchronized void PhysicsCalculation() {
         physicsThread = new Thread(new Runnable() {
             @Override
@@ -62,7 +58,6 @@ public class GameEngine {
 
     public void start() {
         time = 0;
-        Initialize();
         Update();
         PhysicsCalculation();
         TimeStart();
@@ -103,11 +98,7 @@ public class GameEngine {
 
     public interface OnAction {
         void onUpdate();
-
-        void onInit();
-
         void onPhysicsUpdate();
-
         void onTime(long time);
     }
 

@@ -2,12 +2,15 @@
     -fx-background-color: #1d1d1d;
 }
 
-.goldRoot {
-    -fx-background-color: #4b4a08;
-}
-
 .label {
     -fx-text-fill: #FFF;
     -fx-label-padding: 8px;
     -fx-font-size: 15px;
+}
+
+.refined-button-effect {
+    -fx-background-color: linear-gradient(to bottom, #4CAF50, #81C784); /* Smooth green gradient */
+    -fx-background-radius: 10;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 5); /* Softer drop shadow */
 }
