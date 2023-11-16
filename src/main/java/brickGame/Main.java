@@ -8,6 +8,7 @@
     import javafx.scene.Scene;
     import javafx.scene.control.Button;
     import javafx.scene.control.Label;
+    import javafx.scene.effect.DropShadow;
     import javafx.scene.image.Image;
     import javafx.scene.image.ImageView;
     import javafx.scene.input.KeyEvent;
@@ -124,6 +125,7 @@
                 initializeBall();
                 createPaddle();
                 setupGameBoard();
+                primaryStage.setResizable(false);
 
                 load = new Button("Load Game");
                 newGame = new Button("Start New Game");
@@ -131,7 +133,6 @@
                 load.setTranslateY(300);
                 newGame.setTranslateX(220);
                 newGame.setTranslateY(340);
-
             }
 
             root = new Pane();
@@ -142,14 +143,8 @@
             makeHeartScore();
             makeBackgroundImage();
 
-
-            if (!loadFromSave) {
-                root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel, newGame);
-                //root.getChildren().add(ball);
-
-            } else {
-                root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel);
-            }
+            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel);
+            if (!loadFromSave) { root.getChildren().addAll(newGame); }
 
             // Error around here, creates index out of bound exception
             for (Block block : blocks) {
@@ -159,7 +154,7 @@
     //                root.getChildren().add(currentblock.rect);
             }
             Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
-            scene.getStylesheets().add("style.css");
+            scene.getStylesheets().add("/css/main.css");
             scene.setOnKeyPressed(this);
             primaryStage.setTitle("The Incredible Block Breaker Game");
             primaryStage.getIcons().add(new Image("/images/favicon.png"));
@@ -195,7 +190,7 @@
                         engine.setOnAction(Main.this);
                         engine.setFps(120);
                         engine.start();
-                        SoundManager.startBackgroundMusic("src/main/resources/Sound Effects/background-music-soft-piano.mp3");
+                        SoundManager.startBackgroundMusic("src/main/resources/Sound Effects/Background Music/background-music-soft-piano.mp3");
 
                         load.setVisible(false);
                         newGame.setVisible(false);
@@ -299,7 +294,8 @@
             yBall = SCENE_HEIGHT / 2.0;
             ball = new Circle();
             ball.setRadius(BALL_RADIUS);
-            ball.setFill(new ImagePattern(new Image("/images/Ball.png")));
+            ball.setFill(new ImagePattern(new Image("/images/ball.png")));
+
         }
 
         private void createPaddle() {
@@ -721,7 +717,7 @@
 
 
             if (time - goldTime > 5000) {
-                ball.setFill(new ImagePattern(new Image("/images/Ball.png")));
+                ball.setFill(new ImagePattern(new Image("/images/ball.png")));
                 isGoldStatus = false;
             }
 
@@ -760,11 +756,20 @@
         }
 
         public void makeBackgroundImage() {
-            Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/background-image-2.png")));
+            Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/Background Images/background-image-4.png")));
             ImageView backgroundView = new ImageView(backgroundImage);
             backgroundView.setFitWidth(SCENE_WIDTH);
             backgroundView.setFitHeight(SCENE_HEIGHT);
             root.getChildren().add(backgroundView);
 
+        }
+
+        public DropShadow dropShadow() {
+            DropShadow dropShadow = new DropShadow();
+            dropShadow.setRadius(5.0);
+            dropShadow.setOffsetX(1.0);
+            dropShadow.setOffsetY(1.0);
+            dropShadow.setColor(Color.color(0.4, 0.5, 0.5));
+            return dropShadow;
         }
     }

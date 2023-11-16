@@ -134,7 +134,7 @@ public class Block implements Serializable {
 
     private static void blockHit() {
         // Playing the background music
-        String musicFile = "src/main/resources/Sound Effects/block-hit.mp3";
+        String musicFile = "src/main/resources/Sound Effects/blockHit.mp3";
         Media sound = new Media(new File(musicFile).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.setVolume(0.57);

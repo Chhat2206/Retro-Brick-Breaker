@@ -22,12 +22,11 @@ public class SoundManager {
     public static void buttonClickSound() {
         playSound("src/main/resources/Sound Effects/buttonClickSound.mp3");
     }
-
     public static void paddleBounceSound() {
-        playSound("src/main/resources/Sound Effects/paddle-bounce.mp3");
+        playSound("src/main/resources/Sound Effects/paddleBounce.mp3");
     }
     public static void pauseMenuSound() {
-        playSound("src/main/resources/Sound Effects/pause-menu.mp3");
+        playSound("src/main/resources/Sound Effects/pauseMenu.mp3");
     }
     public static void ballHitFloor() {
         playSound("src/main/resources/Sound Effects/ballHitFloor.mp3");

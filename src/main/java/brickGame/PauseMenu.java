@@ -38,7 +38,7 @@ public class PauseMenu {
 
         Scene scene = new Scene(pauseLayout, 200, 600);
         scene.setFill(Color.TRANSPARENT);
-        scene.getStylesheets().add("/css/pause-menu.css");
+        scene.getStylesheets().add("/css/pauseMenu.css");
         pauseStage.setScene(scene);
 
         positionPauseMenuOverGame(primaryStage);
