@@ -71,6 +71,8 @@ https://pixabay.com/sound-effects/interface-soft-click-131438/
 
 https://pixabay.com/sound-effects/click-for-game-menu-131903/
 
+paddle & block assets: https://kenney.nl/assets/shape-characters
+
 Backgrounds:
 https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp1933991.jpg&f=1&nofb=1&ipt=fc0b8ee5c987bf5da44add35593287a16a29a3c3e22aff1eabc7c4d7aa071bb5&ipo=images
 https://wallpapercave.com/dwp2x/wp1933955.png

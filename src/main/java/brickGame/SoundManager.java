@@ -39,6 +39,7 @@ public class SoundManager {
     }
     public static void winSound() { playSound("src/main/resources/Sound Effects/winSound.mp3"); }
     public static void muteSoundPauseMenu() { playSound("src/main/resources/Sound Effects/muteSoundPauseMenu.mp3"); }
+    public static void blockHit() {playSound("src/main/resources/Sound Effects/blockHit.mp3"); setVolume(0.57);}
     public static void startBackgroundMusic(String musicFilePath) {
         try {
             Media sound = new Media(new File(musicFilePath).toURI().toString());

@@ -31,7 +31,7 @@
         private static final int LEFT  = 1;
         private static final int RIGHT = 2;
         private static final int PADDLE_WIDTH = 130;
-        private static final int PADDLE_HEIGHT = 30;
+        private static final int PADDLE_HEIGHT = 20;
         private static final int BALL_RADIUS = 10;
         private static final int SCENE_WIDTH = 500;
         private static final int SCENE_HEIGHT = 700;
@@ -206,7 +206,7 @@
         }
 
         private void setupGameBoard() {
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 5; i++) {
                 for (int j = 0; j < level + 1; j++) {
                     int r = new Random().nextInt(500);
                     if (r % 5 == 0) {
@@ -304,7 +304,7 @@
             rect.setHeight(PADDLE_HEIGHT);
             rect.setX(paddleMoveX);
             rect.setY(paddleMoveY);
-            ImagePattern pattern = new ImagePattern(new Image("block.jpg"));
+            ImagePattern pattern = new ImagePattern(new Image("/images/paddle.png"));
             rect.setFill(pattern);
         }
 
@@ -682,7 +682,7 @@
 
                         if (block.type == Block.BLOCK_STAR) {
                             goldTime = time;
-                            ball.setFill(new ImagePattern(new Image("goldball.png")));
+                            ball.setFill(new ImagePattern(new Image("/images/goldBall.png")));
                             System.out.println("gold ball");
     //                        root.getStyleClass().add("goldRoot");
                             isGoldStatus = true;
