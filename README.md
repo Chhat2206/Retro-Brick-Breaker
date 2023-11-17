@@ -58,6 +58,9 @@ Music provided by NoCopyrightSounds
 Free Download/Stream: http://ncs.io/karma
 Watch: http://ncs.lnk.to/karmaAT/youtube 
 
+background-music-8-bit: https://pixabay.com/sound-effects/8bit-music-for-game-68698/
+
+
 Ball:
 <a href="https://www.freepik.com/free-vector/variety-balls-with-unique-patterns_1164446.htm#query=ball%20game&position=0&from_view=keyword&track=ais">Image by brgfx</a> on Freepik
 
@@ -78,6 +81,8 @@ https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2F
 https://wallpapercave.com/dwp2x/wp1933955.png
 https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp7495828.jpg&f=1&nofb=1&ipt=1bd232da5f62157ec8678330150854cac87851b14658277ad6c770e645afd960&ipo=images
 
+collectPowerup : https://pixabay.com/sound-effects/coin-collect-retro-8-bit-sound-effect-145251/
+changeBackgroundMusic: https://pixabay.com/sound-effects/tape-cassette-insert-172758/
 muteMusicPauseMenu: https://pixabay.com/sound-effects/click-21156/
 win sound: https://pixabay.com/sound-effects/game-bonus-144751/
 game over: https://pixabay.com/sound-effects/videogame-death-sound-43894/

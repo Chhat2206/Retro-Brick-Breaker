@@ -1,0 +1,21 @@
+.button {
+    -fx-background-color: #7DB1B1; /* Primary color */
+    -fx-text-fill: #18191A;
+    -fx-font-family: 'Consolas', sans-serif;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 20px; /* Rounded corners */
+    -fx-background-radius: 20px;
+    -fx-effect: dropshadow( gaussian, rgba(0,0,0,0.6), 3,0,0,1 );
+}
+
+.button:hover {
+    -fx-background-color: #4169E1; /* Darker shade for hover effect */
+    -fx-cursor: hand; /* Change cursor to hand pointer */
+    -fx-text-fill: white;
+}
+
+.button:pressed {
+    -fx-background-color: green; /* Green background for pressed state */
+    -fx-text-fill: white; /* White text for better readability */
+}

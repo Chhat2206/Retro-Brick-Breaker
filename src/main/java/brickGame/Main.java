@@ -30,7 +30,7 @@
         // Constants
         private static final int LEFT  = 1;
         private static final int RIGHT = 2;
-        private static final int PADDLE_WIDTH = 130;
+        private static final int PADDLE_WIDTH = 110;
         private static final int PADDLE_HEIGHT = 20;
         private static final int BALL_RADIUS = 10;
         private static final int SCENE_WIDTH = 500;
@@ -190,7 +190,7 @@
                         engine.setOnAction(Main.this);
                         engine.setFps(120);
                         engine.start();
-                        SoundManager.startBackgroundMusic("src/main/resources/Sound Effects/Background Music/background-music-soft-piano.mp3");
+                        SoundManager.startBackgroundMusic("src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3");
 
                         load.setVisible(false);
                         newGame.setVisible(false);

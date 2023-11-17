@@ -26,7 +26,7 @@ public class SoundManager {
         playSound("src/main/resources/Sound Effects/paddleBounce.mp3");
     }
     public static void pauseMenuSound() {
-        playSound("src/main/resources/Sound Effects/pauseMenu.mp3");
+        playSound("src/main/resources/Sound Effects/Menus/pauseMenu.mp3");
     }
     public static void ballHitFloor() {
         playSound("src/main/resources/Sound Effects/ballHitFloor.mp3");
