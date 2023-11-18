@@ -1,6 +1,6 @@
 /* styles.css */
 
-.pause-menu-box {
+.pause-menu-gradient {
     -fx-border-color: linear-gradient(to right, blue, cyan);
     -fx-border-width: 5;
     -fx-background-color: rgba(0, 0, 0, 0.5);

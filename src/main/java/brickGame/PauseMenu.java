@@ -30,8 +30,7 @@ public class PauseMenu {
 
         Scene scene = new Scene(pauseLayout, 200, 600);
         scene.setFill(Color.TRANSPARENT);
-        scene.getStylesheets().add("/css/defaultMenu.css");
-        scene.getStylesheets().add("/css/pauseMenu.css");
+        scene.getStylesheets().addAll("/css/defaultMenu.css", "/css/pauseMenu.css");
         pauseStage.setScene(scene);
 
         positionPauseMenuOverGame(primaryStage);
@@ -60,7 +59,7 @@ public class PauseMenu {
     private static void configurePauseLayout() {
         pauseLayout = new VBox(20);
         pauseLayout.setAlignment(Pos.CENTER);
-        pauseLayout.getStyleClass().add("pause-menu-box");
+        pauseLayout.getStyleClass().add("pause-menu-gradient");
     }
 
     private static void addButtonsToLayout(Main main, GameEngine engine) {
@@ -165,4 +164,15 @@ public class PauseMenu {
         st.play();
     }
 
+    public static double getPauseStageX() {
+        return pauseStage.getX();
+    }
+
+    public static double getPauseStageY() {
+        return pauseStage.getY();
+    }
+
+    public static double getPauseStageWidth() {
+        return pauseLayout.getWidth();
+    }
 }

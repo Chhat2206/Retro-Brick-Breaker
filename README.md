@@ -49,17 +49,16 @@ private static void positionPauseMenuOverGame(Stage primaryStage) {
 - two threads accessing array at the same time so it gives a concurrent error, that is what breaks the game after lvl 1
 
 - Falling objects gain extra physics (bounce upwards) when engine is stopped
-# Credits:
-Background Music:
-background-music-soft-piano: https://pixabay.com/sound-effects/soft-piano-100-bpm-121529/
 
-background-music-ncs: Song: Alaina Cross - Karma [NCS Release]
-Music provided by NoCopyrightSounds
-Free Download/Stream: http://ncs.io/karma
-Watch: http://ncs.lnk.to/karmaAT/youtube 
+## Credits
 
-background-music-8-bit: https://pixabay.com/sound-effects/8bit-music-for-game-68698/
+### Images
 
+### Music
+Background Music
+- [backgroundMusicSoftPiano](https://pixabay.com/sound-effects/soft-piano-100-bpm-121529/)
+- [backgroundMusicNCS](http://ncs.lnk.to/karmaAT/youtube)
+- [backgroundMusicSoftPiano](https://pixabay.com/sound-effects/8bit-music-for-game-68698/)
 
 Ball:
 <a href="https://www.freepik.com/free-vector/variety-balls-with-unique-patterns_1164446.htm#query=ball%20game&position=0&from_view=keyword&track=ais">Image by brgfx</a> on Freepik

@@ -1,4 +1,4 @@
-.pause-menu-box {
+.sound-menu-gradient {
     -fx-border-color: linear-gradient(to right, orangered, coral);
     -fx-border-width: 5;
     -fx-background-color: rgba(0, 0, 0, 0.5);

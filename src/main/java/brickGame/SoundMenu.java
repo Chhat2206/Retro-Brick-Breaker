@@ -1,11 +1,11 @@
 package brickGame;
 
+import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Slider;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 public class SoundMenu {
 
@@ -23,19 +24,17 @@ public class SoundMenu {
     public static void display() {
         initializeSoundStage();
         configureSoundLayout();
-        HBox volumeControls = new HBox(10);
-        volumeControls.setAlignment(Pos.CENTER);
-        Slider volumeSlider = createVolumeSlider();
-        Button muteButton = createMuteButton();
-        volumeControls.getChildren().addAll(volumeSlider, muteButton);
+        addVolumeControls();
+        addCloseButton();
 
-        soundLayout.getChildren().addAll(volumeSlider, muteButton);
-
-        Scene scene = new Scene(soundLayout, 300, 400);
+        Scene scene = new Scene(soundLayout, 200, 250);
         soundStage.setScene(scene);
         scene.setFill(Color.TRANSPARENT);
-        scene.getStylesheets().add("/css/defaultMenu.css");
-        scene.getStylesheets().add("/css/soundMenu.css");
+        scene.getStylesheets().addAll("/css/defaultMenu.css", "/css/soundMenu.css");
+
+        positionSoundMenuNextToPauseMenu();
+        fadeInMenu();
+
         soundStage.showAndWait();
 
     }
@@ -50,6 +49,7 @@ public class SoundMenu {
         soundLayout = new VBox(10);
         soundLayout.setAlignment(Pos.CENTER);
         soundLayout.setSpacing(20);
+        soundLayout.getStyleClass().add("sound-menu-gradient");
     }
 
     public static Slider createVolumeSlider() {
@@ -76,15 +76,33 @@ public class SoundMenu {
         return muteButton;
     }
 
-    private static void positionSoundMenuOverGame(Stage primaryStage) {
-        double centerXPosition = primaryStage.getX() + (primaryStage.getWidth() / 2) - (soundStage.getWidth() / 2);
-        double centerYPosition = primaryStage.getY() + (primaryStage.getHeight() / 2) - (soundStage.getHeight() / 2);
-        soundStage.setX(centerXPosition);
-        soundStage.setY(centerYPosition);
+    private static void fadeInMenu() {
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(500), soundLayout);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+        fadeIn.play();
     }
 
-    public static void initializeSoundMenuBlur(Stage primaryStage) {
-        GaussianBlur blur = new GaussianBlur(4);
-        primaryStage.getScene().getRoot().setEffect(blur);
+    private static void addVolumeControls() {
+        HBox volumeControls = new HBox(10);
+        volumeControls.setAlignment(Pos.CENTER);
+        Slider volumeSlider = createVolumeSlider();
+        Button muteButton = createMuteButton();
+        volumeControls.getChildren().addAll(volumeSlider, muteButton);
+        soundLayout.getChildren().add(volumeControls);
     }
+
+    private static void addCloseButton() {
+        Button closeButton = new Button("Close");
+        closeButton.setOnAction(e -> soundStage.close());
+        soundLayout.getChildren().add(closeButton);
+    }
+
+    private static void positionSoundMenuNextToPauseMenu() {
+        // Position the Sound Menu to the right of the Pause Menu
+        soundStage.setX(PauseMenu.getPauseStageX() + PauseMenu.getPauseStageWidth());
+        soundStage.setY(PauseMenu.getPauseStageY());
+    }
+
+
 }
