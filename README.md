@@ -49,7 +49,7 @@ private static void positionPauseMenuOverGame(Stage primaryStage) {
 - two threads accessing array at the same time so it gives a concurrent error, that is what breaks the game after lvl 1
 
 - Falling objects gain extra physics (bounce upwards) when engine is stopped
-
+- Fading out didn't work when we called it in the beginning the setaction in the end of sound menu so I just set everything under the close menu. There are many small changes and fixes like this but they weren't all documented
 ## Credits
 
 ### Images
@@ -65,7 +65,7 @@ Ball:
 
 Interface: https://pixabay.com/sound-effects/interface-124464/
 
-button: https://pixabay.com/sound-effects/button-124476/
+buttonClickSound.mp3: https://pixabay.com/sound-effects/click-button-app-147358/
 
 block-hit: https://pixabay.com/sound-effects/stop-13692/
 

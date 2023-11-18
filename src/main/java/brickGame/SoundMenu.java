@@ -22,20 +22,21 @@ public class SoundMenu {
     private static VBox soundLayout;
 
     public static void display() {
+        PauseMenu.soundMenuOpen();
         initializeSoundStage();
         configureSoundLayout();
         addVolumeControls();
         addCloseButton();
 
-        Scene scene = new Scene(soundLayout, 200, 250);
+        Scene scene = new Scene(soundLayout, 150, 220);
         soundStage.setScene(scene);
         scene.setFill(Color.TRANSPARENT);
         scene.getStylesheets().addAll("/css/defaultMenu.css", "/css/soundMenu.css");
 
         positionSoundMenuNextToPauseMenu();
-        fadeInMenu();
 
         soundStage.showAndWait();
+
 
     }
 
@@ -48,7 +49,7 @@ public class SoundMenu {
     private static void configureSoundLayout() {
         soundLayout = new VBox(10);
         soundLayout.setAlignment(Pos.CENTER);
-        soundLayout.setSpacing(20);
+        soundLayout.setSpacing(10);
         soundLayout.getStyleClass().add("sound-menu-gradient");
     }
 
@@ -84,17 +85,24 @@ public class SoundMenu {
     }
 
     private static void addVolumeControls() {
-        HBox volumeControls = new HBox(10);
+        VBox volumeControls = new VBox(10); // Changed from HBox to VBox
         volumeControls.setAlignment(Pos.CENTER);
+
         Slider volumeSlider = createVolumeSlider();
         Button muteButton = createMuteButton();
+
         volumeControls.getChildren().addAll(volumeSlider, muteButton);
         soundLayout.getChildren().add(volumeControls);
     }
 
     private static void addCloseButton() {
         Button closeButton = new Button("Close");
-        closeButton.setOnAction(e -> soundStage.close());
+        closeButton.setOnAction(e -> {
+            PauseMenu.resetSoundButtonStyle();
+            soundStage.close();
+            PauseMenu.fadeInMenu();
+        });
+
         soundLayout.getChildren().add(closeButton);
     }
 
@@ -103,6 +111,5 @@ public class SoundMenu {
         soundStage.setX(PauseMenu.getPauseStageX() + PauseMenu.getPauseStageWidth());
         soundStage.setY(PauseMenu.getPauseStageY());
     }
-
 
 }

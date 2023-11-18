@@ -16,11 +16,10 @@ import javafx.util.Duration;
 
 import javafx.scene.effect.GaussianBlur;
 
-import java.io.File;
-
 public class PauseMenu {
     private static Stage pauseStage;
     private static VBox pauseLayout;
+    private static Button soundButton;
 
     public static void display(Main main, GameEngine engine, Stage primaryStage) {
         initializePauseStage();
@@ -28,7 +27,7 @@ public class PauseMenu {
 
         addButtonsToLayout(main, engine);
 
-        Scene scene = new Scene(pauseLayout, 200, 600);
+        Scene scene = new Scene(pauseLayout, 200, 400);
         scene.setFill(Color.TRANSPARENT);
         scene.getStylesheets().addAll("/css/defaultMenu.css", "/css/pauseMenu.css");
         pauseStage.setScene(scene);
@@ -46,8 +45,8 @@ public class PauseMenu {
             }
         });
 
-        pauseStage.showAndWait();
         disablePauseMenuBlur(primaryStage);
+        pauseStage.showAndWait();
     }
 
     private static void initializePauseStage() {
@@ -65,25 +64,26 @@ public class PauseMenu {
     private static void addButtonsToLayout(Main main, GameEngine engine) {
 
         Button resumeButton = createButton("Resume", e -> {
-            SoundManager.buttonClickSound();
+//            fadeOutMenu();
+//            SoundManager.buttonClickSound();
             engine.start();
             pauseStage.close();
         });
 
-        Button soundButton = createButton("Sound Settings", e -> {
-//            pauseStage.close();
+        soundButton = createButton("Sound Settings", e -> {
+            soundMenuOpen();
             SoundMenu.display();
         });
 
 
         Button saveButton = new Button("Save Game");
-        // Initializes the saveButton the action is set
 
         saveButton.setOnAction(e -> {
             SoundManager.buttonClickSound();
             main.saveGame();
             saveButton.setText("Game Saved");
-            saveButton.setStyle("-fx-background-color: green; -fx-text-fill: white;");
+            saveButton.setStyle("-fx-background-color: #f0f0f0; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0); -fx-text-fill: black;");
+
 
 
             PauseTransition pause = new PauseTransition(Duration.seconds(2));
@@ -128,7 +128,7 @@ public class PauseMenu {
 
     private static void positionPauseMenuOverGame(Stage primaryStage) {
         pauseStage.setX(primaryStage.getX() + primaryStage.getWidth() / 3.3 - pauseLayout.getPrefWidth() / 2);
-        pauseStage.setY(primaryStage.getY() + primaryStage.getHeight() / 10 - pauseLayout.getPrefHeight() / 2);
+        pauseStage.setY(primaryStage.getY() + primaryStage.getHeight() / 4.5 - pauseLayout.getPrefHeight() / 2);
     }
 
     public static void initializePauseMenuBlur(Stage primaryStage) {
@@ -140,9 +140,10 @@ public class PauseMenu {
         primaryStage.getScene().getRoot().setEffect(null);
     }
 
-    private static void fadeInMenu() {
+    protected static void fadeInMenu() {
+        System.out.println("In fadeInMenu");
         FadeTransition fadeIn = new FadeTransition(Duration.millis(500), pauseLayout);
-        fadeIn.setFromValue(0);
+        fadeIn.setFromValue(0.3);
         fadeIn.setToValue(1);
         fadeIn.play();
     }
@@ -153,6 +154,19 @@ public class PauseMenu {
         fadeOut.setToValue(0);
         fadeOut.setOnFinished(event -> pauseStage.close());
         fadeOut.play();
+    }
+
+    protected static void soundMenuOpen() {
+        System.out.println("In soundMenuOpen");
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(500), pauseLayout);
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0.3); // Fade to a lower opacity instead of completely invisible
+        fadeOut.play();
+        highlightSoundSystemButton();
+    }
+
+    public static void highlightSoundSystemButton() {
+        soundButton.setStyle("-fx-background-color: #f0f0f0; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
     }
 
     private static void animateButtonPress(Button button) {
@@ -174,5 +188,9 @@ public class PauseMenu {
 
     public static double getPauseStageWidth() {
         return pauseLayout.getWidth();
+    }
+
+    public static void resetSoundButtonStyle() {
+        soundButton.setStyle("");
     }
 }

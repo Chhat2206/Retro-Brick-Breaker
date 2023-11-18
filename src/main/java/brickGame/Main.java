@@ -504,9 +504,6 @@
 
                         outputStream.writeObject(blockSerializable);
 
-                        new Score().showMessage("Game Saved", Main.this);
-
-
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
