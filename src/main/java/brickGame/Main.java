@@ -33,14 +33,14 @@
         // Constants
         private static final int LEFT  = 1;
         private static final int RIGHT = 2;
-        private static final int PADDLE_WIDTH = 110;
-        private static final int PADDLE_HEIGHT = 20;
+        private static final int PADDLE_WIDTH = 90;
+        private static final int PADDLE_HEIGHT = 10;
         private static final int BALL_RADIUS = 10;
         private static final int SCENE_WIDTH = 500;
         private static final int SCENE_HEIGHT = 700;
 
         // Game State Variables
-        private int level = 0;
+        protected int level = 0;
         private int score = 0;
         private int heart = 3;
         private int destroyedBlockCount = 0;
@@ -74,8 +74,9 @@
         private Button newGame;
         protected Stage primaryStage;
 
-        // Game Engine and Media
+        // Game Engine, GameBoardManager and Media
         private GameEngine engine;
+        private GameBoardManager gameBoardManager;
         private MediaPlayer mediaPlayer;
 
         // Ball Movement and Collision Flags
@@ -90,12 +91,13 @@
         private boolean collideToLeftBlock = false;
         private boolean collideToTopBlock = false;
         private double ballVelocityX = 1.000;
+        private double ballVelocityY = 1.000;
 
         // Game Objects
         private Rectangle rect;
-        private final ArrayList<Block> blocks = new ArrayList<>();
+        protected final ArrayList<Block> blocks = new ArrayList<>();
         private final ArrayList<Bonus> chocos = new ArrayList<>();
-        private final Color[] colors = new Color[]{
+        protected final Color[] colors = new Color[]{
                 Color.MAGENTA, Color.RED, Color.GOLD, Color.CORAL,
                 Color.AQUA, Color.VIOLET, Color.GREENYELLOW,
                 Color.ORANGE, Color.PINK, Color.SLATEGREY,
@@ -108,7 +110,7 @@
 
         // Other Instance Variables
         private boolean isGoldStatus = false;
-        private boolean isExistHeartBlock = false;
+        protected boolean isExistHeartBlock = false;
 
         protected GameEngine getGameEngine() {
             return engine;
@@ -130,7 +132,8 @@
 
                 initializeBall();
                 createPaddle();
-                setupGameBoard();
+                gameBoardManager = new GameBoardManager(this);
+                gameBoardManager.setupGameBoard();
                 primaryStage.setResizable(false);
 
                 load = new Button("Load Game");
@@ -212,32 +215,7 @@
             }
         }
 
-        private void setupGameBoard() {
-            for (int i = 0; i < 5; i++) {
-                for (int j = 0; j < level + 1; j++) {
-                    int r = new Random().nextInt(500);
-                    if (r % 5 == 0) {
-                        continue;
-                    }
-                    int type;
-                    if (r % 10 == 1) {
-                        type = Block.BLOCK_CHOCO;
-                    } else if (r % 10 == 2) {
-                        if (!isExistHeartBlock) {
-                            type = Block.BLOCK_HEART;
-                            isExistHeartBlock = true;
-                        } else {
-                            type = Block.BLOCK_NORMAL;
-                        }
-                    } else if (r % 10 == 3) {
-                        type = Block.BLOCK_STAR;
-                    } else {
-                        type = Block.BLOCK_NORMAL;
-                    }
-                    blocks.add(new Block(j, i, colors[r % (colors.length)], type));
-                }
-            }
-        }
+
 
         @Override
         public void handle(KeyEvent event) {
@@ -331,57 +309,89 @@
             collideToLeftBlock = false;
             collideToTopBlock = false;
         }
-
         private void setPhysicsToBall() {
-            //v = ((time - hitTime) / 1000.000) + 1.000;
+            updateBallPosition();
+            checkCollisionWithWalls();
+            checkCollisionWithPaddle();
+            checkCollisionWithBlocks();
+            handleBallDirection();
+        }
 
-            double vY = 1.000;
-            if (goDownBall) {
-                yBall += vY;
-            } else {
-                yBall -= vY;
+        private void checkCollisionWithWalls() {
+            if (yBall <= BALL_RADIUS || yBall + BALL_RADIUS >= SCENE_HEIGHT) {
+                handleWallCollision();
             }
 
-            if (goRightBall) {
-                xBall += ballVelocityX;
-            } else {
-                xBall -= ballVelocityX;
+            if (xBall + BALL_RADIUS >= SCENE_WIDTH || xBall - BALL_RADIUS <= 0) {
+                handleSideWallCollision();
             }
+        }
 
+        private void handleWallCollision() {
             if (yBall <= BALL_RADIUS) {
-                //vX = 1.000;
-                SoundManager.paddleBounceSound();
-                resetCollideFlags();
-                goDownBall = true;
-                return;
+                bounceOffTopWall();
+            } else {
+                bounceOffBottomWall();
             }
-            if (yBall + BALL_RADIUS >= SCENE_HEIGHT) {
-                goDownBall = false;
-                SoundManager.ballHitFloor();
-                if (!isGoldStatus) {
-                    //TODO gameover
-                    heart--;
-                    new Score().show((double) SCENE_WIDTH / 2, (double) SCENE_HEIGHT / 2, -1, this);
+        }
 
-                    if (heart == 0) {
-                        new Score().showGameOver(this);
-                        engine.stop();
-                    }
+        private void bounceOffTopWall() {
+            SoundManager.paddleBounceSound();
+            resetCollideFlags();
+            goDownBall = true;
+        }
 
-                }
-                //return;
+        private void bounceOffBottomWall() {
+            goDownBall = false;
+            SoundManager.ballHitFloor();
+            if (!isGoldStatus) {
+                handleGameOver();
             }
+        }
 
-            if (yBall >= paddleMoveY - BALL_RADIUS) {
-                //System.out.println("Colide1");
-                if (xBall >= paddleMoveX && xBall <= paddleMoveX + PADDLE_WIDTH) {
-                    resetCollideFlags();
-                    collideToBreak = true;
-                    goDownBall = false;
+        private void handleGameOver() {
+            // Game over logic
+            heart--;
+            new Score().show((double) SCENE_WIDTH / 2, (double) SCENE_HEIGHT / 2, -1, this);
 
-                    double relation = (xBall - centerBreakX) / ((double) PADDLE_WIDTH / 2);
+            if (heart == 0) {
+                new Score().showGameOver(this);
+                engine.stop();
+            }
+        }
 
-                    if (Math.abs(relation) <= 0.3) {
+        private void handleSideWallCollision() {
+            SoundManager.paddleBounceSound();
+            resetCollideFlags();
+            if (xBall + BALL_RADIUS >= SCENE_WIDTH) {
+                collideToRightWall = true;
+            } else {
+                collideToLeftWall = true;
+            }
+        }
+
+        private void checkCollisionWithPaddle() {
+            // Collision logic with paddle
+            if (yBall >= paddleMoveY - BALL_RADIUS &&
+                    xBall >= paddleMoveX && xBall <= paddleMoveX + PADDLE_WIDTH) {
+                handlePaddleCollision();
+
+            }
+        }
+
+        private void handlePaddleCollision() {
+            // Handle collision with paddle
+            resetCollideFlags();
+            calculateBallVelocity();
+            goDownBall = false;
+            collideToBreakAndMoveToRight = xBall - centerBreakX > 0;
+            SoundManager.paddleBounceSound();
+        }
+
+        private void calculateBallVelocity() {
+            // Logic to calculate ball velocity
+            double relation = (xBall - centerBreakX) / ((double) PADDLE_WIDTH / 2);
+            if (Math.abs(relation) <= 0.3) {
                         //vX = 0;
                         ballVelocityX = Math.abs(relation);
                     } else if (Math.abs(relation) > 0.3 && Math.abs(relation) <= 0.7) {
@@ -393,49 +403,11 @@
                     }
 
                     collideToBreakAndMoveToRight = xBall - centerBreakX > 0;
-                    //System.out.println("Colide2");
-                }
-            }
+        }
 
-            // Collision with right wall
-            if (xBall + BALL_RADIUS >= SCENE_WIDTH) {
-                SoundManager.paddleBounceSound();
-                resetCollideFlags();
-
-                //vX = 1.000;
-                collideToRightWall = true;
-            }
-
-            // Collision with left wall
-            if (xBall - BALL_RADIUS <= 0) {
-                SoundManager.paddleBounceSound();
-                resetCollideFlags();
-
-                //vX = 1.000;
-                collideToLeftWall = true;
-            }
-
-            if (collideToBreak) {
-                if (collideToBreakAndMoveToRight) {
-                    goRightBall = true;
-                } else {
-                    goRightBall = false;
-                }
-            }
-
-            //Wall Collide
-
-            if (collideToRightWall) {
-                goRightBall = false;
-            }
-
-            if (collideToLeftWall) {
-                goRightBall = true;
-            }
-
-            //Block Collide
-
+        private void checkCollisionWithBlocks() {
             if (collideToRightBlock) {
+
                 goRightBall = true;
             }
 
@@ -450,22 +422,28 @@
             if (collideToBottomBlock) {
                 goDownBall = true;
             }
+        }
 
-            // Collision with paddle
-            if (yBall + BALL_RADIUS >= paddleMoveY && yBall - BALL_RADIUS <= paddleMoveY + PADDLE_HEIGHT) {
-                if (xBall + BALL_RADIUS >= paddleMoveX && xBall - BALL_RADIUS <= paddleMoveX + PADDLE_WIDTH) {
-                    SoundManager.paddleBounceSound();
-                    resetCollideFlags();
-                }
+        private void handleBallDirection() {
+            // Logic to handle the direction of the ball after collision
+            if (collideToBreak) {
+                goRightBall = collideToBreakAndMoveToRight;
+            }
+            if (collideToRightWall) {
+                goRightBall = false;
+            }
+            if (collideToLeftWall) {
+                goRightBall = true;
             }
         }
 
+        private void updateBallPosition() {
+            xBall += goRightBall ? ballVelocityX : -ballVelocityX;
+            yBall += goDownBall ? ballVelocityY : -ballVelocityY;
+        }
 
         private void checkDestroyedCount() {
             if (destroyedBlockCount == blocks.size()) {
-                //TODO win level todo...
-                //System.out.println("You Win");
-
                 nextLevel();
             }
         }
@@ -516,7 +494,6 @@
                             }
                             blockSerializable.add(new BlockSerializable(block.row, block.column, block.type));
                         }
-
                         outputStream.writeObject(blockSerializable);
 
                     } catch (FileNotFoundException e) {
@@ -599,12 +576,10 @@
                         ballVelocityX = 1.000;
                         resetCollideFlags();
                         goDownBall = true;
-
                         isGoldStatus = false;
                         isExistHeartBlock = false;
                         time = 0;
                         goldTime = 0;
-
                         engine.stop();
                         blocks.clear();
                         chocos.clear();
@@ -628,12 +603,10 @@
                 destroyedBlockCount = 0;
                 resetCollideFlags();
                 goDownBall = true;
-
                 isGoldStatus = false;
                 isExistHeartBlock = false;
                 time = 0;
                 goldTime = 0;
-
                 blocks.clear();
                 chocos.clear();
 
@@ -656,7 +629,6 @@
                     rect.setY(paddleMoveY);
                     ball.setCenterX(xBall);
                     ball.setCenterY(yBall);
-
                     for (Bonus choco : chocos) {
                         choco.choco.setY(choco.y);
                     }
@@ -675,7 +647,6 @@
                         block.rect.setVisible(false);
                         block.isDestroyed = true;
                         destroyedBlockCount++;
-                        //System.out.println("size is " + blocks.size());
                         resetCollideFlags();
 
                         if (block.type == Block.BLOCK_CHOCO) {
@@ -694,7 +665,6 @@
                             goldTime = time;
                             ball.setFill(new ImagePattern(new Image("/images/goldBall.png")));
                             System.out.println("gold ball");
-    //                        root.getStyleClass().add("goldRoot");
                             isGoldStatus = true;
                         }
 
@@ -711,11 +681,7 @@
                         } else if (hitCode == Block.HIT_TOP) {
                             collideToTopBlock = true;
                         }
-
                     }
-
-                    //TODO hit to break and some work here....
-                    //System.out.println("Break in row:" + block.row + " and column:" + block.column + " hit");
                 }
             }
         }
@@ -724,8 +690,6 @@
         public void onPhysicsUpdate() {
             checkDestroyedCount();
             setPhysicsToBall();
-
-
             if (time - goldTime > 5000) {
                 ball.setFill(new ImagePattern(new Image("/images/ball.png")));
                 isGoldStatus = false;
@@ -745,10 +709,7 @@
                 }
                 choco.y += ((time - choco.timeCreated) / 1000.000) + 1.000;
             }
-
-
         }
-
         @Override
         public void onTime(long time) {
             this.time = time;
@@ -772,25 +733,5 @@
             backgroundView.setFitHeight(SCENE_HEIGHT);
             root.getChildren().add(backgroundView);
 
-        }
-
-        public DropShadow dropShadow() {
-            DropShadow dropShadow = new DropShadow();
-            dropShadow.setRadius(5.0);
-            dropShadow.setOffsetX(1.0);
-            dropShadow.setOffsetY(1.0);
-            dropShadow.setColor(Color.color(0.4, 0.5, 0.5));
-            return dropShadow;
-        }
-
-        public static void playRandomBackgroundMusic() {
-            String[] tracks = {
-                    "src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3",
-                    "src/main/resources/Sound Effects/Background Music/backgroundMusic8Bit.mp3",
-                    "src/main/resources/Sound Effects/Background Music/backgroundMusicNCS.mp3"
-            };
-
-            Random random = new Random();
-            int randomIndex = random.nextInt(tracks.length);
         }
     }
