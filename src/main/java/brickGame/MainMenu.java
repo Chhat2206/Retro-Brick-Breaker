@@ -1,38 +1,37 @@
 package brickGame;
 
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Button;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class MainMenu {
+public class MainMenu extends VBox {
+    private Stage primaryStage;
 
-    public static void display(Stage primaryStage) {
-        VBox menuLayout = new VBox(10);
-        Scene menuScene = new Scene(menuLayout, 300, 200);
+    public MainMenu(Stage primaryStage) {
+        this.primaryStage = primaryStage;
 
-        Button startButton = new Button("Start New Game");
-        Button loadButton = new Button("Load Game");
-        Button exitButton = new Button("Exit");
+        Button startButton = new Button("Start");
+        startButton.setOnAction(e -> startGame());
 
-        startButton.setOnAction(e -> {
-            try {
-                // Start a new game
-                new Main().start(primaryStage);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
+        Button loadButton = new Button("Load");
+        loadButton.setOnAction(e -> loadGame());
 
-        loadButton.setOnAction(e -> {
-            System.out.println("Load Game");
-        });
+        Button settingsButton = new Button("Settings");
+        settingsButton.setOnAction(e -> openSettings());
 
-        exitButton.setOnAction(e -> primaryStage.close());
+        Button quitButton = new Button("Quit");
+        quitButton.setOnAction(e -> primaryStage.close());
 
-        menuLayout.getChildren().addAll(startButton, loadButton, exitButton);
+        this.getChildren().addAll(startButton, loadButton, settingsButton, quitButton);
+    }
 
-        primaryStage.setScene(menuScene);
-        primaryStage.show();
+    private void startGame() {
+    }
+
+    private void loadGame() {
+    }
+
+    private void openSettings() {
     }
 }

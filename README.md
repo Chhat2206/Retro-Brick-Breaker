@@ -87,3 +87,4 @@ win sound: https://pixabay.com/sound-effects/game-bonus-144751/
 game over: https://pixabay.com/sound-effects/videogame-death-sound-43894/
 level up:https://pixabay.com/sound-effects/level-up-47165/
 ball hit the bottom: https://pixabay.com/sound-effects/jazz-bass-open-e-39297/
+collectBonus: https://pixabay.com/sound-effects/collectcoin-6075/

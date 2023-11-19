@@ -1,5 +1,6 @@
     package brickGame;
 
+    import javafx.animation.AnimationTimer;
     import javafx.application.Application;
     import javafx.application.Platform;
     import javafx.event.ActionEvent;
@@ -11,6 +12,7 @@
     import javafx.scene.effect.DropShadow;
     import javafx.scene.image.Image;
     import javafx.scene.image.ImageView;
+    import javafx.scene.input.KeyCode;
     import javafx.scene.input.KeyEvent;
     import javafx.scene.layout.Pane;
     import javafx.scene.media.MediaPlayer;
@@ -19,6 +21,7 @@
     import javafx.scene.shape.Circle;
     import javafx.scene.shape.Rectangle;
     import javafx.stage.Stage;
+    import java.util.Random;
 
 
     import java.io.*;
@@ -43,10 +46,14 @@
         private int destroyedBlockCount = 0;
 
         // Paddle Variables
+        private static final int PADDLE_SPEED = 3;
         private double paddleMoveX = 0.0;
         private double paddleMoveY = 640.0f;
         private final int halfPaddleWidth = PADDLE_WIDTH / 2;
         private double centerBreakX;
+        private boolean leftKeyPressed = false;
+        private boolean rightKeyPressed = false;
+        private AnimationTimer paddleMoveTimer;
 
         // Ball Variables
         private Circle ball;
@@ -57,7 +64,6 @@
         // Game Mechanics Variables
         private boolean loadFromSave = false;
         private long time = 0;
-        private long hitTime = 0;
         private long goldTime = 0;
 
         // UI Components
@@ -154,8 +160,9 @@
     //                root.getChildren().add(currentblock.rect);
             }
             Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+            scene.setOnKeyPressed(this); // Paddle Movement
+            scene.setOnKeyReleased(this);
             scene.getStylesheets().add("/css/main.css");
-            scene.setOnKeyPressed(this);
             primaryStage.setTitle("The Incredible Block Breaker Game");
             primaryStage.getIcons().add(new Image("/images/favicon.png"));
             primaryStage.setScene(scene);
@@ -228,64 +235,70 @@
                         type = Block.BLOCK_NORMAL;
                     }
                     blocks.add(new Block(j, i, colors[r % (colors.length)], type));
-                    //System.out.println("colors " + r % (colors.length));
                 }
             }
         }
 
         @Override
         public void handle(KeyEvent event) {
+            if (event.getEventType() == KeyEvent.KEY_PRESSED) {
+                handleKeyPressed(event);
+            } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
+                handleKeyReleased(event);
+            }
+        }
+
+        private void handleKeyPressed(KeyEvent event) {
             switch (event.getCode()) {
                 case LEFT:
                 case A:
+                    leftKeyPressed = true;
                     movePaddleX(LEFT);
                     break;
                 case D:
                 case RIGHT:
+                    rightKeyPressed = true;
                     movePaddleX(RIGHT);
                     break;
                 case ESCAPE:
                     PauseMenu.display(this, getGameEngine(), primaryStage);
                     event.consume();
                     break;
-                case M:
-                    toggleMute();
+            }
+        }
+
+        private void handleKeyReleased(KeyEvent event) {
+            switch (event.getCode()) {
+                case A:
+                    leftKeyPressed = false;
+                    break;
+                case D:
+                    rightKeyPressed = false;
                     break;
             }
         }
 
         // Not properly synchronizing to variable
         private void movePaddleX(final int direction) {
-            new Thread(new Runnable() {
+            if (paddleMoveTimer != null) {
+                paddleMoveTimer.stop();
+            }
+            paddleMoveTimer = new AnimationTimer() {
                 @Override
-                public void run() {
-                    int INITIAL_SLEEP_TIME = 4;
-                    for (int i = 0; i < 30; i++) {
-                        if (paddleMoveX == (SCENE_WIDTH - PADDLE_WIDTH) && direction == RIGHT) {
-                            return;
-                        }
-                        if (paddleMoveX == 0 && direction == LEFT) {
-                            return;
-                        }
-                        if (direction == RIGHT) {
-                            paddleMoveX++;
-                        } else {
-                            paddleMoveX--;
-                        }
-                        centerBreakX = paddleMoveX + halfPaddleWidth;
-
-                        // Controlling frame rate. Code looks awful so will fix
-                        try {
-                            Thread.sleep(INITIAL_SLEEP_TIME);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        if (i >= 20) {
-                            INITIAL_SLEEP_TIME = i;
-                        }
+                public void handle(long now) {
+                    if ((direction == LEFT && !leftKeyPressed) || (direction == RIGHT && !rightKeyPressed)) {
+                        this.stop();
+                        return;
                     }
+                    if (paddleMoveX <= 0 && direction == LEFT || paddleMoveX >= (SCENE_WIDTH - PADDLE_WIDTH) && direction == RIGHT) {
+                        return;
+                    }
+                    paddleMoveX += (direction == RIGHT ? PADDLE_SPEED : -PADDLE_SPEED);
+                    centerBreakX = paddleMoveX + halfPaddleWidth;
+                    rect.setX(paddleMoveX);
                 }
-            }).start();
+            };
+            paddleMoveTimer.start();
         }
 
 
@@ -337,8 +350,8 @@
 
             if (yBall <= BALL_RADIUS) {
                 //vX = 1.000;
-                resetCollideFlags();
                 SoundManager.paddleBounceSound();
+                resetCollideFlags();
                 goDownBall = true;
                 return;
             }
@@ -362,7 +375,6 @@
             if (yBall >= paddleMoveY - BALL_RADIUS) {
                 //System.out.println("Colide1");
                 if (xBall >= paddleMoveX && xBall <= paddleMoveX + PADDLE_WIDTH) {
-                    hitTime = time;
                     resetCollideFlags();
                     collideToBreak = true;
                     goDownBall = false;
@@ -387,16 +399,18 @@
 
             // Collision with right wall
             if (xBall + BALL_RADIUS >= SCENE_WIDTH) {
-                resetCollideFlags();
                 SoundManager.paddleBounceSound();
+                resetCollideFlags();
+
                 //vX = 1.000;
                 collideToRightWall = true;
             }
 
             // Collision with left wall
             if (xBall - BALL_RADIUS <= 0) {
-                resetCollideFlags();
                 SoundManager.paddleBounceSound();
+                resetCollideFlags();
+
                 //vX = 1.000;
                 collideToLeftWall = true;
             }
@@ -426,7 +440,7 @@
             }
 
             if (collideToLeftBlock) {
-                goRightBall = true;
+                goRightBall = false;
             }
 
             if (collideToTopBlock) {
@@ -441,6 +455,7 @@
             if (yBall + BALL_RADIUS >= paddleMoveY && yBall - BALL_RADIUS <= paddleMoveY + PADDLE_HEIGHT) {
                 if (xBall + BALL_RADIUS >= paddleMoveX && xBall - BALL_RADIUS <= paddleMoveX + PADDLE_WIDTH) {
                     SoundManager.paddleBounceSound();
+                    resetCollideFlags();
                 }
             }
         }
@@ -587,7 +602,6 @@
 
                         isGoldStatus = false;
                         isExistHeartBlock = false;
-                        hitTime = 0;
                         time = 0;
                         goldTime = 0;
 
@@ -617,7 +631,6 @@
 
                 isGoldStatus = false;
                 isExistHeartBlock = false;
-                hitTime = 0;
                 time = 0;
                 goldTime = 0;
 
@@ -724,6 +737,7 @@
                 }
                 if (choco.y >= paddleMoveY && choco.y <= paddleMoveY + PADDLE_HEIGHT && choco.x >= paddleMoveX && choco.x <= paddleMoveX + PADDLE_WIDTH) {
                     System.out.println("You Got it and +3 score for you");
+                    SoundManager.collectBonus();
                     choco.taken = true;
                     choco.choco.setVisible(false);
                     score += 3;
@@ -732,7 +746,6 @@
                 choco.y += ((time - choco.timeCreated) / 1000.000) + 1.000;
             }
 
-            //System.out.println("time is:" + time + " goldTime is " + goldTime);
 
         }
 
@@ -768,5 +781,16 @@
             dropShadow.setOffsetY(1.0);
             dropShadow.setColor(Color.color(0.4, 0.5, 0.5));
             return dropShadow;
+        }
+
+        public static void playRandomBackgroundMusic() {
+            String[] tracks = {
+                    "src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3",
+                    "src/main/resources/Sound Effects/Background Music/backgroundMusic8Bit.mp3",
+                    "src/main/resources/Sound Effects/Background Music/backgroundMusicNCS.mp3"
+            };
+
+            Random random = new Random();
+            int randomIndex = random.nextInt(tracks.length);
         }
     }
