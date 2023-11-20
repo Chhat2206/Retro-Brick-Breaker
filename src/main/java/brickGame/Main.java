@@ -3,31 +3,26 @@
     import javafx.animation.AnimationTimer;
     import javafx.application.Application;
     import javafx.application.Platform;
-    import javafx.event.ActionEvent;
     import javafx.event.EventHandler;
     import javafx.scene.Cursor;
     import javafx.scene.Scene;
     import javafx.scene.control.Button;
     import javafx.scene.control.Label;
-    import javafx.scene.effect.DropShadow;
     import javafx.scene.image.Image;
     import javafx.scene.image.ImageView;
-    import javafx.scene.input.KeyCode;
     import javafx.scene.input.KeyEvent;
     import javafx.scene.layout.Pane;
-    import javafx.scene.media.MediaPlayer;
     import javafx.scene.paint.Color;
     import javafx.scene.paint.ImagePattern;
     import javafx.scene.shape.Circle;
     import javafx.scene.shape.Rectangle;
     import javafx.stage.Stage;
-    import java.util.Random;
+
+    import java.util.*;
 
 
     import java.io.*;
-    import java.util.ArrayList;
-    import java.util.Objects;
-    import java.util.Random;
+
 
     public class Main extends Application implements EventHandler<KeyEvent>, GameEngine.OnAction {
         // Constants
@@ -57,8 +52,8 @@
 
         // Ball Variables
         private Circle ball;
-        private double xBall;
-        private double yBall;
+        private double ballPosX;
+        private double ballPosY;
          // Example renamed from vX
 
         // Game Mechanics Variables
@@ -76,8 +71,6 @@
 
         // Game Engine, GameBoardManager and Media
         private GameEngine engine;
-        private GameBoardManager gameBoardManager;
-        private MediaPlayer mediaPlayer;
 
         // Ball Movement and Collision Flags
         private boolean goDownBall = true;
@@ -91,7 +84,6 @@
         private boolean collideToLeftBlock = false;
         private boolean collideToTopBlock = false;
         private double ballVelocityX = 1.000;
-        private double ballVelocityY = 1.000;
 
         // Game Objects
         private Rectangle rect;
@@ -117,7 +109,7 @@
         }
 
         @Override
-        public void start(Stage primaryStage) throws Exception {
+        public void start(Stage primaryStage) {
             this.primaryStage = primaryStage;
 
             if (!loadFromSave) {
@@ -125,14 +117,14 @@
                 if (level >1){
                     new Score().showMessage("Level Up :)", this);
                 }
-                if (level == 3) {
+                if (level == 10) {
                     new Score().showWin(this);
                     return;
                 }
 
                 initializeBall();
                 createPaddle();
-                gameBoardManager = new GameBoardManager(this);
+                GameBoardManager gameBoardManager = new GameBoardManager(this);
                 gameBoardManager.setupGameBoard();
                 primaryStage.setResizable(false);
 
@@ -157,11 +149,12 @@
 
             // Error around here, creates index out of bound exception
             for (Block block : blocks) {
-                root.getChildren().add(block.rect);
-    //            for (int i = 0; i < blocks.size(); i++) {
-    //                Block currentblock = blocks.get(i);
-    //                root.getChildren().add(currentblock.rect);
-            }
+                Platform.runLater(() -> {
+                    if (block != null && block.rect != null) {
+                        root.getChildren().add(block.rect);
+                    }
+                });
+        }
             Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
             scene.setOnKeyPressed(this); // Paddle Movement
             scene.setOnKeyReleased(this);
@@ -181,30 +174,24 @@
                     engine.start();
                 }
 
-                load.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        SoundManager.buttonClickSound();
-                        loadGame();
+                load.setOnAction(event -> {
+                    SoundManager.buttonClickSound();
+                    loadGame();
 
-                        load.setVisible(false);
-                        newGame.setVisible(false);
-                    }
+                    load.setVisible(false);
+                    newGame.setVisible(false);
                 });
 
-                newGame.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        primaryStage.getScene().setCursor(Cursor.NONE);
-                        engine = new GameEngine();
-                        engine.setOnAction(Main.this);
-                        engine.setFps(120);
-                        engine.start();
-                        SoundManager.startBackgroundMusic("src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3");
+                newGame.setOnAction(event -> {
+                    primaryStage.getScene().setCursor(Cursor.NONE);
+                    engine = new GameEngine();
+                    engine.setOnAction(Main.this);
+                    engine.setFps(120);
+                    engine.start();
+                    SoundManager.startBackgroundMusic("src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3");
 
-                        load.setVisible(false);
-                        newGame.setVisible(false);
-                    }
+                    load.setVisible(false);
+                    newGame.setVisible(false);
                 });
             } else {
                 engine = new GameEngine();
@@ -214,8 +201,6 @@
                 loadFromSave = false;
             }
         }
-
-
 
         @Override
         public void handle(KeyEvent event) {
@@ -256,7 +241,6 @@
             }
         }
 
-        // Not properly synchronizing to variable
         private void movePaddleX(final int direction) {
             if (paddleMoveTimer != null) {
                 paddleMoveTimer.stop();
@@ -281,8 +265,8 @@
 
 
         private void initializeBall() {
-            xBall = SCENE_WIDTH / 2.0;
-            yBall = SCENE_HEIGHT / 2.0;
+            ballPosX = SCENE_WIDTH / 2.0;
+            ballPosY = SCENE_HEIGHT / 2.0;
             ball = new Circle();
             ball.setRadius(BALL_RADIUS);
             ball.setFill(new ImagePattern(new Image("/images/ball.png")));
@@ -318,17 +302,17 @@
         }
 
         private void checkCollisionWithWalls() {
-            if (yBall <= BALL_RADIUS || yBall + BALL_RADIUS >= SCENE_HEIGHT) {
+            if (ballPosY <= BALL_RADIUS || ballPosY + BALL_RADIUS >= SCENE_HEIGHT) {
                 handleWallCollision();
             }
 
-            if (xBall + BALL_RADIUS >= SCENE_WIDTH || xBall - BALL_RADIUS <= 0) {
+            if (ballPosX + BALL_RADIUS >= SCENE_WIDTH || ballPosX - BALL_RADIUS <= 0) {
                 handleSideWallCollision();
             }
         }
 
         private void handleWallCollision() {
-            if (yBall <= BALL_RADIUS) {
+            if (ballPosY <= BALL_RADIUS) {
                 bounceOffTopWall();
             } else {
                 bounceOffBottomWall();
@@ -363,7 +347,7 @@
         private void handleSideWallCollision() {
             SoundManager.paddleBounceSound();
             resetCollideFlags();
-            if (xBall + BALL_RADIUS >= SCENE_WIDTH) {
+            if (ballPosX + BALL_RADIUS >= SCENE_WIDTH) {
                 collideToRightWall = true;
             } else {
                 collideToLeftWall = true;
@@ -372,8 +356,8 @@
 
         private void checkCollisionWithPaddle() {
             // Collision logic with paddle
-            if (yBall >= paddleMoveY - BALL_RADIUS &&
-                    xBall >= paddleMoveX && xBall <= paddleMoveX + PADDLE_WIDTH) {
+            if (ballPosY >= paddleMoveY - BALL_RADIUS &&
+                    ballPosX >= paddleMoveX && ballPosX <= paddleMoveX + PADDLE_WIDTH) {
                 handlePaddleCollision();
 
             }
@@ -384,13 +368,13 @@
             resetCollideFlags();
             calculateBallVelocity();
             goDownBall = false;
-            collideToBreakAndMoveToRight = xBall - centerBreakX > 0;
+            collideToBreakAndMoveToRight = ballPosX - centerBreakX > 0;
             SoundManager.paddleBounceSound();
         }
 
         private void calculateBallVelocity() {
             // Logic to calculate ball velocity
-            double relation = (xBall - centerBreakX) / ((double) PADDLE_WIDTH / 2);
+            double relation = (ballPosX - centerBreakX) / ((double) PADDLE_WIDTH / 2);
             if (Math.abs(relation) <= 0.3) {
                         //vX = 0;
                         ballVelocityX = Math.abs(relation);
@@ -402,12 +386,11 @@
                         //System.out.println("vX " + vX);
                     }
 
-                    collideToBreakAndMoveToRight = xBall - centerBreakX > 0;
+                    collideToBreakAndMoveToRight = ballPosX - centerBreakX > 0;
         }
 
         private void checkCollisionWithBlocks() {
             if (collideToRightBlock) {
-
                 goRightBall = true;
             }
 
@@ -438,8 +421,9 @@
         }
 
         private void updateBallPosition() {
-            xBall += goRightBall ? ballVelocityX : -ballVelocityX;
-            yBall += goDownBall ? ballVelocityY : -ballVelocityY;
+            ballPosX += goRightBall ? ballVelocityX : -ballVelocityX;
+            double ballVelocityY = 1.000;
+            ballPosY += goDownBall ? ballVelocityY : -ballVelocityY;
         }
 
         private void checkDestroyedCount() {
@@ -449,74 +433,65 @@
         }
 
         protected void saveGame() {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    new File(savePathDir).mkdirs();
-                    File file = new File(SAVE_PATH);
-                    ObjectOutputStream outputStream = null;
-                    try {
-                        outputStream = new ObjectOutputStream(new FileOutputStream(file));
+            new Thread(() -> {
+                new File(savePathDir).mkdirs();
+                File file = new File(SAVE_PATH);
+                ObjectOutputStream outputStream = null;
+                try {
+                    outputStream = new ObjectOutputStream(new FileOutputStream(file));
 
-                        outputStream.writeInt(level);
-                        outputStream.writeInt(score);
-                        outputStream.writeInt(heart);
-                        outputStream.writeInt(destroyedBlockCount);
+                    outputStream.writeInt(level);
+                    outputStream.writeInt(score);
+                    outputStream.writeInt(heart);
+                    outputStream.writeInt(destroyedBlockCount);
 
 
-                        outputStream.writeDouble(xBall);
-                        outputStream.writeDouble(yBall);
-                        outputStream.writeDouble(paddleMoveX);
-                        outputStream.writeDouble(paddleMoveY);
-                        outputStream.writeDouble(centerBreakX);
-                        outputStream.writeLong(time);
-                        outputStream.writeLong(goldTime);
-                        outputStream.writeDouble(ballVelocityX);
+                    outputStream.writeDouble(ballPosX);
+                    outputStream.writeDouble(ballPosY);
+                    outputStream.writeDouble(paddleMoveX);
+                    outputStream.writeDouble(paddleMoveY);
+                    outputStream.writeDouble(centerBreakX);
+                    outputStream.writeLong(time);
+                    outputStream.writeLong(goldTime);
+                    outputStream.writeDouble(ballVelocityX);
+                    outputStream.writeBoolean(isExistHeartBlock);
+                    outputStream.writeBoolean(isGoldStatus);
+                    outputStream.writeBoolean(goDownBall);
+                    outputStream.writeBoolean(goRightBall);
+                    outputStream.writeBoolean(collideToBreak);
+                    outputStream.writeBoolean(collideToBreakAndMoveToRight);
+                    outputStream.writeBoolean(collideToRightWall);
+                    outputStream.writeBoolean(collideToLeftWall);
+                    outputStream.writeBoolean(collideToRightBlock);
+                    outputStream.writeBoolean(collideToBottomBlock);
+                    outputStream.writeBoolean(collideToLeftBlock);
+                    outputStream.writeBoolean(collideToTopBlock);
 
-
-                        outputStream.writeBoolean(isExistHeartBlock);
-                        outputStream.writeBoolean(isGoldStatus);
-                        outputStream.writeBoolean(goDownBall);
-                        outputStream.writeBoolean(goRightBall);
-                        outputStream.writeBoolean(collideToBreak);
-                        outputStream.writeBoolean(collideToBreakAndMoveToRight);
-                        outputStream.writeBoolean(collideToRightWall);
-                        outputStream.writeBoolean(collideToLeftWall);
-                        outputStream.writeBoolean(collideToRightBlock);
-                        outputStream.writeBoolean(collideToBottomBlock);
-                        outputStream.writeBoolean(collideToLeftBlock);
-                        outputStream.writeBoolean(collideToTopBlock);
-
-                        ArrayList<BlockSerializable> blockSerializable = new ArrayList<BlockSerializable>();
-                        for (Block block : blocks) {
-                            if (block.isDestroyed) {
-                                continue;
-                            }
-                            blockSerializable.add(new BlockSerializable(block.row, block.column, block.type));
+                    ArrayList<BlockSerializable> blockSerializable = new ArrayList<>();
+                    for (Block block : blocks) {
+                        if (block.isDestroyed) {
+                            continue;
                         }
-                        outputStream.writeObject(blockSerializable);
+                        blockSerializable.add(new BlockSerializable(block.row, block.column, block.type));
+                        BlockSerializable serializedBlock = new BlockSerializable(block.row, block.column, block.type);
+                        serializedBlock.colorIndex = Arrays.asList(colors).indexOf(block.color); // Save color index
+                        blockSerializable.add(serializedBlock);
+                    }
+                    outputStream.writeObject(blockSerializable);
 
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        assert outputStream != null;
+                        outputStream.flush();
+                        outputStream.close();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    } finally {
-                        try {
-                            outputStream.flush();
-                            outputStream.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
                     }
                 }
             }).start();
 
-        }
-
-        private void toggleMute() {
-            if (mediaPlayer != null) {
-                mediaPlayer.setMute(!mediaPlayer.isMute());
-            }
         }
 
         protected void loadGame() {
@@ -540,8 +515,8 @@
             score = gameState.score;
             heart = gameState.heart;
             destroyedBlockCount = gameState.destroyedBlockCount;
-            xBall = gameState.xBall;
-            yBall = gameState.yBall;
+            ballPosX = gameState.xBall;
+            ballPosY = gameState.yBall;
             paddleMoveX = gameState.xBreak;
             paddleMoveY = gameState.yBreak;
             centerBreakX = gameState.centerBreakX;
@@ -553,42 +528,35 @@
             chocos.clear();
 
             for (BlockSerializable ser : gameState.blocks) {
-                int r = new Random().nextInt(200);
-                blocks.add(new Block(ser.row, ser.j, colors[r % colors.length], ser.type));
+                Color blockColor = colors[ser.colorIndex];
+                blocks.add(new Block(ser.row, ser.column, blockColor, ser.type));
             }
-
-
             try {
                 loadFromSave = true;
                 start(primaryStage);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
         }
 
         private void nextLevel() {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        ballVelocityX = 1.000;
-                        resetCollideFlags();
-                        goDownBall = true;
-                        isGoldStatus = false;
-                        isExistHeartBlock = false;
-                        time = 0;
-                        goldTime = 0;
-                        engine.stop();
-                        blocks.clear();
-                        chocos.clear();
-                        destroyedBlockCount = 0;
-                        start(primaryStage);
+            Platform.runLater(() -> {
+                try {
+                    ballVelocityX = 1.000;
+                    resetCollideFlags();
+                    goDownBall = true;
+                    isGoldStatus = false;
+                    isExistHeartBlock = false;
+                    time = 0;
+                    goldTime = 0;
+                    engine.stop();
+                    blocks.clear();
+                    chocos.clear();
+                    destroyedBlockCount = 0;
+                    start(primaryStage);
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             });
         }
@@ -619,26 +587,23 @@
 
         @Override
         public void onUpdate() {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
+            Platform.runLater(() -> {
 
-                    scoreLabel.setText("Score: " + score);
-                    heartLabel.setText("Heart : " + heart);
-                    rect.setX(paddleMoveX);
-                    rect.setY(paddleMoveY);
-                    ball.setCenterX(xBall);
-                    ball.setCenterY(yBall);
-                    for (Bonus choco : chocos) {
-                        choco.choco.setY(choco.y);
-                    }
+                scoreLabel.setText("Score: " + score);
+                heartLabel.setText("Heart : " + heart);
+                rect.setX(paddleMoveX);
+                rect.setY(paddleMoveY);
+                ball.setCenterX(ballPosX);
+                ball.setCenterY(ballPosY);
+                for (Bonus choco : chocos) {
+                    choco.choco.setY(choco.y);
                 }
             });
 
 
-            if (yBall >= Block.getPaddingTop() && yBall <= (Block.getHeight() * (level + 1)) + Block.getPaddingTop()) {
+            if (ballPosY >= Block.getPaddingTop() && ballPosY <= (Block.getHeight() * (level + 1)) + Block.getPaddingTop()) {
                 for (final Block block : blocks) {
-                    int hitCode = block.checkHitToBlock(xBall, yBall, BALL_RADIUS);
+                    int hitCode = block.checkHitToBlock(ballPosX, ballPosY, BALL_RADIUS);
                     if (hitCode != Block.NO_HIT) {
                         score += 1;
 
@@ -652,12 +617,7 @@
                         if (block.type == Block.BLOCK_CHOCO) {
                             final Bonus choco = new Bonus(block.row, block.column);
                             choco.timeCreated = time;
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    root.getChildren().add(choco.choco);
-                                }
-                            });
+                            Platform.runLater(() -> root.getChildren().add(choco.choco));
                             chocos.add(choco);
                         }
 

@@ -4,12 +4,13 @@ import java.io.Serializable;
 
 public class BlockSerializable implements Serializable {
     public final int row;
-    public final int j;
+    public final int column;
     public final int type;
+    public int colorIndex;
 
     public BlockSerializable(int row , int j , int type) {
         this.row = row;
-        this.j = j;
+        this.column = j;
         this.type = type;
     }
 }

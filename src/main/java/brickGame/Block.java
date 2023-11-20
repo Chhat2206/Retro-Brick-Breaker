@@ -17,7 +17,7 @@ public class Block implements Serializable {
     public int row;
     public int column;
     public boolean isDestroyed = false;
-    private Color color;
+    Color color;
     public int type;
 
     public int x;
