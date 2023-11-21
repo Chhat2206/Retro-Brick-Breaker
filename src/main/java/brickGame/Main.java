@@ -41,7 +41,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     // Paddle Variables
     private static final int PADDLE_SPEED = 3;
     private double paddleMoveX = 0.0;
-    private double paddleMoveY = 640.0f;
+    private double paddleMoveY = 690.0f;
     private final int halfPaddleWidth = PADDLE_WIDTH / 2;
     private double centerBreakX;
     private boolean leftKeyPressed = false;
@@ -298,22 +298,18 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private void bounceOffBottomWall() {
         goDownBall = false;
+        heart--;
         SoundManager.ballHitFloor();
         if (!isGoldStatus) {
-            handleGameOver();
+            new Score().show((double) SCENE_WIDTH / 2, (double) SCENE_HEIGHT / 2, -1, this);
+
+            if (heart == 0) {
+                new Score().showGameOver(this);
+                engine.stop();
+            }
         }
     }
 
-    private void handleGameOver() {
-        // Game over logic
-        heart--;
-        new Score().show((double) SCENE_WIDTH / 2, (double) SCENE_HEIGHT / 2, -1, this);
-
-        if (heart == 0) {
-            new Score().showGameOver(this);
-            engine.stop();
-        }
-    }
 
     private void handleSideWallCollision() {
         SoundManager.paddleBounceSound();
@@ -326,13 +322,13 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private void checkCollisionWithPaddle() {
-        // Collision logic with paddle
-        if (ballPosY >= paddleMoveY - BALL_RADIUS &&
-                ballPosX >= paddleMoveX && ballPosX <= paddleMoveX + PADDLE_WIDTH) {
+        if (ballPosY + BALL_RADIUS >= paddleMoveY &&
+                ballPosX + BALL_RADIUS >= paddleMoveX &&
+                ballPosX - BALL_RADIUS <= paddleMoveX + PADDLE_WIDTH) {
             handlePaddleCollision();
-
         }
     }
+
 
     private void handlePaddleCollision() {
         // Handle collision with paddle
@@ -586,7 +582,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         });
 
 
-        if (ballPosY >= Block.getPaddingTop() && ballPosY <= (Block.getHeight() * (level + 1)) + Block.getPaddingTop()) {
+        if (ballPosY + BALL_RADIUS >= Block.getPaddingTop() && ballPosY - BALL_RADIUS <= (Block.getHeight() * (level + 1)) + Block.getPaddingTop()) {
             for (final Block block : blocks) {
                 int hitCode = block.checkHitToBlock(ballPosX, ballPosY, BALL_RADIUS);
                 if (hitCode != Block.NO_HIT) {

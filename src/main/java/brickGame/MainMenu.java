@@ -1,5 +1,7 @@
 package brickGame;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -8,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -31,7 +34,7 @@ public class MainMenu {
         root.setStyle("-fx-background-image: url('/images/Main%20Menu/backgroundImage.png');" +
                 "-fx-background-size: cover;");
 
-        SoundManager.mainMenuMusic();
+//        SoundManager.mainMenuMusic();
 
 
         // Load and add the logo
@@ -84,9 +87,34 @@ public class MainMenu {
     }
 
     private void startNewGame() {
-        // Logic to start a new game
-        Main game = new Main();
-        game.newGame(primaryStage);
+        // Create a translate transition to move the current scene out
+        TranslateTransition translateOut = new TranslateTransition(Duration.seconds(.2), primaryStage.getScene().getRoot());
+        translateOut.setFromX(0);
+        translateOut.setToX(-primaryStage.getWidth()); // Move to the left
+
+        // When the translation out is complete, start the new game
+        translateOut.setOnFinished(e -> {
+            Main game = new Main();
+
+            // Assuming newGame creates and sets up the scene for the game
+            game.newGame(primaryStage);
+
+            // The scene should now be set up in the newGame method, so we can retrieve it
+            Scene newGameScene = primaryStage.getScene();
+
+            // Create a translate transition for the new game scene to slide in
+            TranslateTransition translateIn = new TranslateTransition(Duration.seconds(.1), newGameScene.getRoot());
+            translateIn.setFromX(primaryStage.getWidth()); // Start from the right
+            translateIn.setToX(0); // Move to the original position
+            translateIn.play();
+        });
+
+        // Start the translate out transition
+        translateOut.play();
     }
+
+
+
+
 
 }
