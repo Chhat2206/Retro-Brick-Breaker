@@ -22,6 +22,7 @@ public class PauseMenu {
     private static Button soundButton;
 
     public static void display(Main main, GameEngine engine, Stage primaryStage) {
+
         initializePauseStage();
         configurePauseLayout();
 
@@ -98,7 +99,7 @@ public class PauseMenu {
         Button loadButton = createButton("Load Game", e -> {
 //            fadeOutMenu();
 //            SoundManager.buttonClickSound();
-            main.loadGame();
+            main.loadGame(main.primaryStage);
             System.out.println("Game Loaded");
             pauseStage.close();
         });
@@ -117,7 +118,7 @@ public class PauseMenu {
 
         // Add all elements to pauseLayout
         pauseLayout.getChildren().addAll(resumeButton, soundButton, saveButton, loadButton, restartButton, quitButton);
-        SoundManager.pauseMenuSound();
+        SoundManager.pauseMenuMusic();
     }
 
     private static Button createButton(String text, EventHandler<ActionEvent> action) {

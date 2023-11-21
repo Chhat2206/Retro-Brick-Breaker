@@ -38,7 +38,7 @@ public class UIManager {
     }
 
     public void makeBackgroundImage() {
-        Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/Background Images/background-image-4.png")));
+        Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/Background Images/backgroundImage-4.png")));
         ImageView backgroundView = new ImageView(backgroundImage);
         backgroundView.setFitWidth(SCENE_WIDTH);
         backgroundView.setFitHeight(SCENE_HEIGHT);

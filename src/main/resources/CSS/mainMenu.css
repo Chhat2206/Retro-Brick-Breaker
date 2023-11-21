@@ -1,49 +1,22 @@
-/* Main Menu Styles */
-
-/* General root style */
 .root {
     -fx-background-color: #2C3E50; /* Dark blue background for the main menu */
-    -fx-font-family: 'Arial', sans-serif; /* Consistent font across the menu */
-    -fx-padding: 20px; /* Padding around the menu */
+    -fx-font-family: 'Arial', sans-serif;
+    -fx-padding: 20px;
 }
 
-/* Style for all buttons in the main menu */
-.button {
-    -fx-background-color: #3498DB; /* Bright blue color for buttons */
-    -fx-text-fill: #ECF0F1; /* Light grey text for readability */
-    -fx-font-size: 16px; /* Slightly larger font size */
-    -fx-padding: 15px 30px; /* More padding for better button size */
-    -fx-border-radius: 30px; /* More pronounced rounded corners */
-    -fx-background-radius: 30px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.7), 5,0,0,2); /* Slightly larger drop shadow */
-}
-
-.button:hover {
-    -fx-background-color: #2980B9; /* Darker blue for hover effect */
-    -fx-cursor: hand; /* Hand cursor on hover */
-}
-
-.button:pressed {
-    -fx-background-color: #1ABC9C; /* Turquoise color for pressed state */
-}
-
-/* Style for the VBox containing menu options */
 .vbox {
-    -fx-spacing: 15px; /* Space between menu buttons */
-    -fx-alignment: center; /* Align buttons to center */
+    -fx-spacing: 15px;
+    -fx-alignment: center;
 }
-
-/* Style for labels (if any) in the menu */
 .label {
     -fx-text-fill: #BDC3C7; /* Light grey color for labels */
-    -fx-font-size: 18px; /* Slightly larger font for labels */
+    -fx-font-size: 18px;
 }
 
-/* If using a title or header in the menu */
 .title {
-    -fx-font-size: 24px; /* Larger font size for title */
+    -fx-font-size: 24px;
     -fx-text-fill: #ECF0F1; /* Light grey color */
-    -fx-font-weight: bold; /* Bold font weight for title */
-    -fx-padding: 10px; /* Padding around title */
-    -fx-alignment: center; /* Center alignment for title */
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+    -fx-alignment: center;
 }

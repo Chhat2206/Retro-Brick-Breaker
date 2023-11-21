@@ -80,6 +80,7 @@ https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2F
 https://wallpapercave.com/dwp2x/wp1933955.png
 https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp7495828.jpg&f=1&nofb=1&ipt=1bd232da5f62157ec8678330150854cac87851b14658277ad6c770e645afd960&ipo=images
 
+mainMenuBackground: https://pixabay.com/sound-effects/sci-fi-survival-dreamscape-6319/
 collectPowerup : https://pixabay.com/sound-effects/coin-collect-retro-8-bit-sound-effect-145251/
 changeBackgroundMusic: https://pixabay.com/sound-effects/tape-cassette-insert-172758/
 muteMusicPauseMenu: https://pixabay.com/sound-effects/click-21156/

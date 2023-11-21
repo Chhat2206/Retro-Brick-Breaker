@@ -62,7 +62,7 @@ public class SoundMenu {
     }
 
     public static Button createMuteButton() {
-        ImageView muteIcon = new ImageView(new Image("/images/muteMusic.png"));
+        ImageView muteIcon = new ImageView(new Image("/images/sound menu/muteMusic.png"));
         muteIcon.setFitWidth(60);
         muteIcon.setFitHeight(60);
         muteIcon.setPreserveRatio(true);
@@ -72,7 +72,7 @@ public class SoundMenu {
             isMuted = !isMuted;
             SoundManager.toggleMuteBackgroundMusic();
             SoundManager.muteSoundPauseMenu();
-            muteIcon.setImage(isMuted ? new Image("/images/playMusic.png") : new Image("/images/muteMusic.png"));
+            muteIcon.setImage(isMuted ? new Image("/images/sound menu/playMusic.png") : new Image("/images/sound menu/muteMusic.png"));
         });
         return muteButton;
     }

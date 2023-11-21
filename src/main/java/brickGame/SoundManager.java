@@ -25,8 +25,9 @@ public class SoundManager {
     public static void paddleBounceSound() {
         playSound("src/main/resources/Sound Effects/paddleBounce.mp3");
     }
-    public static void pauseMenuSound() {
+    public static void pauseMenuMusic() {
         playSound("src/main/resources/Sound Effects/Menus/pauseMenu.mp3");
+        setVolume(0.7);
     }
     public static void ballHitFloor() {
         playSound("src/main/resources/Sound Effects/ballHitFloor.mp3");
@@ -53,6 +54,12 @@ public class SoundManager {
         playSound("src/main/resources/Sound Effects/collectBonus.mp3");
         setVolume(1);
     }
+
+    public static void mainMenuMusic() {
+        playSound("src/main/resources/Sound Effects/Menus/soundMenu.mp3");
+        setVolume(1);
+    }
+
     public static void startBackgroundMusic(String musicFilePath) {
         try {
             Media sound = new Media(new File(musicFilePath).toURI().toString());
