@@ -110,53 +110,59 @@
 
         @Override
         public void start(Stage primaryStage) {
+            MainMenu mainMenu = new MainMenu(primaryStage);
+            mainMenu.display();
+        }
+
+        public void newGame(Stage primaryStage) {
             this.primaryStage = primaryStage;
 
+            // Increment level and show messages if appropriate
             if (!loadFromSave) {
                 level++;
-                if (level >1){
+                if (level > 1) {
                     new Score().showMessage("Level Up :)", this);
                 }
                 if (level == 10) {
                     new Score().showWin(this);
                     return;
                 }
-
-                initializeBall();
-                createPaddle();
-                GameBoardManager gameBoardManager = new GameBoardManager(this);
-                gameBoardManager.setupGameBoard();
-                primaryStage.setResizable(false);
-
-                load = new Button("Load Game");
-                newGame = new Button("Start New Game");
-                load.setTranslateX(220);
-                load.setTranslateY(300);
-                newGame.setTranslateX(220);
-                newGame.setTranslateY(340);
             }
 
+            // Initialize ball and paddle
+            initializeBall();
+            createPaddle();
+
+            // Set up the game board
+            if (!loadFromSave) {
+                GameBoardManager gameBoardManager = new GameBoardManager(this);
+                gameBoardManager.setupGameBoard();
+            }
+            primaryStage.setResizable(false);
+
+            // Create and set up UI components
             root = new Pane();
             scoreLabel = new Label("Score: " + score);
             Label levelLabel = new Label("Level: " + level);
             levelLabel.setTranslateY(20);
-
             makeHeartScore();
             makeBackgroundImage();
-
             root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel);
-            if (!loadFromSave) { root.getChildren().addAll(newGame); }
 
-            // Error around here, creates index out of bound exception
-            for (Block block : blocks) {
-                Platform.runLater(() -> {
-                    if (block != null && block.rect != null) {
-                        root.getChildren().add(block.rect);
-                    }
-                });
-        }
+            // Set up the blocks
+            if (!loadFromSave) {
+                for (Block block : blocks) {
+                    Platform.runLater(() -> {
+                        if (block != null && block.rect != null) {
+                            root.getChildren().add(block.rect);
+                        }
+                    });
+                }
+            }
+
+            // Set up the scene
             Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
-            scene.setOnKeyPressed(this); // Paddle Movement
+            scene.setOnKeyPressed(this);
             scene.setOnKeyReleased(this);
             scene.getStylesheets().add("/css/main.css");
             primaryStage.setTitle("The Incredible Block Breaker Game");
@@ -164,43 +170,100 @@
             primaryStage.setScene(scene);
             primaryStage.show();
 
-            if (!loadFromSave) {
-                if (level > 1 && level < 18) {
-                    load.setVisible(false);
-                    newGame.setVisible(false);
-                    engine = new GameEngine();
-                    engine.setOnAction(this);
-                    engine.setFps(120);
-                    engine.start();
-                }
-
-                load.setOnAction(event -> {
-                    SoundManager.buttonClickSound();
-                    loadGame();
-
-                    load.setVisible(false);
-                    newGame.setVisible(false);
-                });
-
-                newGame.setOnAction(event -> {
-                    primaryStage.getScene().setCursor(Cursor.NONE);
-                    engine = new GameEngine();
-                    engine.setOnAction(Main.this);
-                    engine.setFps(120);
-                    engine.start();
-                    SoundManager.startBackgroundMusic("src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3");
-
-                    load.setVisible(false);
-                    newGame.setVisible(false);
-                });
-            } else {
-                engine = new GameEngine();
-                engine.setOnAction(this);
-                engine.setFps(120);
-                engine.start();
-                loadFromSave = false;
-            }
+            // Start the game engine
+            engine = new GameEngine();
+            engine.setOnAction(this);
+            engine.setFps(120);
+            engine.start();
         }
+
+
+//        public void newGame(Stage primaryStage) {
+//            this.primaryStage = primaryStage;
+//
+//            if (!loadFromSave) {
+//                level++;
+//                if (level >1){
+//                    new Score().showMessage("Level Up :)", this);
+//                }
+//                if (level == 10) {
+//                    new Score().showWin(this);
+//                    return;
+//                }
+//
+//                initializeBall();
+//                createPaddle();
+//
+//                GameBoardManager gameBoardManager = new GameBoardManager(this);
+//                gameBoardManager.setupGameBoard();
+//                primaryStage.setResizable(false);
+//            }
+//
+//            root = new Pane();
+//            scoreLabel = new Label("Score: " + score);
+//            Label levelLabel = new Label("Level: " + level);
+//            levelLabel.setTranslateY(20);
+//
+//            makeHeartScore();
+//            makeBackgroundImage();
+//
+//            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel);
+//            if (!loadFromSave) { root.getChildren().addAll(newGame); }
+//
+//            // Error around here, creates index out of bound exception
+//            for (Block block : blocks) {
+//                Platform.runLater(() -> {
+//                    if (block != null && block.rect != null) {
+//                        root.getChildren().add(block.rect);
+//                    }
+//                });
+//        }
+//            Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+//            scene.setOnKeyPressed(this); // Paddle Movement
+//            scene.setOnKeyReleased(this);
+//            scene.getStylesheets().add("/css/main.css");
+//            primaryStage.setTitle("The Incredible Block Breaker Game");
+//            primaryStage.getIcons().add(new Image("/images/favicon.png"));
+//            primaryStage.setScene(scene);
+//            primaryStage.show();
+//
+//            if (!loadFromSave) {
+//                if (level > 1 && level < 18) {
+//                    load.setVisible(false);
+//                    newGame.setVisible(false);
+//                    engine = new GameEngine();
+//                    engine.setOnAction(this);
+//                    engine.setFps(120);
+//                    engine.start();
+//                }
+//
+//                load.setOnAction(event -> {
+//                    SoundManager.buttonClickSound();
+//                    loadGame();
+//
+//                    load.setVisible(false);
+//                    newGame.setVisible(false);
+//                });
+//
+//                newGame.setOnAction(event -> {
+//                    primaryStage.getScene().setCursor(Cursor.NONE);
+//                    engine = new GameEngine();
+//                    engine.setOnAction(Main.this);
+//                    engine.setFps(120);
+//                    engine.start();
+//                    SoundManager.startBackgroundMusic("src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3");
+//
+//                    load.setVisible(false);
+//                    newGame.setVisible(false);
+//                });
+//            } else {
+//                engine = new GameEngine();
+//                engine.setOnAction(this);
+//                engine.setFps(120);
+//                engine.start();
+//                loadFromSave = false;
+//            }
+//        }
 
         @Override
         public void handle(KeyEvent event) {
@@ -213,13 +276,11 @@
 
         private void handleKeyPressed(KeyEvent event) {
             switch (event.getCode()) {
-                case LEFT:
                 case A:
                     leftKeyPressed = true;
                     movePaddleX(LEFT);
                     break;
                 case D:
-                case RIGHT:
                     rightKeyPressed = true;
                     movePaddleX(RIGHT);
                     break;
@@ -529,14 +590,18 @@
 
             for (BlockSerializable ser : gameState.blocks) {
                 Color blockColor = colors[ser.colorIndex];
-                blocks.add(new Block(ser.row, ser.column, blockColor, ser.type));
+                Block block = new Block(ser.row, ser.column, blockColor, ser.type);
+                blocks.add(block);
+                // Add block's rectangle to the UI if needed
+                Platform.runLater(() -> {
+                    if (block.rect != null) {
+                        root.getChildren().add(block.rect);
+                    }
+                });
             }
-            try {
-                loadFromSave = true;
-                start(primaryStage);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
+            loadFromSave = true;
+            newGame(primaryStage);
         }
 
         private void nextLevel() {
@@ -553,7 +618,7 @@
                     blocks.clear();
                     chocos.clear();
                     destroyedBlockCount = 0;
-                    start(primaryStage);
+                    newGame(primaryStage);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -578,7 +643,7 @@
                 blocks.clear();
                 chocos.clear();
 
-                start(primaryStage);
+                newGame(primaryStage);
             } catch (Exception e) {
                 e.printStackTrace();
             }
