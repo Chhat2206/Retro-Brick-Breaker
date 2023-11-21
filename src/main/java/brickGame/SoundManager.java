@@ -22,15 +22,16 @@ public class SoundManager {
     public static void buttonClickSound() {
         playSound("src/main/resources/Sound Effects/buttonClickSound.mp3");
     }
-
     public static void paddleBounceSound() {
-        playSound("src/main/resources/Sound Effects/paddle-bounce.mp3");
+        playSound("src/main/resources/Sound Effects/paddleBounce.mp3");
     }
-    public static void pauseMenuSound() {
-        playSound("src/main/resources/Sound Effects/pause-menu.mp3");
+    public static void pauseMenuMusic() {
+        playSound("src/main/resources/Sound Effects/Menus/pauseMenu.mp3");
+        setVolume(0.7);
     }
     public static void ballHitFloor() {
         playSound("src/main/resources/Sound Effects/ballHitFloor.mp3");
+        setVolume(1.5);
     }
     public static void levelUp() {
         playSound("src/main/resources/Sound Effects/levelUp.mp3");
@@ -38,7 +39,27 @@ public class SoundManager {
     public static void gameOver() {
         playSound("src/main/resources/Sound Effects/gameOver.mp3");
     }
-    public static void winSound() { playSound("src/main/resources/Sound Effects/winSound.mp3"); }
+    public static void winSound() {
+        playSound("src/main/resources/Sound Effects/winSound.mp3");
+        setVolume(0.6);
+    }
+    public static void muteSoundPauseMenu() {
+        playSound("src/main/resources/Sound Effects/muteSoundPauseMenu.mp3");
+    }
+    public static void blockHit() {
+        playSound("src/main/resources/Sound Effects/blockHit.mp3");
+        setVolume(0.57);
+    }
+    public static void collectBonus() {
+        playSound("src/main/resources/Sound Effects/collectBonus.mp3");
+        setVolume(1);
+    }
+
+    public static void mainMenuMusic() {
+        playSound("src/main/resources/Sound Effects/Menus/soundMenu.mp3");
+        setVolume(1);
+    }
+
     public static void startBackgroundMusic(String musicFilePath) {
         try {
             Media sound = new Media(new File(musicFilePath).toURI().toString());
@@ -73,6 +94,19 @@ public class SoundManager {
         if (backgroundMediaPlayer != null) {
             backgroundMediaPlayer.setMute(!backgroundMediaPlayer.isMute());
         }
+    }
+
+    public static void setVolume(double volume) {
+        if (backgroundMediaPlayer != null) {
+            backgroundMediaPlayer.setVolume(volume);
+        }
+    }
+
+    public static double getVolume() {
+        if (backgroundMediaPlayer != null) {
+            return backgroundMediaPlayer.getVolume();
+        }
+        return 0; // Default volume if the player is null
     }
 
 }

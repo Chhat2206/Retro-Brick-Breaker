@@ -16,17 +16,14 @@ public class Block implements Serializable {
 
     public int row;
     public int column;
-
-
     public boolean isDestroyed = false;
-
-    private Color color;
+    Color color;
     public int type;
 
     public int x;
     public int y;
 
-    private final int width = 100;
+    private final int width = 80;
     private final int height = 30;
     private final int paddingTop = height * 2;
     private final int paddingHeight = 50;
@@ -65,15 +62,15 @@ public class Block implements Serializable {
         rect.setY(y);
 
         if (type == BLOCK_CHOCO) {
-            Image image = new Image("choco.jpg");
+            Image image = new Image("/images/blocks/chocoBlock.png");
             ImagePattern pattern = new ImagePattern(image);
             rect.setFill(pattern);
         } else if (type == BLOCK_HEART) {
-            Image image = new Image("heart.jpg");
+            Image image = new Image("/images/blocks/heartBlock.png");
             ImagePattern pattern = new ImagePattern(image);
             rect.setFill(pattern);
         } else if (type == BLOCK_STAR) {
-            Image image = new Image("star.jpg");
+            Image image = new Image("/images/blocks/starBlock.png");
             ImagePattern pattern = new ImagePattern(image);
             rect.setFill(pattern);
         } else {
@@ -91,25 +88,25 @@ public class Block implements Serializable {
 
         // Check collision with the bottom of the block
         if (xBall >= x && xBall <= x + width && yBall - ballRadius <= y + height && yBall + ballRadius > y + height) {
-            blockHit();
+            SoundManager.blockHit();
             return HIT_BOTTOM;
         }
 
         // Check collision with the top of the block
         if (xBall >= x && xBall <= x + width && yBall + ballRadius >= y && yBall - ballRadius < y) {
-            blockHit();
+            SoundManager.blockHit();
             return HIT_TOP;
         }
 
         // Check collision with the right side of the block
         if (yBall >= y && yBall <= y + height && xBall - ballRadius <= x + width && xBall + ballRadius > x + width) {
-            blockHit();
+            SoundManager.blockHit();
             return HIT_RIGHT;
         }
 
         // Check collision with the left side of the block
         if (yBall >= y && yBall <= y + height && xBall + ballRadius >= x && xBall - ballRadius < x) {
-            blockHit();
+            SoundManager.blockHit();
             return HIT_LEFT;
         }
 
@@ -130,15 +127,5 @@ public class Block implements Serializable {
 
     public static int getWidth() {
         return block.width;
-    }
-
-    private static void blockHit() {
-        // Playing the background music
-        String musicFile = "src/main/resources/Sound Effects/block-hit.mp3";
-        Media sound = new Media(new File(musicFile).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.setVolume(0.57);
-        mediaPlayer.setCycleCount(1);
-        mediaPlayer.play();
     }
 }

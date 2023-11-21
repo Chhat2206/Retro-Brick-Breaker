@@ -1,0 +1,22 @@
+.root {
+    -fx-background-color: #2C3E50; /* Dark blue background for the main menu */
+    -fx-font-family: 'Arial', sans-serif;
+    -fx-padding: 20px;
+}
+
+.vbox {
+    -fx-spacing: 15px;
+    -fx-alignment: center;
+}
+.label {
+    -fx-text-fill: #BDC3C7; /* Light grey color for labels */
+    -fx-font-size: 18px;
+}
+
+.title {
+    -fx-font-size: 24px;
+    -fx-text-fill: #ECF0F1; /* Light grey color */
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
