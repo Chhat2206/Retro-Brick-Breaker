@@ -4,9 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -65,8 +63,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     Pane root;
     private Label scoreLabel;
     private Label heartLabel;
-    private Button load;
-    private Button newGame;
     protected Stage primaryStage;
 
     // Game Engine, GameBoardManager and Media
