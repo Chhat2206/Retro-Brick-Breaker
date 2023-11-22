@@ -26,8 +26,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     // Constants
     private static final int LEFT  = 1;
     private static final int RIGHT = 2;
-    private static final int PADDLE_WIDTH = 90;
-    private static final int PADDLE_HEIGHT = 10;
+    private static int PADDLE_WIDTH = 90;
+    private static final int PADDLE_HEIGHT = 14;
     private static final int BALL_RADIUS = 10;
     private static final int SCENE_WIDTH = 500;
     private static final int SCENE_HEIGHT = 700;
@@ -40,8 +40,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     // Paddle Variables
     private static final int PADDLE_SPEED = 3;
-    private double paddleMoveX = 0.0;
-    private double paddleMoveY = 690.0f;
+    private double paddleMoveX = 250.0;
+    private double paddleMoveY = 680.0f;
     private final int halfPaddleWidth = PADDLE_WIDTH / 2;
     private double centerBreakX;
     private boolean leftKeyPressed = false;
@@ -80,6 +80,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private boolean collideToLeftBlock = false;
     private boolean collideToTopBlock = false;
     private double ballVelocityX = 1.000;
+    double ballVelocityY = 1.000;
+    private static final double MAX_VELOCITY_X = 3.0; // Maximum horizontal velocity of the ball
+    private static final double MAX_VELOCITY = 4.0;   // Maximum overall velocity of the ball
+    private static final double SPIN_EFFECT = 0.5;    // Effect of spin on ball's trajectory
 
     // Game Objects
     private Rectangle rect;
@@ -88,8 +92,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     protected final Color[] colors = new Color[]{
             Color.MAGENTA, Color.RED, Color.GOLD, Color.CORAL,
             Color.AQUA, Color.VIOLET, Color.GREENYELLOW,
-            Color.ORANGE, Color.PINK, Color.SLATEGREY,
-            Color.YELLOW, Color.TOMATO, Color.TAN,
+            Color.ORANGE, Color.PINK,
+            Color.YELLOW, Color.TOMATO,
     };
 
     // File Paths for Saving and Loading
@@ -104,6 +108,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     protected GameEngine getGameEngine() {
         return engine;
     }
+
+    private UIManager uiManager;
 
     @Override
     public void start(Stage primaryStage) {
@@ -142,9 +148,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         scoreLabel = new Label("Score: " + score);
         Label levelLabel = new Label("Level: " + level);
         levelLabel.setTranslateY(20);
-        makeHeartScore();
-        makeBackgroundImage();
-        root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel);
+
+        this.uiManager = new UIManager(root);
+        this.uiManager.makeBackgroundImage();
+        this.uiManager.makeHeartScore(heart);
+
+        root.getChildren().addAll(rect, ball, scoreLabel, levelLabel);
 
         // Set up the blocks
         if (!loadFromSave) {
@@ -297,13 +306,14 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private void bounceOffBottomWall() {
+        resetCollideFlags();
         goDownBall = false;
-        heart--;
-        SoundManager.ballHitFloor();
         if (!isGoldStatus) {
+            heart--;
+            SoundManager.ballHitFloor();
             new Score().show((double) SCENE_WIDTH / 2, (double) SCENE_HEIGHT / 2, -1, this);
 
-            if (heart == 0) {
+            if (heart <= 0) {
                 new Score().showGameOver(this);
                 engine.stop();
             }
@@ -331,7 +341,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
 
     private void handlePaddleCollision() {
-        // Handle collision with paddle
         resetCollideFlags();
         calculateBallVelocity();
         goDownBall = false;
@@ -340,20 +349,16 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private void calculateBallVelocity() {
-        // Logic to calculate ball velocity
         double relation = (ballPosX - centerBreakX) / ((double) PADDLE_WIDTH / 2);
-        if (Math.abs(relation) <= 0.3) {
-            //vX = 0;
-            ballVelocityX = Math.abs(relation);
-        } else if (Math.abs(relation) > 0.3 && Math.abs(relation) <= 0.7) {
-            ballVelocityX = (Math.abs(relation) * 1.5) + (level / 3.500);
-            //System.out.println("vX " + vX);
-        } else {
-            ballVelocityX = (Math.abs(relation) * 2) + (level / 3.500);
-            //System.out.println("vX " + vX);
-        }
+        ballVelocityX = Math.abs(relation) * MAX_VELOCITY_X; // MAX_VELOCITY_X can be a constant defining max horizontal velocity
+        ballVelocityY = Math.sqrt(Math.pow(MAX_VELOCITY, 2) - Math.pow(ballVelocityX, 2)); // MAX_VELOCITY is the maximum speed of the ball
 
-        collideToBreakAndMoveToRight = ballPosX - centerBreakX > 0;
+        // Add spin effect based on paddle movement
+        if (leftKeyPressed) {
+            ballVelocityX -= SPIN_EFFECT; // SPIN_EFFECT is a constant defining how much spin affects the ball
+        } else if (rightKeyPressed) {
+            ballVelocityX += SPIN_EFFECT;
+        }
     }
 
     private void checkCollisionWithBlocks() {
@@ -389,7 +394,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private void updateBallPosition() {
         ballPosX += goRightBall ? ballVelocityX : -ballVelocityX;
-        double ballVelocityY = 1.000;
         ballPosY += goDownBall ? ballVelocityY : -ballVelocityY;
     }
 
@@ -569,9 +573,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     @Override
     public void onUpdate() {
         Platform.runLater(() -> {
-
             scoreLabel.setText("Score: " + score);
-            heartLabel.setText("Heart : " + heart);
+
+            // Update this line to get the heartLabel from UIManager
+            Label heartLabelFromUIManager = uiManager.getHeartLabel();
+            heartLabelFromUIManager.setText("Heart : " + heart);
+
             rect.setX(paddleMoveX);
             rect.setY(paddleMoveY);
             ball.setCenterX(ballPosX);
@@ -641,11 +648,29 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 continue;
             }
             if (choco.y >= paddleMoveY && choco.y <= paddleMoveY + PADDLE_HEIGHT && choco.x >= paddleMoveX && choco.x <= paddleMoveX + PADDLE_WIDTH) {
-                System.out.println("You Got it and +3 score for you");
                 SoundManager.collectBonus();
                 choco.taken = true;
                 choco.choco.setVisible(false);
-                score += 3;
+
+                Random rand = new Random();
+                int effect = rand.nextInt(3); // Randomly choose an effect
+                switch (effect) {
+                    case 0: // Change paddle width
+                        PADDLE_WIDTH = rand.nextBoolean() ? PADDLE_WIDTH + 10 : Math.max(PADDLE_WIDTH + 10, 30);
+                        System.out.println("Paddle width changed!");
+                        break;
+                    case 1: // Bonus 3 points
+                        score += 3;
+                        System.out.println("Bonus 3 points!");
+                        break;
+                    case 2: // Gold ball
+                        goldTime = time;
+                        ball.setFill(new ImagePattern(new Image("/images/goldBall.png")));
+                        isGoldStatus = true;
+                        System.out.println("Gold ball activated!");
+                        break;
+                }
+
                 new Score().show(choco.x, choco.y, 3, this);
             }
             choco.y += ((time - choco.timeCreated) / 1000.000) + 1.000;
@@ -654,24 +679,5 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     @Override
     public void onTime(long time) {
         this.time = time;
-    }
-
-    public void makeHeartScore() {
-        Image heartImage = new Image("/images/heart.png");
-        ImageView heartImageView = new ImageView(heartImage);
-        heartImageView.setFitHeight(20);
-        heartImageView.setFitWidth(20);
-
-        heartLabel = new Label("Heart: " + heart, heartImageView);
-        heartLabel.getStyleClass().add("heart-label-gradient");
-        heartLabel.setTranslateX(SCENE_WIDTH - 90);
-    }
-
-    public void makeBackgroundImage() {
-        Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/Background Images/backgroundImage-1.png")));
-        ImageView backgroundView = new ImageView(backgroundImage);
-        backgroundView.setFitWidth(SCENE_WIDTH);
-        backgroundView.setFitHeight(SCENE_HEIGHT);
-        root.getChildren().add(backgroundView);
     }
 }

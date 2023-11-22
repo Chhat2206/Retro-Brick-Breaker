@@ -31,8 +31,7 @@ public class MainMenu {
         menuOptions.setTranslateX(135);
         menuOptions.setTranslateY(250);
 
-        root.setStyle("-fx-background-image: url('/images/Main%20Menu/backgroundImage.png');" +
-                "-fx-background-size: cover;");
+        root.getStyleClass().add("background-pane");
 
 //        SoundManager.mainMenuMusic();
 
@@ -45,7 +44,7 @@ public class MainMenu {
 
         // Create buttons with increased size
         Button startNewGameButton = createButton("/images/Main Menu/newGame.png", e -> startNewGame(), 230, 90);
-        Button loadGameButton = createButton("/images/Main Menu/loadGame.png", e -> mainGame.loadGame(primaryStage), 230, 90);
+        Button loadGameButton = createButton("/images/Main Menu/loadGame.png", e -> startTransition(primaryStage, () -> mainGame.loadGame(primaryStage)), 230, 90);
         Button exitButton = createButton("/images/Main Menu/quitGame.png", e -> Platform.exit(), 230, 90);
 
         menuOptions.getChildren().addAll(startNewGameButton, loadGameButton, exitButton);
@@ -87,34 +86,29 @@ public class MainMenu {
     }
 
     private void startNewGame() {
-        // Create a translate transition to move the current scene out
-        TranslateTransition translateOut = new TranslateTransition(Duration.seconds(.2), primaryStage.getScene().getRoot());
-        translateOut.setFromX(0);
-        translateOut.setToX(-primaryStage.getWidth()); // Move to the left
-
-        // When the translation out is complete, start the new game
-        translateOut.setOnFinished(e -> {
+        startTransition(primaryStage, () -> {
             Main game = new Main();
-
-            // Assuming newGame creates and sets up the scene for the game
             game.newGame(primaryStage);
+        });
+    }
 
-            // The scene should now be set up in the newGame method, so we can retrieve it
-            Scene newGameScene = primaryStage.getScene();
 
-            // Create a translate transition for the new game scene to slide in
-            TranslateTransition translateIn = new TranslateTransition(Duration.seconds(.1), newGameScene.getRoot());
-            translateIn.setFromX(primaryStage.getWidth()); // Start from the right
+    private void startTransition(Stage stage, Runnable afterTransition) {
+        TranslateTransition translateOut = new TranslateTransition(Duration.seconds(.2), stage.getScene().getRoot());
+        translateOut.setFromX(0);
+        translateOut.setToX(-stage.getWidth()); // Move to the left
+
+        translateOut.setOnFinished(e -> {
+            afterTransition.run();
+
+            Scene newScene = stage.getScene();
+            TranslateTransition translateIn = new TranslateTransition(Duration.seconds(.1), newScene.getRoot());
+            translateIn.setFromX(stage.getWidth()); // Start from the right
             translateIn.setToX(0); // Move to the original position
             translateIn.play();
         });
 
-        // Start the translate out transition
         translateOut.play();
     }
-
-
-
-
 
 }
