@@ -25,7 +25,6 @@ public class PauseMenu {
 
         initializePauseStage();
         configurePauseLayout();
-
         addButtonsToLayout(main, engine);
 
         Scene scene = new Scene(pauseLayout, 200, 400);

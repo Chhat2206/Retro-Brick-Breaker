@@ -126,7 +126,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             if (level > 1) {
                 new Score().showMessage("Level Up :)", this);
             }
-            if (level == 10) {
+
+            if (level == 6) {
                 new Score().showWin(this);
                 return;
             }
@@ -150,7 +151,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         levelLabel.setTranslateY(20);
 
         this.uiManager = new UIManager(root);
-        this.uiManager.makeBackgroundImage();
+        String backgroundImagePath = "/images/Background Images/backgroundImage-" + level + ".png";
+        this.uiManager.makeBackgroundImage(backgroundImagePath);
         this.uiManager.makeHeartScore(heart);
 
         root.getChildren().addAll(rect, ball, scoreLabel, levelLabel);
@@ -173,7 +175,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         scene.getStylesheets().add("/css/main.css");
         primaryStage.setTitle("The Incredible Block Breaker Game");
         primaryStage.getIcons().add(new Image("/images/favicon.png"));
-        SoundManager.startBackgroundMusic("src/main/resources/Sound Effects/Background Music/backgroundMusic8Bit.mp3");
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -613,6 +614,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                         goldTime = time;
                         ball.setFill(new ImagePattern(new Image("/images/goldBall.png")));
                         System.out.println("gold ball");
+                        SoundManager.goldBallPowerUp();
                         isGoldStatus = true;
                     }
 

@@ -43,6 +43,8 @@ public class SoundManager {
         playSound("src/main/resources/Sound Effects/winSound.mp3");
         setVolume(0.6);
     }
+    public static void goldBallPowerUp() {
+        playSound("src/main/resources/Sound Effects/goldBallPowerUp.mp3");}
     public static void muteSoundPauseMenu() {
         playSound("src/main/resources/Sound Effects/muteSoundPauseMenu.mp3");
     }
@@ -55,10 +57,11 @@ public class SoundManager {
         setVolume(1);
     }
 
-    public static void mainMenuMusic() {
-        playSound("src/main/resources/Sound Effects/Menus/soundMenu.mp3");
-        setVolume(1);
+    public static void soundMenu() {
+        playSound("src/main/resources/Sound Effects/Menus/menuOpen.mp3");
+        setVolume(0.6);
     }
+
 
     public static void startBackgroundMusic(String musicFilePath) {
         try {
@@ -75,18 +78,6 @@ public class SoundManager {
     public static void stopBackgroundMusic() {
         if (backgroundMediaPlayer != null) {
             backgroundMediaPlayer.stop();
-        }
-    }
-
-    public static void pauseBackgroundMusic() {
-        if (backgroundMediaPlayer != null && backgroundMediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
-            backgroundMediaPlayer.pause();
-        }
-    }
-
-    public static void resumeBackgroundMusic() {
-        if (backgroundMediaPlayer != null && backgroundMediaPlayer.getStatus() == MediaPlayer.Status.PAUSED) {
-            backgroundMediaPlayer.play();
         }
     }
 

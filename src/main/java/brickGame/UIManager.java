@@ -2,7 +2,7 @@ package brickGame;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import java.util.Objects;
 
@@ -17,6 +17,16 @@ public class UIManager {
         this.root = root;
     }
 
+    public void makeBackgroundImage(String imagePath) {
+        Image bgImage = new Image(imagePath);
+        BackgroundImage backgroundImage = new BackgroundImage(bgImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                BackgroundSize.DEFAULT);
+        this.root.setBackground(new Background(backgroundImage));
+    }
+
     public void makeHeartScore(int heart) {
         Image heartImage = new Image("/images/heart.png");
         ImageView heartImageView = new ImageView(heartImage);
@@ -26,15 +36,8 @@ public class UIManager {
         heartLabel = new Label("Heart: " + heart, heartImageView);
         heartLabel.getStyleClass().add("heart-label-gradient");
         heartLabel.setTranslateX(SCENE_WIDTH - 90);
-        root.getChildren().add(heartLabel);
-    }
 
-    public void makeBackgroundImage() {
-        Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/Background Images/backgroundImage-1.png")));
-        ImageView backgroundView = new ImageView(backgroundImage);
-        backgroundView.setFitWidth(SCENE_WIDTH);
-        backgroundView.setFitHeight(SCENE_HEIGHT);
-        root.getChildren().add(backgroundView);
+        root.getChildren().add(heartLabel);
     }
 
     public Label getHeartLabel() {

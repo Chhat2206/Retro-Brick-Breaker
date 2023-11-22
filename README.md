@@ -22,6 +22,26 @@ a pause button. it was implemented but i wanted to remove mouse cursor to make t
 - List the Java classes you modified from the provided code base. Describe the changes you made and explain why these modifications were necessary.
 
 ## Unexpected Problems:
+### Unexpected Problems
+
+- **Collision Detection**: Collision detection in the game is currently experiencing issues. We've partially resolved the problem by incorporating the ball radius into the 'checkHitToBlock' function, enabling every block to detect and disappear upon collision with the ball.
+
+- **Pause Menu Addition**: The addition of a pause menu required changes to access modifiers from private to protected in order to grant access in the same package. When loading the game, the menu should automatically close.
+
+- **Loading Game Issues**: Loading the game leads to changes in blocks, speeds up ball velocity, and prevents level progression. When minimizing the pause menu and reopening the game, only the pause menu is displayed, not the entire game.
+
+- **Button Commands Loop**: Running commands on buttons occasionally triggers a feedback loop, causing repeated 'esc' key actions. Moving code from the main menu to functions has a cascading effect throughout the codebase.
+
+- **Window Size Limitation**: Attempts to limit window size resulted in issues with the pause menu. In some cases, sound effects may not work as expected.
+
+- **Persistent Pause Menu**: The pause menu remains in place when the game screen is moved. This was resolved with the following code:
+
+```java
+private static void positionPauseMenuOverGame(Stage primaryStage) {
+  pauseStage.setX(primaryStage.getX() + primaryStage.getWidth() / 3.3 - pauseLayout.getPrefWidth() / 2);
+  pauseStage.setY(primaryStage.getY() + primaryStage.getHeight() / 6 - pauseLayout.getPrefHeight() / 2);
+}
+```
 - Collision Detection is completely messed up in this game. We have currently fixed half the problem:
 
 Adding the ball radius to the 'checkHitToBlock' function allows every block to detect and disappear when the ball collides with the block.
@@ -54,38 +74,40 @@ private static void positionPauseMenuOverGame(Stage primaryStage) {
 
 ### Images
 
+#### Ball
+- [Image by brgfx](https://www.freepik.com/free-vector/variety-balls-with-unique-patterns_1164446.htm#query=ball%20game&position=0&from_view=keyword&track=ais) on Freepik
+
 ### Music
-Background Music
+
+#### Background Music
 - [backgroundMusicSoftPiano](https://pixabay.com/sound-effects/soft-piano-100-bpm-121529/)
 - [backgroundMusicNCS](http://ncs.lnk.to/karmaAT/youtube)
 - [backgroundMusicSoftPiano](https://pixabay.com/sound-effects/8bit-music-for-game-68698/)
 
-Ball:
-<a href="https://www.freepik.com/free-vector/variety-balls-with-unique-patterns_1164446.htm#query=ball%20game&position=0&from_view=keyword&track=ais">Image by brgfx</a> on Freepik
+#### Interface Sounds
+- [interface-124464](https://pixabay.com/sound-effects/interface-124464/)
+- [buttonClickSound.mp3](https://pixabay.com/sound-effects/click-button-app-147358/)
+- [block-hit](https://pixabay.com/sound-effects/stop-13692/)
+- [interface-soft-click-131438](https://pixabay.com/sound-effects/interface-soft-click-131438/)
+- [click-for-game-menu-131903](https://pixabay.com/sound-effects/click-for-game-menu-131903/)
 
-Interface: https://pixabay.com/sound-effects/interface-124464/
+#### Game Assets
+- Paddle & block assets: [Kenney.nl Shape Characters](https://kenney.nl/assets/shape-characters)
 
-buttonClickSound.mp3: https://pixabay.com/sound-effects/click-button-app-147358/
+#### Backgrounds
+- [Wallpaper 1](https://wallpapercave.com/wp/wp1933991.jpg)
+- [Wallpaper 2](https://wallpapercave.com/dwp2x/wp1933955.png)
+- [Wallpaper 3](https://wallpapercave.com/wp/wp7495828.jpg)
 
-block-hit: https://pixabay.com/sound-effects/stop-13692/
-
-https://pixabay.com/sound-effects/interface-soft-click-131438/
-
-https://pixabay.com/sound-effects/click-for-game-menu-131903/
-
-paddle & block assets: https://kenney.nl/assets/shape-characters
-
-Backgrounds:
-https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp1933991.jpg&f=1&nofb=1&ipt=fc0b8ee5c987bf5da44add35593287a16a29a3c3e22aff1eabc7c4d7aa071bb5&ipo=images
-https://wallpapercave.com/dwp2x/wp1933955.png
-https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp7495828.jpg&f=1&nofb=1&ipt=1bd232da5f62157ec8678330150854cac87851b14658277ad6c770e645afd960&ipo=images
-
-mainMenuBackground: https://pixabay.com/sound-effects/sci-fi-survival-dreamscape-6319/
-collectPowerup : https://pixabay.com/sound-effects/coin-collect-retro-8-bit-sound-effect-145251/
-changeBackgroundMusic: https://pixabay.com/sound-effects/tape-cassette-insert-172758/
-muteMusicPauseMenu: https://pixabay.com/sound-effects/click-21156/
-win sound: https://pixabay.com/sound-effects/game-bonus-144751/
-game over: https://pixabay.com/sound-effects/videogame-death-sound-43894/
-level up:https://pixabay.com/sound-effects/level-up-47165/
-ball hit the bottom: https://pixabay.com/sound-effects/jazz-bass-open-e-39297/
-collectBonus: https://pixabay.com/sound-effects/collectcoin-6075/
+#### Sound Effects
+- [mainMenuBackground](https://pixabay.com/sound-effects/sci-fi-survival-dreamscape-6319/)
+- [collectPowerup](https://pixabay.com/sound-effects/coin-collect-retro-8-bit-sound-effect-145251/)
+- [changeBackgroundMusic](https://pixabay.com/sound-effects/tape-cassette-insert-172758/)
+- [muteMusicPauseMenu](https://pixabay.com/sound-effects/click-21156/)
+- [levelUp.mp3](https://pixabay.com/sound-effects/game-bonus-144751/)
+- [game over](https://pixabay.com/sound-effects/videogame-death-sound-43894/)
+- [winSound.mp3](https://pixabay.com/sound-effects/winsquare-6993/)
+- [ball hit the bottom](https://pixabay.com/sound-effects/jazz-bass-open-e-39297/)
+- [collectBonus](https://pixabay.com/sound-effects/collectcoin-6075/)
+- [menuOpen.mp3](https://pixabay.com/sound-effects/game-start-6104/)
+- [goldBallPowerUp.mp3](https://pixabay.com/sound-effects/collect-5930/)

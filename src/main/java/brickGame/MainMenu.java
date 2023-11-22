@@ -32,9 +32,7 @@ public class MainMenu {
         menuOptions.setTranslateY(250);
 
         root.getStyleClass().add("background-pane");
-
-//        SoundManager.mainMenuMusic();
-
+       SoundManager.soundMenu();
 
         // Load and add the logo
         ImageView logoView = createLogoView("/images/Main Menu/logo.png");
@@ -72,7 +70,11 @@ public class MainMenu {
 
         Button button = new Button("", imageView);
         button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 0;");
-        button.setOnAction(e -> action.accept(null));
+        button.setOnAction(e -> {
+            SoundManager.startBackgroundMusic("src/main/resources/Sound Effects/Background Music/backgroundMusic8Bit.mp3");
+
+            action.accept(null);
+        });
         return button;
     }
 
@@ -86,6 +88,11 @@ public class MainMenu {
     }
 
     private void startNewGame() {
+        if (primaryStage.getScene() == null) {
+            System.err.println("Primary stage's scene is null. Cannot start new game.");
+            return;
+        }
+
         startTransition(primaryStage, () -> {
             Main game = new Main();
             game.newGame(primaryStage);
@@ -94,9 +101,14 @@ public class MainMenu {
 
 
     private void startTransition(Stage stage, Runnable afterTransition) {
+        if (stage == null || stage.getScene() == null || stage.getScene().getRoot() == null) {
+            System.err.println("Stage, Scene, or Root is null. Cannot proceed with transition.");
+            return;
+        }
+
         TranslateTransition translateOut = new TranslateTransition(Duration.seconds(.2), stage.getScene().getRoot());
         translateOut.setFromX(0);
-        translateOut.setToX(-stage.getWidth()); // Move to the left
+        translateOut.setToX(-stage.getWidth());
 
         translateOut.setOnFinished(e -> {
             afterTransition.run();

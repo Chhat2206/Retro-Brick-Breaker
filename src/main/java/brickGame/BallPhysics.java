@@ -1,3 +1,2 @@
-package brickGame;
-public class BallPhysics {
+package brickGame;public class BallPhysics {
 }
