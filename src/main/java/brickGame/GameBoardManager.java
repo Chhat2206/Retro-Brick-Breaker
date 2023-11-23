@@ -37,7 +37,7 @@ public class GameBoardManager {
             }
             return Block.BLOCK_NORMAL;
         } else if (r % 10 == 3) {
-            return Block.BLOCK_STAR;
+            return Block.BLOCK_GOLDEN_TIME;
         }
         return Block.BLOCK_NORMAL;
     }

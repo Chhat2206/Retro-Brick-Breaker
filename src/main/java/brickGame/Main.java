@@ -7,7 +7,6 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -26,7 +25,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     // Constants
     private static final int LEFT  = 1;
     private static final int RIGHT = 2;
-    private static int PADDLE_WIDTH = 90;
+    private static int paddleWidth = 90;
     private static final int PADDLE_HEIGHT = 14;
     private static final int BALL_RADIUS = 10;
     private static final int SCENE_WIDTH = 500;
@@ -42,7 +41,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private static final int PADDLE_SPEED = 3;
     private double paddleMoveX = 250.0;
     private double paddleMoveY = 680.0f;
-    private final int halfPaddleWidth = PADDLE_WIDTH / 2;
+    private final int halfPaddleWidth = paddleWidth / 2;
     private double centerBreakX;
     private boolean leftKeyPressed = false;
     private boolean rightKeyPressed = false;
@@ -146,16 +145,15 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
         // Create and set up UI components
         root = new Pane();
-        scoreLabel = new Label("Score: " + score);
-        Label levelLabel = new Label("Level: " + level);
-        levelLabel.setTranslateY(20);
+        scoreLabel = new Label();
+
 
         this.uiManager = new UIManager(root);
         String backgroundImagePath = "/images/Background Images/backgroundImage-" + level + ".png";
         this.uiManager.makeBackgroundImage(backgroundImagePath);
-        this.uiManager.makeHeartScore(heart);
+        this.uiManager.makeHeartScore(heart, score, level);
 
-        root.getChildren().addAll(rect, ball, scoreLabel, levelLabel);
+        root.getChildren().addAll(rect, ball);
 
         // Set up the blocks
         if (!loadFromSave) {
@@ -233,7 +231,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                     this.stop();
                     return;
                 }
-                if (paddleMoveX <= 0 && direction == LEFT || paddleMoveX >= (SCENE_WIDTH - PADDLE_WIDTH) && direction == RIGHT) {
+                if (paddleMoveX <= 0 && direction == LEFT || paddleMoveX >= (SCENE_WIDTH - paddleWidth) && direction == RIGHT) {
                     return;
                 }
                 paddleMoveX += (direction == RIGHT ? PADDLE_SPEED : -PADDLE_SPEED);
@@ -256,7 +254,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private void createPaddle() {
         rect = new Rectangle();
-        rect.setWidth(PADDLE_WIDTH);
+        rect.setWidth(paddleWidth);
         rect.setHeight(PADDLE_HEIGHT);
         rect.setX(paddleMoveX);
         rect.setY(paddleMoveY);
@@ -335,7 +333,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private void checkCollisionWithPaddle() {
         if (ballPosY + BALL_RADIUS >= paddleMoveY &&
                 ballPosX + BALL_RADIUS >= paddleMoveX &&
-                ballPosX - BALL_RADIUS <= paddleMoveX + PADDLE_WIDTH) {
+                ballPosX - BALL_RADIUS <= paddleMoveX + paddleWidth) {
             handlePaddleCollision();
         }
     }
@@ -350,7 +348,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private void calculateBallVelocity() {
-        double relation = (ballPosX - centerBreakX) / ((double) PADDLE_WIDTH / 2);
+        double relation = (ballPosX - centerBreakX) / ((double) paddleWidth / 2);
         ballVelocityX = Math.abs(relation) * MAX_VELOCITY_X; // MAX_VELOCITY_X can be a constant defining max horizontal velocity
         ballVelocityY = Math.sqrt(Math.pow(MAX_VELOCITY, 2) - Math.pow(ballVelocityX, 2)); // MAX_VELOCITY is the maximum speed of the ball
 
@@ -574,11 +572,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     @Override
     public void onUpdate() {
         Platform.runLater(() -> {
-            scoreLabel.setText("Score: " + score);
-
+            uiManager.setScore(score);
             // Update this line to get the heartLabel from UIManager
             Label heartLabelFromUIManager = uiManager.getHeartLabel();
-            heartLabelFromUIManager.setText("Heart : " + heart);
+            heartLabelFromUIManager.setText("Hearts: " + heart);
 
             rect.setX(paddleMoveX);
             rect.setY(paddleMoveY);
@@ -610,7 +607,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                         chocos.add(choco);
                     }
 
-                    if (block.type == Block.BLOCK_STAR) {
+                    if (block.type == Block.BLOCK_GOLDEN_TIME) {
                         goldTime = time;
                         ball.setFill(new ImagePattern(new Image("/images/goldBall.png")));
                         System.out.println("gold ball");
@@ -649,7 +646,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             if (choco.y > SCENE_HEIGHT || choco.taken) {
                 continue;
             }
-            if (choco.y >= paddleMoveY && choco.y <= paddleMoveY + PADDLE_HEIGHT && choco.x >= paddleMoveX && choco.x <= paddleMoveX + PADDLE_WIDTH) {
+            if (choco.y >= paddleMoveY && choco.y <= paddleMoveY + PADDLE_HEIGHT && choco.x >= paddleMoveX && choco.x <= paddleMoveX + paddleWidth) {
                 SoundManager.collectBonus();
                 choco.taken = true;
                 choco.choco.setVisible(false);
@@ -658,7 +655,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 int effect = rand.nextInt(3); // Randomly choose an effect
                 switch (effect) {
                     case 0: // Change paddle width
-                        PADDLE_WIDTH = rand.nextBoolean() ? PADDLE_WIDTH + 10 : Math.max(PADDLE_WIDTH + 10, 30);
+                        paddleWidth += rand.nextInt(6) + 10; // Range from 10 to 15
                         System.out.println("Paddle width changed!");
                         break;
                     case 1: // Bonus 3 points

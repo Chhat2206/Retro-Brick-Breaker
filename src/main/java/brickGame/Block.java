@@ -2,13 +2,10 @@ package brickGame;
 
 
 import javafx.scene.image.Image;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
-import java.io.File;
 import java.io.Serializable;
 
 public class Block implements Serializable {
@@ -38,7 +35,7 @@ public class Block implements Serializable {
 
     public static int BLOCK_NORMAL = 99;
     public static int BLOCK_CHOCO = 100;
-    public static int BLOCK_STAR = 101;
+    public static int BLOCK_GOLDEN_TIME = 101;
     public static int BLOCK_HEART = 102;
 
 
@@ -69,8 +66,8 @@ public class Block implements Serializable {
             Image image = new Image("/images/blocks/heartBlock.png");
             ImagePattern pattern = new ImagePattern(image);
             rect.setFill(pattern);
-        } else if (type == BLOCK_STAR) {
-            Image image = new Image("/images/blocks/starBlock.png");
+        } else if (type == BLOCK_GOLDEN_TIME) {
+            Image image = new Image("/images/blocks/goldenBallBlock.png");
             ImagePattern pattern = new ImagePattern(image);
             rect.setFill(pattern);
         } else {
