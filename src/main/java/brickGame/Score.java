@@ -12,17 +12,17 @@ public class Score {
 
     private static final Duration ANIMATION_DURATION = Duration.millis(200);
 
-    private Label createStyledLabel(String text, double x, double y) {
+    private Label createStyledLabel(String text, double x, double y, String style) {
         Label label = new Label(text);
         label.setTranslateX(x);
         label.setTranslateY(y);
-        label.setStyle("-fx-font-size: 20px; -fx-text-fill: rgba(255,0,153,0.8); -fx-font-weight: bold;");
+        label.getStyleClass().add(style);
         return label;
     }
 
     public void show(final double x, final double y, int score, final Main main) {
         String sign = score >= 0 ? "+" : "";
-        final Label label = createStyledLabel(sign + score, x, y);
+        final Label label = createStyledLabel(sign + score, x, y, "score-label"); // Apply CSS class "score-label"
 
         Platform.runLater(() -> main.root.getChildren().add(label));
 
@@ -44,7 +44,7 @@ public class Score {
 
     public void showMessage(String message, final Main main) {
         SoundManager.levelUp();
-        final Label label = createStyledLabel(message, 220, 340);
+        final Label label = createStyledLabel(message, 220, 340, "message-label"); // Apply CSS class "message-label"
 
         Platform.runLater(() -> main.root.getChildren().add(label));
 
@@ -59,33 +59,11 @@ public class Score {
         SequentialTransition sequentialTransition = new SequentialTransition(label, scaleTransition, fadeTransition);
         sequentialTransition.play();
     }
+
     public void showGameOver(final Main main) {
         Platform.runLater(() -> {
             SoundManager.gameOver();
-            Label label = new Label("Game Over :(");
-            label.setTranslateX(200);
-            label.setTranslateY(250);
-            label.setScaleX(2);
-            label.setScaleY(2);
-
-            Button restart = new Button("Restart");
-            restart.setTranslateX(220);
-            restart.setTranslateY(300);
-            restart.setOnAction(event -> main.restartGame());
-
-            main.root.getChildren().addAll(label, restart);
-        });
-    }
-
-    public void showWin(final Main main) {
-        Platform.runLater(() -> {
-            SoundManager.winSound();
-            Label label = new Label("You Win :)");
-            label.setTranslateX(200);
-            label.setTranslateY(250);
-            label.setScaleX(2);
-            label.setScaleY(2);
-            main.root.getChildren().addAll(label);
+            GameOverScreen.display(main, main.primaryStage); // Display the Game Over Screen
         });
     }
 }

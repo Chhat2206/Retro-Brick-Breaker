@@ -92,7 +92,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             Color.MAGENTA, Color.RED, Color.GOLD, Color.CORAL,
             Color.AQUA, Color.VIOLET, Color.GREENYELLOW,
             Color.ORANGE, Color.PINK,
-            Color.YELLOW, Color.TOMATO,
+            Color.TOMATO,
     };
 
     // File Paths for Saving and Loading
@@ -127,7 +127,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             }
 
             if (level == 6) {
-                new Score().showWin(this);
+                YouWinScreen.display(this, primaryStage);
                 return;
             }
         }
@@ -171,6 +171,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         scene.setOnKeyPressed(this);
         scene.setOnKeyReleased(this);
         scene.getStylesheets().add("/css/main.css");
+        scene.getStylesheets().add("/css/score.css");
         primaryStage.setTitle("The Incredible Block Breaker Game");
         primaryStage.getIcons().add(new Image("/images/favicon.png"));
         primaryStage.setScene(scene);
@@ -675,8 +676,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             choco.y += ((time - choco.timeCreated) / 1000.000) + 1.000;
         }
     }
+
     @Override
     public void onTime(long time) {
         this.time = time;
     }
+
 }
