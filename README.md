@@ -96,7 +96,7 @@ private static void positionPauseMenuOverGame(Stage primaryStage) {
 
 #### Backgrounds
 - [Wallpaper 1](https://wallpapercave.com/wp/wp1933991.jpg)
-- [Wallpaper 2](https://wallpapercave.com/dwp2x/wp1933955.png)
+- [Wallpaper 2 //]()
 - [Wallpaper 3](https://wallpapercave.com/wp/wp7495828.jpg)
 
 #### Sound Effects

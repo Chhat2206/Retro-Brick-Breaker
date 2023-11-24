@@ -1,6 +1,5 @@
 package brickGame;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -31,12 +30,12 @@ public class GameState {
     public long time;
     public long goldTime;
     public double vX;
-    public ArrayList<BlockSerializable> blocks = new ArrayList<BlockSerializable>();
+    public ArrayList<BlockSerializable> blocks = new ArrayList<>();
 
 
     public void read() {
         try {
-            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new File(Main.SAVE_PATH)));
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(Main.SAVE_PATH));
             level = inputStream.readInt();
             score = inputStream.readInt();
             heart = inputStream.readInt();

@@ -4,9 +4,33 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class SoundManager {
     private static MediaPlayer backgroundMediaPlayer;
+    private static final List<String> musicFiles = new ArrayList<>();
+
+    static {
+        // Initialize the list with music files
+        Collections.addAll(musicFiles,
+                "src/main/resources/Sound Effects/Background Music/backgroundMusic8Bit.mp3",
+                "src/main/resources/Sound Effects/Background Music/backgroundMusicNCS.mp3",
+                "src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3");
+    }
+
+    public static void startRandomBackgroundMusic() {
+        if (musicFiles.isEmpty()) {
+            System.err.println("No music files available.");
+            return;
+        }
+
+        // Shuffle and select the first song
+        Collections.shuffle(musicFiles);
+        String musicFilePath = musicFiles.remove(0); // Remove the played song from the list
+        startBackgroundMusic(musicFilePath);
+    }
 
     private static void playSound(String soundFile) {
         try {

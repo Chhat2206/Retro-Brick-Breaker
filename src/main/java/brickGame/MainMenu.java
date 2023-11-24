@@ -1,6 +1,5 @@
 package brickGame;
 
-import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -17,8 +16,8 @@ import java.util.function.Consumer;
 
 public class MainMenu {
 
-    private Stage primaryStage;
-    private Main mainGame; // Reference to Main
+    private final Stage primaryStage;
+    private final Main mainGame; // Reference to Main
 
     public MainMenu(Stage primaryStage, Main mainGame) {
         this.primaryStage = primaryStage;
@@ -71,7 +70,7 @@ public class MainMenu {
         Button button = new Button("", imageView);
         button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 0;");
         button.setOnAction(e -> {
-            SoundManager.startBackgroundMusic("src/main/resources/Sound Effects/Background Music/backgroundMusic8Bit.mp3");
+            SoundManager.startRandomBackgroundMusic();
 
             action.accept(null);
         });

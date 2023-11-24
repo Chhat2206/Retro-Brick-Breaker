@@ -1,22 +1,17 @@
 package brickGame;
 
 import javafx.application.Platform;
-import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.control.Label;
-import java.util.Objects;
 
 public class UIManager {
 
-    private Pane root;
+    private final Pane root;
     private Label heartLabel;
     private Label scoreLabel;
-    private Label levelLabel;
 
-    private static final int SCENE_WIDTH = 500;
-    private static final int SCENE_HEIGHT = 700;
 
     public UIManager(Pane root) {
         this.root = root;
@@ -39,7 +34,7 @@ public class UIManager {
         ImageView levelImageView = new ImageView(levelImage);
         levelImageView.setFitHeight(25);
         levelImageView.setFitWidth(25);
-        levelLabel = new Label("Level: " + level, levelImageView);
+        Label levelLabel = new Label("Level: " + level, levelImageView);
 
         // Score label setup
         Image coinImage = new Image("/images/Coins.png");

@@ -23,7 +23,7 @@ public class YouWinScreen {
         configureLayout();
         addElementsToLayout(main, primaryStage);
 
-        Scene winScene = new Scene(vbox, 400, 200);
+        Scene winScene = new Scene(vbox, 400, 250);
         winScene.getStylesheets().add("/css/youWinScreen.css");
         youWinStage.setScene(winScene);
 
@@ -48,8 +48,11 @@ public class YouWinScreen {
 
     private static void addElementsToLayout(Main main, Stage primaryStage) {
         Label winLabel = new Label("Congratulations! You Win!");
-        winLabel.getStyleClass().add("win-label");
 
+        int coinsCollected = main.score;
+
+        // Create labels to display the information
+        Label coinsLabel = new Label("Coins Collected: " + coinsCollected);
         Button restartButton = createButton("Restart", e -> {
             fadeOutScreen();
             main.restartGame();
@@ -63,8 +66,9 @@ public class YouWinScreen {
             youWinStage.close();
         });
 
-        vbox.getChildren().addAll(winLabel, restartButton, returnButton);
+        vbox.getChildren().addAll(winLabel, coinsLabel, restartButton, returnButton);
     }
+
 
     private static Button createButton(String text, EventHandler<ActionEvent> action) {
         Button button = new Button(text);

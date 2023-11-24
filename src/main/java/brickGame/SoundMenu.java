@@ -4,12 +4,11 @@ import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -55,9 +54,7 @@ public class SoundMenu {
 
     public static Slider createVolumeSlider() {
         Slider volumeSlider = new Slider(0, 1, SoundManager.getVolume());
-        volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            SoundManager.setVolume(newValue.doubleValue());
-        });
+        volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> SoundManager.setVolume(newValue.doubleValue()));
         return volumeSlider;
     }
 

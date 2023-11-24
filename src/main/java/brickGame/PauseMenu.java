@@ -141,7 +141,6 @@ public class PauseMenu {
     }
 
     protected static void fadeInMenu() {
-        System.out.println("In fadeInMenu");
         FadeTransition fadeIn = new FadeTransition(Duration.millis(500), pauseLayout);
         fadeIn.setFromValue(0.3);
         fadeIn.setToValue(1);
@@ -157,7 +156,6 @@ public class PauseMenu {
     }
 
     protected static void soundMenuOpen() {
-        System.out.println("In soundMenuOpen");
         FadeTransition fadeOut = new FadeTransition(Duration.millis(500), pauseLayout);
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0.3); // Fade to a lower opacity instead of completely invisible
