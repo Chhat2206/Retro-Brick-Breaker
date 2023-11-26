@@ -29,7 +29,9 @@ public class MainMenu {
         VBox menuOptions = new VBox(10);
         menuOptions.setTranslateX(135);
         menuOptions.setTranslateY(250);
-
+        primaryStage.setTitle("The Incredible Block Breaker Menu");
+        primaryStage.getIcons().add(new Image("/images/Main Menu/favicon.png"));
+        primaryStage.setResizable(false);
         root.getStyleClass().add("background-pane");
        SoundManager.soundMenu();
 

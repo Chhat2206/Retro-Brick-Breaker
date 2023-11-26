@@ -34,7 +34,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     // Game State Variables
     protected int level = 0;
     protected int score = 0;
-    private int heart = 3;
+    private int heart = 1;
     private int destroyedBlockCount = 0;
 
     // Paddle Variables
@@ -141,6 +141,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         root = new Pane();
         this.uiManager = new UIManager(root);
         String backgroundImagePath = "/images/Background Images/backgroundImage-" + level + ".png";
+        // Restart game has issues when utilizing this code, fix in the future
         this.uiManager.makeBackgroundImage(backgroundImagePath);
         this.uiManager.makeHeartScore(heart, score, level);
         root.getChildren().addAll(rect, ball);
@@ -186,7 +187,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 new Score().showMessage("Level Up :)", this);
             }
 
-            if (level == 6) {
+            //11
+            if (level == 2) {
                 YouWinScreen.display(this, primaryStage);
                 return;
             }
@@ -292,7 +294,13 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private void setPhysicsToBall() {
         updateBallPosition();
         checkCollisionWithWalls();
-        checkCollisionWithPaddle();
+
+        if (checkContinuousCollisionWithPaddle()) {
+            handlePaddleCollision(); // Fixes paddle randomly bugging out
+        } else {
+            checkCollisionWithPaddle(); // Fallback to original collision check
+        }
+
         checkCollisionWithBlocks();
         handleBallDirection();
     }
@@ -355,6 +363,18 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }
     }
 
+    private boolean checkContinuousCollisionWithPaddle() {
+        double nextX = ballPosX + (goRightBall ? ballVelocityX : -ballVelocityX);
+        double nextY = ballPosY + (goDownBall ? ballVelocityY : -ballVelocityY);
+
+        // Check for collision in the path between current position and next position, to fix the bug where it phases through the paddle
+        if (nextY + ballRadius >= paddleMoveY && nextY - ballRadius <= paddleMoveY + PADDLE_HEIGHT) {
+            if (nextX + ballRadius >= paddleMoveX && nextX - ballRadius <= paddleMoveX + paddleWidth) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void handlePaddleCollision() {
         resetCollideFlags();
@@ -650,8 +670,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
 
-
-
     private void handleBlockHit(Block block, int hitCode) {
         score += 1;
         new Score().show(block.x, block.y, 1, this);
@@ -742,7 +760,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 applyBallSizeEffect(rand);
                 break;
         }
-
         new Score().show(choco.x, choco.y, 3, this);
     }
 
@@ -779,8 +796,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         score += bonusPoints;
         System.out.println("Bonus " + bonusPoints + " points!");
     }
-
-
 
 
     @Override

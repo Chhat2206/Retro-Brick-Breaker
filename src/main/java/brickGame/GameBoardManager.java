@@ -32,6 +32,18 @@ public class GameBoardManager {
             case 6:
                 createLevel6Layout();
                 break;
+            case 7:
+                createLevel7Layout();
+                break;
+            case 8:
+                createLevel8Layout();
+                break;
+            case 9:
+                createLevel9Layout();
+                break;
+            case 10:
+                createLevel10Layout();
+                break;
             default:
                 createDefaultLayout();
                 break;
@@ -39,7 +51,7 @@ public class GameBoardManager {
     }
 
     private void createLevel1Layout() {
-        // Simple row of blocks, with a chance of special blocks
+        // Simple row of blocks
         for (int i = 0; i < 5; i++) {
             int blockType = determineBlockType(random.nextInt(100));
             mainInstance.blocks.add(new Block(0, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
@@ -47,17 +59,7 @@ public class GameBoardManager {
     }
 
     private void createLevel2Layout() {
-        // Pyramid Shape with random block types, up to 5 blocks horizontally and 12 vertically
-        for (int j = 0; j < 12; j++) {
-            for (int i = Math.max(0, j - 7); i < Math.min(5, 12 - j); i++) {
-                int blockType = determineBlockType(random.nextInt(100));
-                mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
-            }
-        }
-    }
-
-    private void createLevel3Layout() {
-        // X shape with random block types, up to 5 blocks horizontally and 12 vertically
+        // X shape
         for (int j = 0; j < 12; j++) {
             int blockTypeLeft = determineBlockType(random.nextInt(100));
             int blockTypeRight = determineBlockType(random.nextInt(100));
@@ -68,8 +70,19 @@ public class GameBoardManager {
         }
     }
 
+
+    private void createLevel3Layout() {
+    // Pyramid Shape
+        for (int j = 0; j < 12; j++) {
+        for (int i = Math.max(0, j - 7); i < Math.min(5, 12 - j); i++) {
+            int blockType = determineBlockType(random.nextInt(100));
+            mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+        }
+    }
+}
+
     private void createLevel4Layout() {
-        // Checkerboard pattern with random block types, up to 5 blocks horizontally and 12 vertically
+        // Checkerboard pattern
         for (int j = 0; j < 12; j++) {
             for (int i = 0; i < 5; i++) {
                 if ((j + i) % 2 == 0) {
@@ -81,7 +94,7 @@ public class GameBoardManager {
     }
 
     private void createLevel5Layout() {
-        // Circle shape with random block types, up to 5 blocks horizontally and 12 vertically
+        // Circle shape
         int centerX = 2;
         int centerY = 6; // Adjusted for 12 vertical blocks
         int radius = 3; // Adjusted radius
@@ -96,17 +109,92 @@ public class GameBoardManager {
     }
 
     private void createLevel6Layout() {
-        // New layout for level 6 - Inverted Pyramid, up to 5 blocks horizontally and 12 vertically
-        for (int j = 0; j < 12; j++) {
-            for (int i = Math.max(0, j - 7); i < Math.min(5, 12 - j); i++) {
+        // Alternative Columns
+        for (int j = 0; j < 13; j++) {
+            for (int i = 0; i < 5; i++) {
+                if (j % 2 == 0) {
+                    int blockType = determineBlockType(random.nextInt(100));
+                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                }
+            }
+        }
+    }
+
+    private void createLevel7Layout() {
+        // Vertical Stripes
+        for (int j = 0; j < 13; j++) {
+            for (int i = 0; i < 5; i++) {
+                if (j % 2 == 0) {
+                    int blockType = determineBlockType(random.nextInt(100));
+                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                }
+            }
+        }
+    }
+
+    private void createLevel8Layout() {
+        // Spiral Pattern - LOL DID NOT WORK
+        int minRow = 0, maxRow = 12, minCol = 0, maxCol = 4;
+        while (minRow < maxRow && minCol < maxCol) {
+            for (int i = minCol; i < maxCol; i++) {
                 int blockType = determineBlockType(random.nextInt(100));
-                mainInstance.blocks.add(new Block(11 - j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                mainInstance.blocks.add(new Block(minRow, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+            }
+            minRow++;
+            for (int i = minRow; i < maxRow; i++) {
+                int blockType = determineBlockType(random.nextInt(100));
+                mainInstance.blocks.add(new Block(i, maxCol - 1, mainInstance.colors[(maxCol - 1) % mainInstance.colors.length], blockType));
+            }
+            maxCol--;
+            if (minRow < maxRow) {
+                for (int i = maxCol - 1; i >= minCol; i--) {
+                    int blockType = determineBlockType(random.nextInt(100));
+                    mainInstance.blocks.add(new Block(maxRow - 1, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                }
+                maxRow--;
+            }
+            if (minCol < maxCol) {
+                for (int i = maxRow - 1; i >= minRow; i--) {
+                    int blockType = determineBlockType(random.nextInt(100));
+                    mainInstance.blocks.add(new Block(i, minCol, mainInstance.colors[minCol % mainInstance.colors.length], blockType));
+                }
+                minCol++;
+            }
+        }
+    }
+
+    private void createLevel9Layout() {
+        // Zig Zag
+        for (int j = 0; j < 13; j++) {
+            for (int i = 0; i < 5; i++) {
+                if ((j / 2 + i) % 2 == 0) {
+                    int blockType = determineBlockType(random.nextInt(100));
+                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                }
+            }
+        }
+    }
+
+    private void createLevel10Layout() {
+        // Diamond Shape
+        int midRow = 6;
+        int midColumn = 2;
+        for (int j = 0; j < 13; j++) {
+            for (int i = 0; i < 5; i++) {
+                if (Math.abs(j - midRow) + Math.abs(i - midColumn) <= midColumn) {
+                    int blockType = determineBlockType(random.nextInt(100));
+                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                }
             }
         }
     }
 
 
-    private void createDefaultLayout() {
+
+
+
+
+    private void createDefaultLayout() { // Worst case if program fails. Best case, it will never be utilized.
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < mainInstance.level + 1; j++) {
                 int r = random.nextInt(500); // Use the existing Random instance

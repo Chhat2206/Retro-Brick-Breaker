@@ -1,97 +1,45 @@
-/* General Label Style */
-.label {
-    -fx-text-fill: #FFF;
-    -fx-padding: 8px;
-    -fx-font-family: "Lucida Console";
-    -fx-font-size: 16px;
-}
-
-/* Refined Button with Gradient Effect */
-.refined-button-effect {
-    -fx-background-color: linear-gradient(to bottom, #4CAF50, #81C784);
-    -fx-background-radius: 10;
-    -fx-padding: 10px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 5);
-}
-
-/* Container for Labels */
-.label-container {
-    -fx-padding: 5px;
-    -fx-border-color: black;
-    -fx-border-width: 3px;
-    -fx-background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* General Button Style */
-.button {
-    -fx-background-color: #7DB1B1;
-    -fx-text-fill: #18191A;
-    -fx-font-family: 'Consolas', sans-serif;
-    -fx-font-size: 14px;
-    -fx-padding: 10px 20px;
-    -fx-border-radius: 20px;
-    -fx-background-radius: 20px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 3,0,0,1);
-}
-
-/* Button Hover Effect */
-.button:hover {
-    -fx-background-color: #4169E1;
-    -fx-cursor: hand;
-    -fx-text-fill: white;
-}
-
-/* Button Pressed State */
-.button:pressed {
-    -fx-background-color: green;
-    -fx-text-fill: white;
-}
-
-/* Pause Menu Gradient Background */
-.pause-menu-gradient {
-    -fx-border-color: linear-gradient(to right, blue, cyan);
-    -fx-border-width: 5;
-    -fx-background-color: rgba(0, 0, 0, 0.5);
-    -fx-background-radius: 10;
-    -fx-border-radius: 8;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 10, 0, 5, 5);
-}
-
-/* Root Container Style */
-.root {
-    -fx-background-color: #2C3E50;
-    -fx-font-family: 'Arial', sans-serif;
-    -fx-padding: 20px;
-}
-
-/* VBox Layout Style */
-.vbox {
-    -fx-spacing: 15px;
-    -fx-alignment: center;
+/* You Win Screen */
+.you-win-layout {
+    -fx-background-color: rgba(85, 196, 81, 0.8); /* Green background color with 80% transparency */
+    -fx-border-color: linear-gradient(to right, rgba(240, 194, 34, 1), rgba(255, 87, 51, 1)); /* Gold to red gradient with full opacity */
+    -fx-border-width: 4; /* Adjusted border width */
+    -fx-background-radius: 9; /* Adjusted radius */
+    -fx-border-radius: 7; /* Adjusted radius */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.7), 9, 0, 4, 4); /* Different shadow parameters */
 }
 
 /* Labels in VBox */
 .vbox .label {
-    -fx-text-fill: #BDC3C7;
-    -fx-font-size: 18px;
+    -fx-text-fill: rgba(255, 255, 255, 1); /* White text with full opacity */
+    -fx-font-size: 17px; /* Slightly decreased font size */
 }
 
 /* Title Style */
 .title {
-    -fx-font-size: 24px;
-    -fx-text-fill: #ECF0F1;
+    -fx-font-size: 22px; /* Smaller font size */
+    -fx-text-fill: rgba(255, 255, 255, 1); /* White text with full opacity */
     -fx-font-weight: bold;
     -fx-padding: 10px;
     -fx-alignment: center;
 }
 
-/* Button Hover Effect in VBox */
-.vbox .button:hover {
-    -fx-effect: dropshadow(gaussian, rgba(20, 81, 140, 0.8), 15, 0.5, 0.0, 0.0);
+/* Refined Button with Gradient Effect */
+.refined-button-effect {
+    -fx-background-color: linear-gradient(to bottom, rgba(0, 102, 204, 1), rgba(0, 51, 102, 1)); /* Blue gradient with full opacity */
+    -fx-background-radius: 8; /* Smaller radius */
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 8, 0, 0, 4); /* Less intense drop shadow */
 }
 
-/* Background Image for Panes */
-.background-pane {
-    -fx-background-image: url('/images/Main%20Menu/backgroundImage.png');
-    -fx-background-size: cover;
+/* Button Hover Effect */
+.button:hover {
+    -fx-background-color: rgba(102, 204, 0, 1); /* Green hover color with full opacity */
+    -fx-cursor: hand;
+    -fx-text-fill: rgba(0, 0, 0, 1); /* Black text on hover with full opacity */
+}
+
+/* Button Pressed State */
+.button:pressed {
+    -fx-background-color: rgba(255, 51, 51, 1); /* Red pressed color with full opacity */
+    -fx-text-fill: rgba(255, 255, 255, 1); /* White text with full opacity */
 }
