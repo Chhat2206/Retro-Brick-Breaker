@@ -71,7 +71,8 @@
 
 ### Visual Glitches
 - **Issue**: Visual glitches like afterimages for the paddle and objects stuck in the air were observed.
-  - **Solution**: Investigate and resolve the visual glitches affecting the paddle, objects, and other elements in the game.
+  - **Solution**: Multiple problems present themselves. The threads clog up the memory in this game very quickly because they are created every time a level is created and an object is initialized. 
+  - Large image files seems to have a hard time rendering in the game. Clear up the memory and lower the image quality.
 
 
 ## Credits
@@ -96,6 +97,7 @@
 - [backgroundMusicSoftPiano](https://pixabay.com/sound-effects/soft-piano-100-bpm-121529/)
 - [backgroundMusicNCS](http://ncs.lnk.to/karmaAT/youtube)
 - [backgroundMusicSoftPiano](https://pixabay.com/sound-effects/8bit-music-for-game-68698/)
+- [backgroundMusicCosmic](https://pixabay.com/sound-effects/spaceship-ambience-with-effects-21420/)
 
 #### Menus
 - [menuOpen](https://pixabay.com/sound-effects/game-start-6104/)

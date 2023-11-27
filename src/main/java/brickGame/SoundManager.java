@@ -13,22 +13,28 @@ public class SoundManager {
     private static final List<String> musicFiles = new ArrayList<>();
 
     static {
-        // Initialize the list with music files
         Collections.addAll(musicFiles,
                 "src/main/resources/Sound Effects/Background Music/backgroundMusic8Bit.mp3",
                 "src/main/resources/Sound Effects/Background Music/backgroundMusicNCS.mp3",
-                "src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3");
+                "src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3",
+                "src/main/resources/Sound Effects/Background Music/backgroundMusicCosmic.mp3");
     }
 
+    // Plays a random track for each new level
     public static void startRandomBackgroundMusic() {
         if (musicFiles.isEmpty()) {
             System.err.println("No music files available.");
             return;
         }
 
-        // Shuffle and select the first song
+        // Stop the current playing music, if any
+        if (backgroundMediaPlayer != null) {
+            backgroundMediaPlayer.stop();
+        }
+
+        // Shuffle and select a new song from the list
         Collections.shuffle(musicFiles);
-        String musicFilePath = musicFiles.remove(0); // Remove the played song from the list
+        String musicFilePath = musicFiles.get(0); // Get the first song in the shuffled list
         startBackgroundMusic(musicFilePath);
     }
 

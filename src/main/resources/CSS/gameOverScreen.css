@@ -1,4 +1,12 @@
 /* General Label Style */
+/* Background Image for Panes */
+.background-pane {
+    -fx-background-image: url('images/Screens/hell.png'); /* Set the background image */
+    -fx-background-size: cover; /* Scale the background image to cover the entire element */
+    -fx-background-repeat: no-repeat; /* Prevent the background image from repeating */
+    -fx-background-position: center; /* Center the background image */
+}
+
 .label {
     -fx-text-fill: rgba(232, 232, 232, 1); /* White color with full opacity */
     -fx-padding: 8px;
@@ -90,7 +98,4 @@
     -fx-effect: dropshadow(gaussian, rgba(22, 160, 133, 0.8), 15, 0.5, 0.0, 0.0);
 }
 
-/* Background Image for Panes */
-.background-pane {
-    -fx-background-image: none; /* No background image */
-}
+

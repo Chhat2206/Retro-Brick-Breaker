@@ -188,7 +188,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             }
 
             //11
-            if (level == 2) {
+            if (level == 11) {
                 YouWinScreen.display(this, primaryStage);
                 return;
             }
