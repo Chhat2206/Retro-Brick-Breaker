@@ -1,5 +1,7 @@
 package brickGame;
 
+import javafx.scene.paint.Color;
+
 import java.util.Random;
 
 public class GameBoardManager {
@@ -51,12 +53,25 @@ public class GameBoardManager {
     }
 
     private void createLevel1Layout() {
-        // Simple row of blocks
-        for (int i = 0; i < 5; i++) {
-            int blockType = determineBlockType(random.nextInt(100));
-            mainInstance.blocks.add(new Block(0, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+        // Create a space ship to take you on your journey
+        int[][] spaceShip = {
+                {0, 0, 1, 1, 1, 1, 1, 0, 0},
+                {0, 1, 0, 0, 0, 0, 0, 1, 0},
+                {1, 0, 0, 1, 0, 1, 0, 0, 1},
+                {1, 0, 0, 1, 0, 1, 0, 0, 1},
+                {1, 0, 1, 1, 1, 1, 1, 0, 1}
+        };
+
+        for (int j = 0; j < 5; j++) {
+            for (int i = 0; i < 9; i++) {
+                if (spaceShip[j][i] == 1) {
+                    int blockType = determineBlockType(random.nextInt(100));
+                    mainInstance.blocks.add(new Block(i, j, mainInstance.colors[j % mainInstance.colors.length], blockType));
+                }
+            }
         }
     }
+
 
     private void createLevel2Layout() {
         // X shape
@@ -72,14 +87,16 @@ public class GameBoardManager {
 
 
     private void createLevel3Layout() {
-    // Pyramid Shape
-        for (int j = 0; j < 12; j++) {
-        for (int i = Math.max(0, j - 7); i < Math.min(5, 12 - j); i++) {
-            int blockType = determineBlockType(random.nextInt(100));
-            mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+        // Random Dots
+        for (int j = 0; j < 13; j++) {
+            for (int i = 0; i < 5; i++) {
+                if (random.nextBoolean() && random.nextBoolean()) { // Double randomness for sparser dots
+                    int blockType = determineBlockType(random.nextInt(100));
+                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                }
+            }
         }
     }
-}
 
     private void createLevel4Layout() {
         // Checkerboard pattern
@@ -94,13 +111,10 @@ public class GameBoardManager {
     }
 
     private void createLevel5Layout() {
-        // Circle shape
-        int centerX = 2;
-        int centerY = 6; // Adjusted for 12 vertical blocks
-        int radius = 3; // Adjusted radius
-        for (int j = 0; j < 12; j++) {
+        // Vertical Lines
+        for (int j = 0; j < 13; j++) {
             for (int i = 0; i < 5; i++) {
-                if (Math.pow(i - centerX, 2) + Math.pow(j - centerY, 2) <= Math.pow(radius, 2)) {
+                if (i % 2 == 0) { // Every alternate column
                     int blockType = determineBlockType(random.nextInt(100));
                     mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
                 }
@@ -109,10 +123,10 @@ public class GameBoardManager {
     }
 
     private void createLevel6Layout() {
-        // Alternative Columns
+        // Horizontal Zigzag
         for (int j = 0; j < 13; j++) {
             for (int i = 0; i < 5; i++) {
-                if (j % 2 == 0) {
+                if ((j / 2 + i) % 2 == 0) {
                     int blockType = determineBlockType(random.nextInt(100));
                     mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
                 }
@@ -121,10 +135,10 @@ public class GameBoardManager {
     }
 
     private void createLevel7Layout() {
-        // Vertical Stripes
+        // Verticle Zip Zag
         for (int j = 0; j < 13; j++) {
             for (int i = 0; i < 5; i++) {
-                if (j % 2 == 0) {
+                if ((i / 2 + j) % 2 == 0) {
                     int blockType = determineBlockType(random.nextInt(100));
                     mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
                 }
@@ -133,32 +147,13 @@ public class GameBoardManager {
     }
 
     private void createLevel8Layout() {
-        // Spiral Pattern - LOL DID NOT WORK
-        int minRow = 0, maxRow = 12, minCol = 0, maxCol = 4;
-        while (minRow < maxRow && minCol < maxCol) {
-            for (int i = minCol; i < maxCol; i++) {
-                int blockType = determineBlockType(random.nextInt(100));
-                mainInstance.blocks.add(new Block(minRow, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
-            }
-            minRow++;
-            for (int i = minRow; i < maxRow; i++) {
-                int blockType = determineBlockType(random.nextInt(100));
-                mainInstance.blocks.add(new Block(i, maxCol - 1, mainInstance.colors[(maxCol - 1) % mainInstance.colors.length], blockType));
-            }
-            maxCol--;
-            if (minRow < maxRow) {
-                for (int i = maxCol - 1; i >= minCol; i--) {
+        // Space Ship!
+        for (int j = 0; j < 13; j++) {
+            for (int i = 0; i < 5; i++) {
+                if (j % 3 == 0 || i % 2 == 0) {
                     int blockType = determineBlockType(random.nextInt(100));
-                    mainInstance.blocks.add(new Block(maxRow - 1, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
                 }
-                maxRow--;
-            }
-            if (minCol < maxCol) {
-                for (int i = maxRow - 1; i >= minRow; i--) {
-                    int blockType = determineBlockType(random.nextInt(100));
-                    mainInstance.blocks.add(new Block(i, minCol, mainInstance.colors[minCol % mainInstance.colors.length], blockType));
-                }
-                minCol++;
             }
         }
     }
@@ -176,22 +171,23 @@ public class GameBoardManager {
     }
 
     private void createLevel10Layout() {
-        // Diamond Shape
-        int midRow = 6;
-        int midColumn = 2;
-        for (int j = 0; j < 13; j++) {
-            for (int i = 0; i < 5; i++) {
-                if (Math.abs(j - midRow) + Math.abs(i - midColumn) <= midColumn) {
-                    int blockType = determineBlockType(random.nextInt(100));
-                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
-                }
-            }
-        }
+//        // Diamond Shape
+//        int midRow = 6;
+//        int midColumn = 2;
+//        for (int j = 0; j < 13; j++) {
+//            for (int i = 0; i < 5; i++) {
+//                if (Math.abs(j - midRow) + Math.abs(i - midColumn) <= midColumn) {
+//                    int blockType = determineBlockType(random.nextInt(100));
+//                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+//                }
+//            }
+//        }
+//    }
+        int row = 6;
+        int column = 2;
+        int blockType = determineBlockType(random.nextInt(100));
+        mainInstance.blocks.add(new Block(row, column, mainInstance.colors[column % mainInstance.colors.length], blockType));
     }
-
-
-
-
 
 
     private void createDefaultLayout() { // Worst case if program fails. Best case, it will never be utilized.

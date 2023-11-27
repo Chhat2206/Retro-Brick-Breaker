@@ -76,46 +76,30 @@
 
 
 ## Credits
-
-
-### Sound Effects
-
 ### Images
-#### Background Images
-- [backgroundImage-4](https://wallpapercave.com/wp/wp1933991.jpg)
-- [backgroundImage-5](https://wallpapercave.com/wp/wp7495828.jpg)
-- [backgroundImage-6](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpaperaccess.com%2Ffull%2F1249933.jpg&f=1&nofb=1&ipt=e2886b5a3ba670dac4164b8be29b02d4fc81650ca6bd4137412dbe209bfa5679&ipo=images)
-- [backgroundImage-7](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpaperaccess.com%2Ffull%2F1439591.jpg&f=1&nofb=1&ipt=1acbca1f4ba13fdefc9b62e9297e2a5ffd8ac63ca81308b7fc0f0c339e735c34&ipo=images)
-- [backgroundImage-8](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpaperaccess.com%2Ffull%2F1485290.jpg&f=1&nofb=1&ipt=f56910d13f6ae0a854e07282d049446d5b4408a69cdfbffb32e1b0affcb631bd&ipo=images)
-- [backgroundImage-9](https://get.pxhere.com/photo/landscape-tree-water-nature-grass-outdoor-horizon-cloud-plant-sky-field-night-meadow-prairie-countryside-sunlight-lake-atmosphere-land-pond-environment-evening-reflection-crop-scenic-color-peaceful-natural-scenery-calm-serene-blue-rest-colorful-agriculture-moon-season-plain-relaxation-single-stars-nightsky-grassland-lone-beauty-inspiration-amazing-beautiful-scene-natur-reflex-exciting-breathtaking-incredible-grass-family-atmosphere-of-earth-computer-wallpaper-883277.jpg)
-
 #### General Assets
-- [Paddle & General Block Design](https://kenney.nl/assets/shape-characters)
+- [Paddle Design](https://kenney.nl/assets/shape-characters)
 
 ### Sound Effects
 #### Background Music
 - [backgroundMusicSoftPiano](https://pixabay.com/sound-effects/soft-piano-100-bpm-121529/)
-- [backgroundMusicNCS](http://ncs.lnk.to/karmaAT/youtube)
 - [backgroundMusicSoftPiano](https://pixabay.com/sound-effects/8bit-music-for-game-68698/)
 - [backgroundMusicCosmic](https://pixabay.com/sound-effects/spaceship-ambience-with-effects-21420/)
 
 #### Menus
-- [menuOpen](https://pixabay.com/sound-effects/game-start-6104/)
+- [mainMenuOpen](https://pixabay.com/sound-effects/game-start-6104/)
+- [pauseMenuOpen](https://pixabay.com/sound-effects/interface-soft-click-131438/)
 
 #### General Sounds
 - [collectPowerup](https://pixabay.com/sound-effects/coin-collect-retro-8-bit-sound-effect-145251/)
 - [buttonClickSound](https://pixabay.com/sound-effects/click-button-app-147358/)
 - [changeBackgroundMusic](https://pixabay.com/sound-effects/tape-cassette-insert-172758/)
 - [muteSoundPauseMenu](https://pixabay.com/sound-effects/click-21156/)
-- [levelUp](https://pixabay.com/sound-effects/game-bonus-144751/)
-- [gameOver](https://pixabay.com/sound-effects/videogame-death-sound-43894/)
+- [levelUp](https://pixabay.com/sound-effects/woosh-low-long01-98755/)
+- [gameOver](https://pixabay.com/sound-effects/power-down-7103/)
 - [winSound](https://pixabay.com/sound-effects/winsquare-6993/)
 - [goldBallPowerUp](https://pixabay.com/sound-effects/collect-5930/)
-- [collectBonus](https://pixabay.com/sound-effects/collectcoin-6075/)
+- [collectBonus](https://pixabay.com/sound-effects/blaster-2-81267/)
 - [ballHitFloor](https://pixabay.com/sound-effects/jazz-bass-open-e-39297/)
 - [paddleBounce](https://pixabay.com/sound-effects/stop-13692/)
-
-???
-- [interface-124464](https://pixabay.com/sound-effects/interface-124464/)
-- [interface-soft-click-131438](https://pixabay.com/sound-effects/interface-soft-click-131438/)
 - [buttonClickSound](https://pixabay.com/sound-effects/click-for-game-menu-131903/)

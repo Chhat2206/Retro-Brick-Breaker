@@ -1,101 +1,49 @@
-/* General Label Style */
-/* Background Image for Panes */
-.background-pane {
-    -fx-background-image: url('images/Screens/hell.png'); /* Set the background image */
-    -fx-background-size: cover; /* Scale the background image to cover the entire element */
-    -fx-background-repeat: no-repeat; /* Prevent the background image from repeating */
-    -fx-background-position: center; /* Center the background image */
+/* Game Over Screen */
+.game-over-layout {
+    -fx-background-color: rgba(0, 0, 0, 0.7); /* Darker background with some transparency */
+    -fx-border-color: linear-gradient(to right, rgb(234, 175, 200), rgb(101, 78, 163)); /* Gradient border with full opacity */
+    -fx-border-width: 4; /* Adjusted border width */
+    -fx-background-radius: 9; /* Adjusted radius */
+    -fx-border-radius: 7; /* Adjusted radius */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.7), 9, 0, 4, 4); /* Subtle drop shadow */
 }
 
-.label {
-    -fx-text-fill: rgba(232, 232, 232, 1); /* White color with full opacity */
-    -fx-padding: 8px;
-    -fx-font-family: "Verdana"; /* Changed font family */
-    -fx-font-size: 15px; /* Slightly smaller font size */
+/* Labels in VBox */
+.game-over-layout .label {
+    -fx-text-fill: rgba(255, 255, 255, 1); /* White text with full opacity */
+    -fx-font-size: 24px; /* Larger font size for emphasis */
+    -fx-font-weight: bold; /* Bold text for impact */
+}
+
+/* Title Style */
+.game-over-layout .title {
+    -fx-font-size: 36px; /* Larger title font size */
+    -fx-text-fill: rgba(255, 255, 255, 1); /* White text with full opacity */
+    -fx-font-weight: bold;
+    -fx-padding: 20px;
+    -fx-alignment: center;
 }
 
 /* Refined Button with Gradient Effect */
-.refined-button-effect {
-    -fx-background-color: linear-gradient(to bottom, rgba(0, 102, 204, 1), rgba(0, 51, 102, 1)); /* Blue gradient with full opacity */
+.game-over-layout .refined-button-effect {
+    -fx-background-color: linear-gradient(to bottom, #ff6b6b, #f45c5c); /* Playful red gradient */
     -fx-background-radius: 8; /* Smaller radius */
-    -fx-padding: 10px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 8, 0, 0, 4); /* Less intense drop shadow */
-}
-
-/* Container for Labels */
-.label-container {
-    -fx-padding: 5px;
-    -fx-border-color: rgba(51, 51, 51, 1); /* Dark grey border with full opacity */
-    -fx-border-width: 2px; /* Thinner border */
-    -fx-background-color: rgba(204, 0, 102, 0.5); /* Pinkish background color with 50% transparency */
-}
-
-/* General Button Style */
-.button {
-    -fx-background-color: rgba(35, 137, 238, 0.8); /* Orange color with full opacity */
-    -fx-text-fill: rgba(0, 0, 0, 1); /* Black text for contrast with full opacity */
-    -fx-font-family: 'Tahoma', sans-serif; /* Different font family */
-    -fx-font-size: 13px; /* Slightly smaller font size */
-    -fx-padding: 8px 18px; /* Adjusted padding */
-    -fx-border-radius: 15px; /* Less rounded corners */
-    -fx-background-radius: 15px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 2, 0, 0, 1); /* Adjusted drop shadow */
+    -fx-padding: 8px 16px; /* Smaller padding for a smaller button */
+    -fx-font-size: 14px; /* Smaller font size for the button text */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0, 0, 2); /* Slightly more intense drop shadow */
 }
 
 /* Button Hover Effect */
-.button:hover {
-    -fx-background-color: rgba(20, 81, 140, 0.8); /* Purple hover color with full opacity */
+.game-over-layout .refined-button-effect:hover {
+    -fx-background-color: linear-gradient(to bottom, #ff4f4f, #e53f3f); /* Brighter red gradient on hover */
     -fx-cursor: hand;
     -fx-text-fill: rgba(255, 255, 255, 1); /* White text on hover with full opacity */
 }
 
 /* Button Pressed State */
-.button:pressed {
-    -fx-background-color: rgba(205, 92, 92, 1); /* Different pressed color with full opacity */
+.game-over-layout .refined-button-effect:pressed {
+    -fx-background-color: linear-gradient(to bottom, #ff9c9c, #d63030); /* Reddish pressed gradient */
     -fx-text-fill: rgba(255, 255, 255, 1); /* White text with full opacity */
-}
-
-/* Game Over Screen */
-.game-over-layout {
-    -fx-background-color: rgba(0, 0, 0, 0.5); /* 50% transparency background color */
-    -fx-border-color: linear-gradient(to right, rgb(234, 175, 200), rgb(101, 78, 163)); /* Orange to red gradient with full opacity */
-    -fx-border-width: 4; /* Adjusted border width */
-    -fx-background-radius: 9; /* Adjusted radius */
-    -fx-border-radius: 7; /* Adjusted radius */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.7), 9, 0, 4, 4); /* Different shadow parameters */
-}
-
-/* Root Container Style */
-.root {
-    -fx-background-color: rgba(52, 73, 94, 0.5); /* 50% transparency background color */
-    -fx-font-family: 'Courier New', monospace; /* Monospace font */
-    -fx-padding: 20px;
-}
-
-/* VBox Layout Style */
-.vbox {
-    -fx-spacing: 15px;
-    -fx-alignment: center;
-}
-
-/* Labels in VBox */
-.vbox .label {
-    -fx-text-fill: rgba(169, 169, 169, 1); /* Dark gray with full opacity */
-    -fx-font-size: 17px; /* Slightly decreased font size */
-}
-
-/* Title Style */
-.title {
-    -fx-font-size: 22px; /* Smaller font size */
-    -fx-text-fill: rgba(245, 245, 245, 1); /* Off-white color with full opacity */
-    -fx-font-weight: bold;
-    -fx-padding: 10px;
-    -fx-alignment: center;
-}
-
-/* Button Hover Effect in VBox */
-.vbox .button:hover {
-    -fx-effect: dropshadow(gaussian, rgba(22, 160, 133, 0.8), 15, 0.5, 0.0, 0.0);
 }
 
 

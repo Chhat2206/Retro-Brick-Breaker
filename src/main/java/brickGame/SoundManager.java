@@ -14,13 +14,10 @@ public class SoundManager {
 
     static {
         Collections.addAll(musicFiles,
-                "src/main/resources/Sound Effects/Background Music/backgroundMusic8Bit.mp3",
-                "src/main/resources/Sound Effects/Background Music/backgroundMusicNCS.mp3",
-                "src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3",
-                "src/main/resources/Sound Effects/Background Music/backgroundMusicCosmic.mp3");
+                "src/main/resources/Sound Effects/Background Music/backgroundMusicCosmic.mp3",
+                "src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3");
     }
 
-    // Plays a random track for each new level
     public static void startRandomBackgroundMusic() {
         if (musicFiles.isEmpty()) {
             System.err.println("No music files available.");
@@ -42,7 +39,6 @@ public class SoundManager {
         try {
             Media sound = new Media(new File(soundFile).toURI().toString());
             MediaPlayer mediaPlayer = new MediaPlayer(sound);
-            mediaPlayer.setVolume(1);
             mediaPlayer.play();
         } catch (Exception e) {
             System.err.println("Error playing sound: " + e.getMessage());
@@ -74,7 +70,9 @@ public class SoundManager {
         setVolume(0.6);
     }
     public static void goldBallPowerUp() {
-        playSound("src/main/resources/Sound Effects/goldBallPowerUp.mp3");}
+        playSound("src/main/resources/Sound Effects/goldBallPowerUp.mp3");
+        setVolume(0.6);
+    }
     public static void muteSoundPauseMenu() {
         playSound("src/main/resources/Sound Effects/muteSoundPauseMenu.mp3");
     }
@@ -84,7 +82,7 @@ public class SoundManager {
     }
     public static void collectBonus() {
         playSound("src/main/resources/Sound Effects/collectBonus.mp3");
-        setVolume(1);
+        setVolume(0.2);
     }
 
     public static void soundMenu() {

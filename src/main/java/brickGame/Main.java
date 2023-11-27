@@ -32,7 +32,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private static final int SCENE_HEIGHT = 700;
 
     // Game State Variables
-    protected int level = 0;
+    protected int level = 9;
     protected int score = 0;
     private int heart = 1;
     private int destroyedBlockCount = 0;
@@ -264,7 +264,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private void initializeBall() {
         ballPosX = SCENE_WIDTH / 2.0;
-        ballPosY = SCENE_HEIGHT / 2.0;
+        ballPosY = SCENE_HEIGHT * 0.7 ;
         ball = new Circle();
         ball.setRadius(ballRadius);
         ball.setFill(new ImagePattern(new Image("/images/ball.png")));
@@ -825,6 +825,5 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public void onTime(long time) {
         this.time = time;
     }
-
 
 }
