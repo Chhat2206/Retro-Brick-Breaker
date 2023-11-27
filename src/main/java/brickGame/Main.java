@@ -4,12 +4,9 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -28,23 +25,23 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     // Constants
     private static final int LEFT  = 1;
     private static final int RIGHT = 2;
-    private static final int PADDLE_WIDTH = 90;
-    private static final int PADDLE_HEIGHT = 10;
-    private static final int BALL_RADIUS = 10;
+    private static int paddleWidth = 90;
+    private static final int PADDLE_HEIGHT = 14;
+    private static final int ballRadius = 10;
     private static final int SCENE_WIDTH = 500;
     private static final int SCENE_HEIGHT = 700;
 
     // Game State Variables
     protected int level = 0;
-    private int score = 0;
-    private int heart = 3;
+    protected int score = 0;
+    private int heart = 1;
     private int destroyedBlockCount = 0;
 
     // Paddle Variables
     private static final int PADDLE_SPEED = 3;
-    private double paddleMoveX = 0.0;
-    private double paddleMoveY = 640.0f;
-    private final int halfPaddleWidth = PADDLE_WIDTH / 2;
+    private double paddleMoveX = 250.0;
+    private double paddleMoveY = 680.0f;
+    private final int halfPaddleWidth = paddleWidth / 2;
     private double centerBreakX;
     private boolean leftKeyPressed = false;
     private boolean rightKeyPressed = false;
@@ -63,10 +60,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     // UI Components
     Pane root;
-    private Label scoreLabel;
-    private Label heartLabel;
-    private Button load;
-    private Button newGame;
     protected Stage primaryStage;
 
     // Game Engine, GameBoardManager and Media
@@ -84,6 +77,20 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private boolean collideToLeftBlock = false;
     private boolean collideToTopBlock = false;
     private double ballVelocityX = 1.000;
+    double ballVelocityY = 1.000;
+    private static final double MAX_VELOCITY_X = 3.0; // Maximum horizontal velocity of the ball
+    private static final double MAX_VELOCITY = 4.0;   // Maximum overall velocity of the ball
+    private static final double SPIN_EFFECT = 0.5;    // Effect of spin on ball's trajectory
+
+    // RandomBlock Temporary Variables
+    long paddleWidthChangeTime;
+    boolean paddleWidthChanged;
+    long ballSizeChangeTime;
+    boolean ballSizeChanged;
+    int originalPaddleWidth;
+    int originalBALL_RADIUS;
+    long paddleWidthChangeDuration = 0;
+    long ballSizeChangeDuration = 0;
 
     // Game Objects
     private Rectangle rect;
@@ -92,8 +99,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     protected final Color[] colors = new Color[]{
             Color.MAGENTA, Color.RED, Color.GOLD, Color.CORAL,
             Color.AQUA, Color.VIOLET, Color.GREENYELLOW,
-            Color.ORANGE, Color.PINK, Color.SLATEGREY,
-            Color.YELLOW, Color.TOMATO, Color.TAN,
+            Color.ORANGE, Color.PINK,
+            Color.TOMATO,
     };
 
     // File Paths for Saving and Loading
@@ -109,48 +116,38 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         return engine;
     }
 
+    private UIManager uiManager;
+
     @Override
     public void start(Stage primaryStage) {
         MainMenu mainMenu = new MainMenu(primaryStage, this);
         mainMenu.display();
     }
 
-    public void newGame(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-
-        // Increment level and show messages if appropriate
-        if (!loadFromSave) {
-            level++;
-            if (level > 1) {
-                new Score().showMessage("Level Up :)", this);
-            }
-            if (level == 10) {
-                new Score().showWin(this);
-                return;
-            }
-        }
-
-        // Initialize ball and paddle
+    private void initializeGameObjects() {
         initializeBall();
         createPaddle();
+    }
 
-        // Set up the game board
+    private void setUpGameBoard() {
         if (!loadFromSave) {
             GameBoardManager gameBoardManager = new GameBoardManager(this);
             gameBoardManager.setupGameBoard();
         }
         primaryStage.setResizable(false);
+    }
 
-        // Create and set up UI components
+    private void createUIComponents() {
         root = new Pane();
-        scoreLabel = new Label("Score: " + score);
-        Label levelLabel = new Label("Level: " + level);
-        levelLabel.setTranslateY(20);
-        makeHeartScore();
-        makeBackgroundImage();
-        root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel);
+        this.uiManager = new UIManager(root);
+        String backgroundImagePath = "/images/Background Images/backgroundImage-" + level + ".png";
+        // Restart game has issues when utilizing this code, fix in the future
+        this.uiManager.makeBackgroundImage(backgroundImagePath);
+        this.uiManager.makeHeartScore(heart, score, level);
+        root.getChildren().addAll(rect, ball);
+    }
 
-        // Set up the blocks
+    private void setUpBlocks() {
         if (!loadFromSave) {
             for (Block block : blocks) {
                 Platform.runLater(() -> {
@@ -160,23 +157,49 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 });
             }
         }
+    }
 
-        // Set up the scene
+    private void setUpScene() {
         Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
         scene.setOnKeyPressed(this);
         scene.setOnKeyReleased(this);
         scene.getStylesheets().add("/css/main.css");
+        scene.getStylesheets().add("/css/score.css");
         primaryStage.setTitle("The Incredible Block Breaker Game");
         primaryStage.getIcons().add(new Image("/images/favicon.png"));
-        SoundManager.startBackgroundMusic("src/main/resources/Sound Effects/Background Music/backgroundMusic8Bit.mp3");
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
 
-        // Start the game engine
+    private void startGameEngine() {
         engine = new GameEngine();
         engine.setOnAction(this);
         engine.setFps(120);
         engine.start();
+    }
+
+    public void newGame(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+
+        if (!loadFromSave) {
+            level++;
+            if (level > 1) {
+                new Score().showMessage("Level Up :)", this);
+            }
+
+            //11
+            if (level == 11) {
+                YouWinScreen.display(this, primaryStage);
+                return;
+            }
+        }
+
+        initializeGameObjects();
+        setUpGameBoard();
+        createUIComponents();
+        setUpBlocks();
+        setUpScene();
+        startGameEngine();
     }
 
     @Override
@@ -227,7 +250,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                     this.stop();
                     return;
                 }
-                if (paddleMoveX <= 0 && direction == LEFT || paddleMoveX >= (SCENE_WIDTH - PADDLE_WIDTH) && direction == RIGHT) {
+                if (paddleMoveX <= 0 && direction == LEFT || paddleMoveX >= (SCENE_WIDTH - paddleWidth) && direction == RIGHT) {
                     return;
                 }
                 paddleMoveX += (direction == RIGHT ? PADDLE_SPEED : -PADDLE_SPEED);
@@ -243,14 +266,14 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         ballPosX = SCENE_WIDTH / 2.0;
         ballPosY = SCENE_HEIGHT / 2.0;
         ball = new Circle();
-        ball.setRadius(BALL_RADIUS);
+        ball.setRadius(ballRadius);
         ball.setFill(new ImagePattern(new Image("/images/ball.png")));
 
     }
 
     private void createPaddle() {
         rect = new Rectangle();
-        rect.setWidth(PADDLE_WIDTH);
+        rect.setWidth(paddleWidth);
         rect.setHeight(PADDLE_HEIGHT);
         rect.setX(paddleMoveX);
         rect.setY(paddleMoveY);
@@ -271,23 +294,29 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private void setPhysicsToBall() {
         updateBallPosition();
         checkCollisionWithWalls();
-        checkCollisionWithPaddle();
+
+        if (checkContinuousCollisionWithPaddle()) {
+            handlePaddleCollision(); // Fixes paddle randomly bugging out
+        } else {
+            checkCollisionWithPaddle(); // Fallback to original collision check
+        }
+
         checkCollisionWithBlocks();
         handleBallDirection();
     }
 
     private void checkCollisionWithWalls() {
-        if (ballPosY <= BALL_RADIUS || ballPosY + BALL_RADIUS >= SCENE_HEIGHT) {
+        if (ballPosY <= ballRadius || ballPosY + ballRadius >= SCENE_HEIGHT) {
             handleWallCollision();
         }
 
-        if (ballPosX + BALL_RADIUS >= SCENE_WIDTH || ballPosX - BALL_RADIUS <= 0) {
+        if (ballPosX + ballRadius >= SCENE_WIDTH || ballPosX - ballRadius <= 0) {
             handleSideWallCollision();
         }
     }
 
     private void handleWallCollision() {
-        if (ballPosY <= BALL_RADIUS) {
+        if (ballPosY <= ballRadius) {
             bounceOffTopWall();
         } else {
             bounceOffBottomWall();
@@ -301,28 +330,25 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private void bounceOffBottomWall() {
+        resetCollideFlags();
         goDownBall = false;
-        SoundManager.ballHitFloor();
         if (!isGoldStatus) {
-            handleGameOver();
+            heart--;
+            SoundManager.ballHitFloor();
+            new Score().show((double) SCENE_WIDTH / 2, (double) SCENE_HEIGHT / 2, -1, this);
+
+            if (heart <= 0) {
+                new Score().showGameOver(this);
+                engine.stop();
+            }
         }
     }
 
-    private void handleGameOver() {
-        // Game over logic
-        heart--;
-        new Score().show((double) SCENE_WIDTH / 2, (double) SCENE_HEIGHT / 2, -1, this);
-
-        if (heart == 0) {
-            new Score().showGameOver(this);
-            engine.stop();
-        }
-    }
 
     private void handleSideWallCollision() {
         SoundManager.paddleBounceSound();
         resetCollideFlags();
-        if (ballPosX + BALL_RADIUS >= SCENE_WIDTH) {
+        if (ballPosX + ballRadius >= SCENE_WIDTH) {
             collideToRightWall = true;
         } else {
             collideToLeftWall = true;
@@ -330,16 +356,27 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private void checkCollisionWithPaddle() {
-        // Collision logic with paddle
-        if (ballPosY >= paddleMoveY - BALL_RADIUS &&
-                ballPosX >= paddleMoveX && ballPosX <= paddleMoveX + PADDLE_WIDTH) {
+        if (ballPosY + ballRadius >= paddleMoveY &&
+                ballPosX + ballRadius >= paddleMoveX &&
+                ballPosX - ballRadius <= paddleMoveX + paddleWidth) {
             handlePaddleCollision();
-
         }
     }
 
+    private boolean checkContinuousCollisionWithPaddle() {
+        double nextX = ballPosX + (goRightBall ? ballVelocityX : -ballVelocityX);
+        double nextY = ballPosY + (goDownBall ? ballVelocityY : -ballVelocityY);
+
+        // Check for collision in the path between current position and next position, to fix the bug where it phases through the paddle
+        if (nextY + ballRadius >= paddleMoveY && nextY - ballRadius <= paddleMoveY + PADDLE_HEIGHT) {
+            if (nextX + ballRadius >= paddleMoveX && nextX - ballRadius <= paddleMoveX + paddleWidth) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void handlePaddleCollision() {
-        // Handle collision with paddle
         resetCollideFlags();
         calculateBallVelocity();
         goDownBall = false;
@@ -348,20 +385,16 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private void calculateBallVelocity() {
-        // Logic to calculate ball velocity
-        double relation = (ballPosX - centerBreakX) / ((double) PADDLE_WIDTH / 2);
-        if (Math.abs(relation) <= 0.3) {
-            //vX = 0;
-            ballVelocityX = Math.abs(relation);
-        } else if (Math.abs(relation) > 0.3 && Math.abs(relation) <= 0.7) {
-            ballVelocityX = (Math.abs(relation) * 1.5) + (level / 3.500);
-            //System.out.println("vX " + vX);
-        } else {
-            ballVelocityX = (Math.abs(relation) * 2) + (level / 3.500);
-            //System.out.println("vX " + vX);
-        }
+        double relation = (ballPosX - centerBreakX) / ((double) paddleWidth / 2);
+        ballVelocityX = Math.abs(relation) * MAX_VELOCITY_X; // MAX_VELOCITY_X can be a constant defining max horizontal velocity
+        ballVelocityY = Math.sqrt(Math.pow(MAX_VELOCITY, 2) - Math.pow(ballVelocityX, 2)); // MAX_VELOCITY is the maximum speed of the ball
 
-        collideToBreakAndMoveToRight = ballPosX - centerBreakX > 0;
+        // Add spin effect based on paddle movement
+        if (leftKeyPressed) {
+            ballVelocityX -= SPIN_EFFECT; // SPIN_EFFECT is a constant defining how much spin affects the ball
+        } else if (rightKeyPressed) {
+            ballVelocityX += SPIN_EFFECT;
+        }
     }
 
     private void checkCollisionWithBlocks() {
@@ -397,7 +430,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private void updateBallPosition() {
         ballPosX += goRightBall ? ballVelocityX : -ballVelocityX;
-        double ballVelocityY = 1.000;
         ballPosY += goDownBall ? ballVelocityY : -ballVelocityY;
     }
 
@@ -573,13 +605,25 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }
     }
 
-
     @Override
     public void onUpdate() {
-        Platform.runLater(() -> {
+        resetTemporaryChanges();
+        updateUIComponents();
+        updateGameObjects();
+        handleBlockCollisions();
+        handleBonusCollection();
+    }
 
-            scoreLabel.setText("Score: " + score);
-            heartLabel.setText("Heart : " + heart);
+    private void updateUIComponents() {
+        Platform.runLater(() -> {
+            uiManager.setScore(score);
+            Label heartLabelFromUIManager = uiManager.getHeartLabel();
+            heartLabelFromUIManager.setText("Hearts: " + heart);
+        });
+    }
+
+    private void updateGameObjects() {
+        Platform.runLater(() -> {
             rect.setX(paddleMoveX);
             rect.setY(paddleMoveY);
             ball.setCenterX(ballPosX);
@@ -588,52 +632,171 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 choco.choco.setY(choco.y);
             }
         });
+    }
 
-
-        if (ballPosY >= Block.getPaddingTop() && ballPosY <= (Block.getHeight() * (level + 1)) + Block.getPaddingTop()) {
-            for (final Block block : blocks) {
-                int hitCode = block.checkHitToBlock(ballPosX, ballPosY, BALL_RADIUS);
+    private void handleBlockCollisions() {
+        for (final Block block : blocks) {
+            if (!block.isDestroyed) {
+                int hitCode = block.checkHitToBlock(ballPosX, ballPosY, ballRadius);
                 if (hitCode != Block.NO_HIT) {
-                    score += 1;
-
-                    new Score().show(block.x, block.y, 1, this);
-
-                    block.rect.setVisible(false);
-                    block.isDestroyed = true;
-                    destroyedBlockCount++;
-                    resetCollideFlags();
-
-                    if (block.type == Block.BLOCK_CHOCO) {
-                        final Bonus choco = new Bonus(block.row, block.column);
-                        choco.timeCreated = time;
-                        Platform.runLater(() -> root.getChildren().add(choco.choco));
-                        chocos.add(choco);
-                    }
-
-                    if (block.type == Block.BLOCK_STAR) {
-                        goldTime = time;
-                        ball.setFill(new ImagePattern(new Image("/images/goldBall.png")));
-                        System.out.println("gold ball");
-                        isGoldStatus = true;
-                    }
-
-                    if (block.type == Block.BLOCK_HEART) {
-                        heart++;
-                    }
-
-                    if (hitCode == Block.HIT_RIGHT) {
-                        collideToRightBlock = true;
-                    } else if (hitCode == Block.HIT_BOTTOM) {
-                        collideToBottomBlock = true;
-                    } else if (hitCode == Block.HIT_LEFT) {
-                        collideToLeftBlock = true;
-                    } else if (hitCode == Block.HIT_TOP) {
-                        collideToTopBlock = true;
-                    }
+                    handleBlockHit(block, hitCode);
+                    repositionBallAfterCollision(block, hitCode);
+                    // Break after handling one collision to prevent multiple collisions in a frame
+                    break;
                 }
             }
         }
     }
+
+    private void repositionBallAfterCollision(Block block, int hitCode) {
+        switch (hitCode) {
+            case Block.HIT_BOTTOM:
+                // Reposition ball below the block
+                ballPosY = block.y + block.getHeight() + ballRadius;
+                break;
+            case Block.HIT_TOP:
+                // Reposition ball above the block
+                ballPosY = block.y - ballRadius;
+                break;
+            case Block.HIT_LEFT:
+                // Reposition ball to the left of the block
+                ballPosX = block.x - ballRadius;
+                break;
+            case Block.HIT_RIGHT:
+                // Reposition ball to the right of the block
+                ballPosX = block.x + block.getWidth() + ballRadius;
+                break;
+        }
+    }
+
+
+    private void handleBlockHit(Block block, int hitCode) {
+        score += 1;
+        new Score().show(block.x, block.y, 1, this);
+
+        block.rect.setVisible(false);
+        block.isDestroyed = true;
+        destroyedBlockCount++;
+        resetCollideFlags();
+
+        checkBlockTypeActions(block);
+
+        switch (hitCode) {
+            case Block.HIT_RIGHT:
+                collideToRightBlock = true;
+                break;
+            case Block.HIT_BOTTOM:
+                collideToBottomBlock = true;
+                break;
+            case Block.HIT_LEFT:
+                collideToLeftBlock = true;
+                break;
+            case Block.HIT_TOP:
+                collideToTopBlock = true;
+                break;
+        }
+    }
+
+    private void checkBlockTypeActions(Block block) {
+        if (block.type == Block.BLOCK_RANDOM) {
+            handleRandomBlock(block);
+        } else if (block.type == Block.BLOCK_GOLDEN_TIME) {
+            handleGoldenTimeBlock();
+        } else if (block.type == Block.BLOCK_HEART) {
+            heart++;
+        }
+    }
+
+    private void handleRandomBlock(Block block) {
+        final Bonus choco = new Bonus(block.row, block.column);
+        choco.timeCreated = time;
+        Platform.runLater(() -> root.getChildren().add(choco.choco));
+        chocos.add(choco);
+    }
+
+    private void handleGoldenTimeBlock() {
+        goldTime = time;
+        ball.setFill(new ImagePattern(new Image("/images/goldBall.png")));
+        SoundManager.goldBallPowerUp();
+        isGoldStatus = true;
+    }
+
+
+    private void handleBonusCollection() {
+        Iterator<Bonus> iterator = chocos.iterator();
+        while (iterator.hasNext()) {
+            Bonus choco = iterator.next();
+
+            if (choco.y > SCENE_HEIGHT || choco.taken) {
+                iterator.remove();
+                continue;
+            }
+
+            if (choco.y >= paddleMoveY && choco.y <= paddleMoveY + PADDLE_HEIGHT && choco.x >= paddleMoveX && choco.x <= paddleMoveX + paddleWidth) {
+                applyBonusEffect(choco);
+                iterator.remove();
+            } else {
+                choco.y += ((time - choco.timeCreated) / 1000.000) + 1.000;
+            }
+        }
+    }
+
+    private void applyBonusEffect(Bonus choco) {
+        SoundManager.collectBonus();
+        choco.taken = true;
+        choco.choco.setVisible(false);
+
+        Random rand = new Random();
+        int effect = rand.nextInt(3); // Assuming 3 different types of bonuses
+
+        switch (effect) {
+            case 0:
+                applyPaddleSizeEffect(rand);
+                break;
+            case 1:
+                applyScoreEffect(rand);
+                break;
+            case 2:
+                applyBallSizeEffect(rand);
+                break;
+        }
+        new Score().show(choco.x, choco.y, 3, this);
+    }
+
+    private void applyPaddleSizeEffect(Random rand) {
+        originalPaddleWidth = paddleWidth;
+        // Randomly decide whether to increase or decrease the paddle width
+        boolean increaseWidth = rand.nextBoolean();
+        if (increaseWidth) {
+            paddleWidth += rand.nextInt(6) + 20; // Increase width
+        } else {
+            paddleWidth -= rand.nextInt(6) + 20; // Decrease width
+            paddleWidth = Math.max(paddleWidth, 20); // Ensure the paddle width doesn't go below a reasonable minimum
+        }
+        rect.setWidth(paddleWidth);
+        paddleWidthChangeTime = System.currentTimeMillis();
+        paddleWidthChangeDuration = (rand.nextInt(6) + 5) * 1000;
+        paddleWidthChanged = true;
+        System.out.println("Paddle width changed from " + originalPaddleWidth + " to " + paddleWidth + " for " + (paddleWidthChangeDuration / 1000) + " seconds.");
+    }
+
+
+    private void applyBallSizeEffect(Random rand) {
+        originalBALL_RADIUS = ballRadius;
+        double newBallRadius = ballRadius + rand.nextInt(11) - 5;
+        ball.setRadius(newBallRadius);
+        ballSizeChangeTime = System.currentTimeMillis();
+        ballSizeChangeDuration = (rand.nextInt(6) + 5) * 1000;
+        ballSizeChanged = true;
+        System.out.println("Ball size changed from " + originalBALL_RADIUS + " to " + newBallRadius + " for " + (ballSizeChangeDuration / 1000) + " seconds.");
+    }
+
+    private void applyScoreEffect(Random rand) {
+        int bonusPoints = rand.nextInt(6) + 3; // Random bonus points between 3 to 8
+        score += bonusPoints;
+        System.out.println("Bonus " + bonusPoints + " points!");
+    }
+
 
     @Override
     public void onPhysicsUpdate() {
@@ -643,20 +806,19 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             ball.setFill(new ImagePattern(new Image("/images/ball.png")));
             isGoldStatus = false;
         }
+    }
 
-        for (Bonus choco : chocos) {
-            if (choco.y > SCENE_HEIGHT || choco.taken) {
-                continue;
-            }
-            if (choco.y >= paddleMoveY && choco.y <= paddleMoveY + PADDLE_HEIGHT && choco.x >= paddleMoveX && choco.x <= paddleMoveX + PADDLE_WIDTH) {
-                System.out.println("You Got it and +3 score for you");
-                SoundManager.collectBonus();
-                choco.taken = true;
-                choco.choco.setVisible(false);
-                score += 3;
-                new Score().show(choco.x, choco.y, 3, this);
-            }
-            choco.y += ((time - choco.timeCreated) / 1000.000) + 1.000;
+
+    private void resetTemporaryChanges() {
+        long currentTime = System.currentTimeMillis();
+        if (paddleWidthChanged && (currentTime - paddleWidthChangeTime) >= paddleWidthChangeDuration) {
+            paddleWidth = originalPaddleWidth;
+            rect.setWidth(paddleWidth);
+            paddleWidthChanged = false;
+        }
+        if (ballSizeChanged && (currentTime - ballSizeChangeTime) >= ballSizeChangeDuration) {
+            ball.setRadius(ballRadius);
+            ballSizeChanged = false;
         }
     }
     @Override
@@ -664,22 +826,5 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         this.time = time;
     }
 
-    public void makeHeartScore() {
-        Image heartImage = new Image("/images/heart.png");
-        ImageView heartImageView = new ImageView(heartImage);
-        heartImageView.setFitHeight(20);
-        heartImageView.setFitWidth(20);
 
-        heartLabel = new Label("Heart: " + heart, heartImageView);
-        heartLabel.getStyleClass().add("heart-label-gradient");
-        heartLabel.setTranslateX(SCENE_WIDTH - 90);
-    }
-
-    public void makeBackgroundImage() {
-        Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/Background Images/backgroundImage-1.png")));
-        ImageView backgroundView = new ImageView(backgroundImage);
-        backgroundView.setFitWidth(SCENE_WIDTH);
-        backgroundView.setFitHeight(SCENE_HEIGHT);
-        root.getChildren().add(backgroundView);
-    }
 }

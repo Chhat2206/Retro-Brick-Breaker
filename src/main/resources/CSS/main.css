@@ -1,11 +1,8 @@
-.root {
-    -fx-background-color: #1d1d1d;
-}
-
 .label {
     -fx-text-fill: #FFF;
     -fx-label-padding: 8px;
-    -fx-font-size: 15px;
+    -fx-font-family: "Lucida Console";
+    -fx-font-size: 16px;
 }
 
 .refined-button-effect {
@@ -13,4 +10,11 @@
     -fx-background-radius: 10;
     -fx-padding: 10px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 5); /* Softer drop shadow */
+}
+
+.label-container {
+    -fx-padding: 5px;
+    -fx-border-color: black; /* Border color */
+    -fx-border-width: 3px; /* Border width */
+    -fx-background-color: rgba(255, 255, 255, 0.2);
 }

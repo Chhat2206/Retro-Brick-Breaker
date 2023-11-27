@@ -5,6 +5,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -25,7 +26,6 @@ public class PauseMenu {
 
         initializePauseStage();
         configurePauseLayout();
-
         addButtonsToLayout(main, engine);
 
         Scene scene = new Scene(pauseLayout, 200, 400);
@@ -142,7 +142,6 @@ public class PauseMenu {
     }
 
     protected static void fadeInMenu() {
-        System.out.println("In fadeInMenu");
         FadeTransition fadeIn = new FadeTransition(Duration.millis(500), pauseLayout);
         fadeIn.setFromValue(0.3);
         fadeIn.setToValue(1);
@@ -158,7 +157,6 @@ public class PauseMenu {
     }
 
     protected static void soundMenuOpen() {
-        System.out.println("In soundMenuOpen");
         FadeTransition fadeOut = new FadeTransition(Duration.millis(500), pauseLayout);
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0.3); // Fade to a lower opacity instead of completely invisible

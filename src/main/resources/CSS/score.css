@@ -1,0 +1,25 @@
+/* styles.css */
+
+.score-label {
+    -fx-font-size: 20px;
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+    -fx-font-weight: bold;
+}
+
+.message-label {
+    -fx-font-size: 24px;
+    -fx-text-fill: rgba(0, 0, 255, 0.8);
+    -fx-font-weight: bold;
+}
+
+.game-over-label {
+    -fx-font-size: 36px;
+    -fx-text-fill: rgba(255, 0, 0, 0.8);
+    -fx-font-weight: bold;
+}
+
+.win-label {
+    -fx-font-size: 36px;
+    -fx-text-fill: rgba(0, 128, 0, 0.8);
+    -fx-font-weight: bold;
+}

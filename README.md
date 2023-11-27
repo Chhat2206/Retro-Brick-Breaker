@@ -11,8 +11,7 @@
 - List any features that have been implemented but are not working correctly. Explain the issues you encountered, and if possible, the steps you took to address them.
 
 ## Features Not Implemented:
-- Identify any features that you were unable to implement and provide a clear explanation for why they were left out.
-a pause button. it was implemented but i wanted to remove mouse cursor to make the game run smoother
+- 
 
 
 ## New Java Classes:
@@ -22,70 +21,101 @@ a pause button. it was implemented but i wanted to remove mouse cursor to make t
 - List the Java classes you modified from the provided code base. Describe the changes you made and explain why these modifications were necessary.
 
 ## Unexpected Problems:
-- Collision Detection is completely messed up in this game. We have currently fixed half the problem:
+### Collision Detection
+- **Issue**: Collision detection is problematic.
+  - **Solution**: Partially resolved by incorporating the ball radius into the 'checkHitToBlock' function, allowing blocks to detect and disappear upon collision with the ball.
 
-Adding the ball radius to the 'checkHitToBlock' function allows every block to detect and disappear when the ball collides with the block.
+### Pause Menu Addition
+- **Issue**: Adding a pause menu led to access modifier changes and problems with automatic closing when loading the game.
+  - **Solution**: Changed access modifiers from private to protected for access in the same package. Menu should automatically close when loading the game.
 
-- Added pause menu
+### Loading Game Issues
+- **Issue**: Loading the game caused various issues like block changes, increased ball velocity, and level progression problems. Reopening the game after minimizing the pause menu displayed only the pause menu.
+  - **Solution**: Investigate and fix the issues related to loading game and pause menu behavior.
 
-Main menu implementation required passing the main and engine functions. Access Modifier must be changed from private to protected to give access in the same package.
-When loading game, menu should be automatically closed. 
+### Button Commands Loop
+- **Issue**: Running commands on buttons sometimes triggered a feedback loop with repeated 'esc' key actions. Moving code from the main menu to functions caused cascading issues.
+  - **Solution**: Analyze and address the feedback loop issue and refactor code to prevent cascading problems.
 
-- Loading game changed blocks, speeds up ball velocity & does not progress level 
-When i minimize my pause menu and open the game back up, it only shows the pause menu and not the entire game
+### Window Size Limitation
+- **Issue**: Attempting to limit the window size caused problems with the pause menu and sound effects.
+  - **Solution**: Investigate the issue with window size limitation and resolve the problems with the pause menu and sound effects.
 
-When running any commands to my buttons, they sometimes will fall into a feedback loop of esc working, then pressing esc again quickly closes it, then repeats over and over
-when taking anything out of the main menu into functions, it creates a massive butterfly effect throughout the code
-trying to limit window size broke the pause menu
-sometimes sounds would not work
+### Persistent Pause Menu
+- **Issue**: The pause menu remained in place when the game screen was moved.
+  - **Solution**: Resolved by adjusting the position of the pause menu based on the game screen's position.
 
-- pause menu would remain in place when game screen was moved. fixed with the below code
-private static void positionPauseMenuOverGame(Stage primaryStage) {
-  pauseStage.setX(primaryStage.getX() + primaryStage.getWidth() / 3.3 - pauseLayout.getPrefWidth() / 2);
-  pauseStage.setY(primaryStage.getY() + primaryStage.getHeight() / 6 - pauseLayout.getPrefHeight() / 2);
-  }
+### Game Engine After Life
+- **Issue**: The game engine ran after every life, causing problems with the pause menu.
+  - **Solution**: Investigate and fix the issue related to the game engine running after a life is lost, potentially due to concurrent access to an array.
 
-- Game engine runs after every life for no reason. This makes it so the pause menu is completely broken when the user loses a heart. 
-- two threads accessing array at the same time so it gives a concurrent error, that is what breaks the game after lvl 1
+### Block Collision
+- **Issue**: Block collision was completely broken and required a rewrite of the handleBlockCollisions function.
+  - **Solution**: Analyze the block collision issue and rewrite the function to ensure proper collision handling.
 
-- Falling objects gain extra physics (bounce upwards) when engine is stopped
-- Fading out didn't work when we called it in the beginning the setaction in the end of sound menu so I just set everything under the close menu. There are many small changes and fixes like this but they weren't all documented
+### Score Freeze
+- **Issue**: The score sometimes froze in place, and falling objects gained unexpected physics.
+  - **Solution**: Investigate and resolve the issues related to score freezing and unexpected physics in falling objects.
+
+### Ball Disappearance
+- **Issue**: The ball occasionally disappeared during gameplay.
+  - **Solution**: Implement additional checks and fixes to prevent the ball from disappearing unexpectedly.
+
+### Fading Out
+- **Issue**: Fading out didn't work as expected, and there were issues with the sound menu.
+  - **Solution**: Review and address the problems related to fading out and sound menu behavior.
+
+### Background Function Bug
+- **Issue**: Loading the game caused issues with the background function.
+  - **Solution**: Investigate and fix the background function issue, which may involve checking why it increases by 1.
+
+### Visual Glitches
+- **Issue**: Visual glitches like afterimages for the paddle and objects stuck in the air were observed.
+  - **Solution**: Multiple problems present themselves. The threads clog up the memory in this game very quickly because they are created every time a level is created and an object is initialized. 
+  - Large image files seems to have a hard time rendering in the game. Clear up the memory and lower the image quality.
+
+
 ## Credits
 
-### Images
 
-### Music
-Background Music
+### Sound Effects
+
+### Images
+#### Background Images
+- [backgroundImage-4](https://wallpapercave.com/wp/wp1933991.jpg)
+- [backgroundImage-5](https://wallpapercave.com/wp/wp7495828.jpg)
+- [backgroundImage-6](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpaperaccess.com%2Ffull%2F1249933.jpg&f=1&nofb=1&ipt=e2886b5a3ba670dac4164b8be29b02d4fc81650ca6bd4137412dbe209bfa5679&ipo=images)
+- [backgroundImage-7](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpaperaccess.com%2Ffull%2F1439591.jpg&f=1&nofb=1&ipt=1acbca1f4ba13fdefc9b62e9297e2a5ffd8ac63ca81308b7fc0f0c339e735c34&ipo=images)
+- [backgroundImage-8](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpaperaccess.com%2Ffull%2F1485290.jpg&f=1&nofb=1&ipt=f56910d13f6ae0a854e07282d049446d5b4408a69cdfbffb32e1b0affcb631bd&ipo=images)
+- [backgroundImage-9](https://get.pxhere.com/photo/landscape-tree-water-nature-grass-outdoor-horizon-cloud-plant-sky-field-night-meadow-prairie-countryside-sunlight-lake-atmosphere-land-pond-environment-evening-reflection-crop-scenic-color-peaceful-natural-scenery-calm-serene-blue-rest-colorful-agriculture-moon-season-plain-relaxation-single-stars-nightsky-grassland-lone-beauty-inspiration-amazing-beautiful-scene-natur-reflex-exciting-breathtaking-incredible-grass-family-atmosphere-of-earth-computer-wallpaper-883277.jpg)
+
+#### General Assets
+- [Paddle & General Block Design](https://kenney.nl/assets/shape-characters)
+
+### Sound Effects
+#### Background Music
 - [backgroundMusicSoftPiano](https://pixabay.com/sound-effects/soft-piano-100-bpm-121529/)
 - [backgroundMusicNCS](http://ncs.lnk.to/karmaAT/youtube)
 - [backgroundMusicSoftPiano](https://pixabay.com/sound-effects/8bit-music-for-game-68698/)
+- [backgroundMusicCosmic](https://pixabay.com/sound-effects/spaceship-ambience-with-effects-21420/)
 
-Ball:
-<a href="https://www.freepik.com/free-vector/variety-balls-with-unique-patterns_1164446.htm#query=ball%20game&position=0&from_view=keyword&track=ais">Image by brgfx</a> on Freepik
+#### Menus
+- [menuOpen](https://pixabay.com/sound-effects/game-start-6104/)
 
-Interface: https://pixabay.com/sound-effects/interface-124464/
+#### General Sounds
+- [collectPowerup](https://pixabay.com/sound-effects/coin-collect-retro-8-bit-sound-effect-145251/)
+- [buttonClickSound](https://pixabay.com/sound-effects/click-button-app-147358/)
+- [changeBackgroundMusic](https://pixabay.com/sound-effects/tape-cassette-insert-172758/)
+- [muteSoundPauseMenu](https://pixabay.com/sound-effects/click-21156/)
+- [levelUp](https://pixabay.com/sound-effects/game-bonus-144751/)
+- [gameOver](https://pixabay.com/sound-effects/videogame-death-sound-43894/)
+- [winSound](https://pixabay.com/sound-effects/winsquare-6993/)
+- [goldBallPowerUp](https://pixabay.com/sound-effects/collect-5930/)
+- [collectBonus](https://pixabay.com/sound-effects/collectcoin-6075/)
+- [ballHitFloor](https://pixabay.com/sound-effects/jazz-bass-open-e-39297/)
+- [paddleBounce](https://pixabay.com/sound-effects/stop-13692/)
 
-buttonClickSound.mp3: https://pixabay.com/sound-effects/click-button-app-147358/
-
-block-hit: https://pixabay.com/sound-effects/stop-13692/
-
-https://pixabay.com/sound-effects/interface-soft-click-131438/
-
-https://pixabay.com/sound-effects/click-for-game-menu-131903/
-
-paddle & block assets: https://kenney.nl/assets/shape-characters
-
-Backgrounds:
-https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp1933991.jpg&f=1&nofb=1&ipt=fc0b8ee5c987bf5da44add35593287a16a29a3c3e22aff1eabc7c4d7aa071bb5&ipo=images
-https://wallpapercave.com/dwp2x/wp1933955.png
-https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp7495828.jpg&f=1&nofb=1&ipt=1bd232da5f62157ec8678330150854cac87851b14658277ad6c770e645afd960&ipo=images
-
-mainMenuBackground: https://pixabay.com/sound-effects/sci-fi-survival-dreamscape-6319/
-collectPowerup : https://pixabay.com/sound-effects/coin-collect-retro-8-bit-sound-effect-145251/
-changeBackgroundMusic: https://pixabay.com/sound-effects/tape-cassette-insert-172758/
-muteMusicPauseMenu: https://pixabay.com/sound-effects/click-21156/
-win sound: https://pixabay.com/sound-effects/game-bonus-144751/
-game over: https://pixabay.com/sound-effects/videogame-death-sound-43894/
-level up:https://pixabay.com/sound-effects/level-up-47165/
-ball hit the bottom: https://pixabay.com/sound-effects/jazz-bass-open-e-39297/
-collectBonus: https://pixabay.com/sound-effects/collectcoin-6075/
+???
+- [interface-124464](https://pixabay.com/sound-effects/interface-124464/)
+- [interface-soft-click-131438](https://pixabay.com/sound-effects/interface-soft-click-131438/)
+- [buttonClickSound](https://pixabay.com/sound-effects/click-for-game-menu-131903/)

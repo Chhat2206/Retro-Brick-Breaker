@@ -1,0 +1,45 @@
+/* You Win Screen */
+.you-win-layout {
+    -fx-background-color: rgba(85, 196, 81, 0.8); /* Green background color with 80% transparency */
+    -fx-border-color: linear-gradient(to right, rgba(240, 194, 34, 1), rgba(255, 87, 51, 1)); /* Gold to red gradient with full opacity */
+    -fx-border-width: 4; /* Adjusted border width */
+    -fx-background-radius: 9; /* Adjusted radius */
+    -fx-border-radius: 7; /* Adjusted radius */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.7), 9, 0, 4, 4); /* Different shadow parameters */
+}
+
+/* Labels in VBox */
+.vbox .label {
+    -fx-text-fill: rgba(255, 255, 255, 1); /* White text with full opacity */
+    -fx-font-size: 17px; /* Slightly decreased font size */
+}
+
+/* Title Style */
+.title {
+    -fx-font-size: 22px; /* Smaller font size */
+    -fx-text-fill: rgba(255, 255, 255, 1); /* White text with full opacity */
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
+
+/* Refined Button with Gradient Effect */
+.refined-button-effect {
+    -fx-background-color: linear-gradient(to bottom, rgba(0, 102, 204, 1), rgba(0, 51, 102, 1)); /* Blue gradient with full opacity */
+    -fx-background-radius: 8; /* Smaller radius */
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 8, 0, 0, 4); /* Less intense drop shadow */
+}
+
+/* Button Hover Effect */
+.button:hover {
+    -fx-background-color: rgba(102, 204, 0, 1); /* Green hover color with full opacity */
+    -fx-cursor: hand;
+    -fx-text-fill: rgba(0, 0, 0, 1); /* Black text on hover with full opacity */
+}
+
+/* Button Pressed State */
+.button:pressed {
+    -fx-background-color: rgba(255, 51, 51, 1); /* Red pressed color with full opacity */
+    -fx-text-fill: rgba(255, 255, 255, 1); /* White text with full opacity */
+}

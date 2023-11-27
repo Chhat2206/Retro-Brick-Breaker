@@ -20,3 +20,12 @@
     -fx-padding: 10px;
     -fx-alignment: center;
 }
+
+.button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(20, 81, 140, 0.8), 15, 0.5, 0.0, 0.0);
+}
+
+.background-pane {
+    -fx-background-image: url('/images/Main%20Menu/backgroundImage.png');
+    -fx-background-size: cover;
+}

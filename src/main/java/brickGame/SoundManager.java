@@ -4,9 +4,39 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class SoundManager {
     private static MediaPlayer backgroundMediaPlayer;
+    private static final List<String> musicFiles = new ArrayList<>();
+
+    static {
+        Collections.addAll(musicFiles,
+                "src/main/resources/Sound Effects/Background Music/backgroundMusic8Bit.mp3",
+                "src/main/resources/Sound Effects/Background Music/backgroundMusicNCS.mp3",
+                "src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3",
+                "src/main/resources/Sound Effects/Background Music/backgroundMusicCosmic.mp3");
+    }
+
+    // Plays a random track for each new level
+    public static void startRandomBackgroundMusic() {
+        if (musicFiles.isEmpty()) {
+            System.err.println("No music files available.");
+            return;
+        }
+
+        // Stop the current playing music, if any
+        if (backgroundMediaPlayer != null) {
+            backgroundMediaPlayer.stop();
+        }
+
+        // Shuffle and select a new song from the list
+        Collections.shuffle(musicFiles);
+        String musicFilePath = musicFiles.get(0); // Get the first song in the shuffled list
+        startBackgroundMusic(musicFilePath);
+    }
 
     private static void playSound(String soundFile) {
         try {
@@ -43,6 +73,8 @@ public class SoundManager {
         playSound("src/main/resources/Sound Effects/winSound.mp3");
         setVolume(0.6);
     }
+    public static void goldBallPowerUp() {
+        playSound("src/main/resources/Sound Effects/goldBallPowerUp.mp3");}
     public static void muteSoundPauseMenu() {
         playSound("src/main/resources/Sound Effects/muteSoundPauseMenu.mp3");
     }
@@ -55,10 +87,11 @@ public class SoundManager {
         setVolume(1);
     }
 
-    public static void mainMenuMusic() {
-        playSound("src/main/resources/Sound Effects/Menus/soundMenu.mp3");
-        setVolume(1);
+    public static void soundMenu() {
+        playSound("src/main/resources/Sound Effects/Menus/menuOpen.mp3");
+        setVolume(0.6);
     }
+
 
     public static void startBackgroundMusic(String musicFilePath) {
         try {
@@ -75,18 +108,6 @@ public class SoundManager {
     public static void stopBackgroundMusic() {
         if (backgroundMediaPlayer != null) {
             backgroundMediaPlayer.stop();
-        }
-    }
-
-    public static void pauseBackgroundMusic() {
-        if (backgroundMediaPlayer != null && backgroundMediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
-            backgroundMediaPlayer.pause();
-        }
-    }
-
-    public static void resumeBackgroundMusic() {
-        if (backgroundMediaPlayer != null && backgroundMediaPlayer.getStatus() == MediaPlayer.Status.PAUSED) {
-            backgroundMediaPlayer.play();
         }
     }
 
