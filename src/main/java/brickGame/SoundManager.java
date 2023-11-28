@@ -18,6 +18,7 @@ public class SoundManager {
                 "src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3");
     }
 
+
     public static void startRandomBackgroundMusic() {
         if (musicFiles.isEmpty()) {
             System.err.println("No music files available.");

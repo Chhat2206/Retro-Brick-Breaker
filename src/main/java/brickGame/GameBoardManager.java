@@ -176,23 +176,25 @@ public class GameBoardManager {
     }
 
     private void createLevel10Layout() {
-//        // Diamond Shape
-//        int midRow = 6;
-//        int midColumn = 2;
-//        for (int j = 0; j < 13; j++) {
-//            for (int i = 0; i < 5; i++) {
-//                if (Math.abs(j - midRow) + Math.abs(i - midColumn) <= midColumn) {
-//                    int blockType = determineBlockType(random.nextInt(100));
-//                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
-//                }
-//            }
-//        }
-//    }
-        int row = 6;
-        int column = 2;
-        int blockType = determineBlockType(random.nextInt(100));
-        mainInstance.blocks.add(new Block(row, column, mainInstance.colors[column % mainInstance.colors.length], blockType));
+        // Diamond Shape
+        int midRow = 6;
+        int midColumn = 2;
+        for (int j = 0; j < 13; j++) {
+            for (int i = 0; i < 5; i++) {
+                if (Math.abs(j - midRow) + Math.abs(i - midColumn) <= midColumn) {
+                    int blockType = determineBlockType(random.nextInt(100));
+                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                }
+            }
+        }
     }
+
+
+//        int row = 6;
+//        int column = 2;
+//        int blockType = determineBlockType(random.nextInt(100));
+//        mainInstance.blocks.add(new Block(row, column, mainInstance.colors[column % mainInstance.colors.length], blockType));
+//    }
 
 
     private void createDefaultLayout() { // Worst case if program fails. Best case, it will never be utilized.

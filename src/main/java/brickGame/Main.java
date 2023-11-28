@@ -32,7 +32,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private static final int SCENE_HEIGHT = 700;
 
     // Game State Variables
-    protected int level = 3;
+    protected int level = 1;
     protected int score = 0;
     private int heart = 3;
     private int destroyedBlockCount = 0;
@@ -148,12 +148,23 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private void createUIComponents() {
         root = new Pane();
         this.uiManager = new UIManager(root);
-        String backgroundImagePath = "/images/Background Images/backgroundImage-" + level + ".png";
-        // Restart game has issues when utilizing this code, fix in the future
-        this.uiManager.makeBackgroundImage(backgroundImagePath);
+        updateBackgroundImage();
         this.uiManager.makeHeartScore(heart, score, level);
         root.getChildren().addAll(rect, ball);
     }
+
+    private void updateBackgroundImage() {
+        String backgroundImagePath = "/images/Background Images/backgroundImage-" + level + ".png";
+        System.out.println();
+        // Check if the resource exists
+        if (getClass().getResource(backgroundImagePath) == null) {
+            System.err.println("Background image not found for level " + level + ": " + backgroundImagePath);
+            // Optionally, set a default background image
+            backgroundImagePath = "/images/Background Images/defaultBackground.png";
+        }
+        this.uiManager.makeBackgroundImage(backgroundImagePath);
+    }
+
 
     private void setUpBlocks() {
         if (!loadFromSave) {
@@ -184,13 +195,13 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         engine.setOnAction(this);
         engine.setFps(120);
         engine.start();
+        this.loadFromSave = false;
     }
 
     public void newGame(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
-        if (!loadFromSave) {
-            level++;
+//level++;
             if (level > 1) {
                 new Score().showMessage(this);
             }
@@ -200,7 +211,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 YouWinScreen.display(this, primaryStage);
                 return;
             }
-        }
+
 
         initializeGameObjects();
         setUpGameBoard();
@@ -443,6 +454,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private void checkDestroyedCount() {
         if (destroyedBlockCount == blocks.size()) {
+            level++;
             nextLevel();
         }
     }
@@ -565,7 +577,14 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }
 
         loadFromSave = true;
+//        engine.start();
         newGame(primaryStage);
+
+//        Platform.runLater(() -> {
+//            if (destroyedBlockCount == blocks.size()) {
+//                nextLevel();
+//            }
+//        });
     }
 
     private void nextLevel() {
@@ -583,7 +602,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 chocos.clear();
                 destroyedBlockCount = 0;
                 newGame(primaryStage);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -593,7 +611,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public void restartGame() {
 
         try {
-            level = 0;
+            level = 1;
             heart = 3;
             score = 0;
             ballVelocityX = 1.000;
