@@ -6,6 +6,8 @@ import javafx.animation.SequentialTransition;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 public class Score {
@@ -42,22 +44,18 @@ public class Score {
         sequentialTransition.play();
     }
 
-    public void showMessage(String message, final Main main) {
-        SoundManager.levelUp();
-        final Label label = createStyledLabel(message, 220, 340, "message-label"); // Apply CSS class "message-label"
 
-        Platform.runLater(() -> main.root.getChildren().add(label));
+    public void showMessage(final Main main) {
+        Rectangle flash = new Rectangle(0, 0, main.primaryStage.getWidth(), main.primaryStage.getHeight());
+        flash.setFill(Color.WHITE); // Set color of the flash
+        Platform.runLater(() -> main.root.getChildren().add(flash));
 
-        ScaleTransition scaleTransition = new ScaleTransition(ANIMATION_DURATION, label);
-        scaleTransition.setToX(1.5);
-        scaleTransition.setToY(1.5);
-
-        FadeTransition fadeTransition = new FadeTransition(ANIMATION_DURATION, label);
+        // Fade out effect for the flash
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.5), flash);
         fadeTransition.setFromValue(1.0);
         fadeTransition.setToValue(0.0);
-
-        SequentialTransition sequentialTransition = new SequentialTransition(label, scaleTransition, fadeTransition);
-        sequentialTransition.play();
+        fadeTransition.setOnFinished(event -> main.root.getChildren().remove(flash));
+        fadeTransition.play();
     }
 
     public void showGameOver(final Main main) {

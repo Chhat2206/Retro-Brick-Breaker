@@ -40,6 +40,7 @@ public class SoundManager {
             Media sound = new Media(new File(soundFile).toURI().toString());
             MediaPlayer mediaPlayer = new MediaPlayer(sound);
             mediaPlayer.play();
+            setVolume(1);
         } catch (Exception e) {
             System.err.println("Error playing sound: " + e.getMessage());
         }
@@ -53,11 +54,9 @@ public class SoundManager {
     }
     public static void pauseMenuMusic() {
         playSound("src/main/resources/Sound Effects/Menus/pauseMenu.mp3");
-        setVolume(0.7);
     }
     public static void ballHitFloor() {
         playSound("src/main/resources/Sound Effects/ballHitFloor.mp3");
-        setVolume(1.5);
     }
     public static void levelUp() {
         playSound("src/main/resources/Sound Effects/levelUp.mp3");
@@ -67,23 +66,29 @@ public class SoundManager {
     }
     public static void winSound() {
         playSound("src/main/resources/Sound Effects/winSound.mp3");
-        setVolume(0.6);
     }
     public static void goldBallPowerUp() {
         playSound("src/main/resources/Sound Effects/goldBallPowerUp.mp3");
-        setVolume(0.6);
     }
     public static void muteSoundPauseMenu() {
         playSound("src/main/resources/Sound Effects/muteSoundPauseMenu.mp3");
     }
     public static void blockHit() {
         playSound("src/main/resources/Sound Effects/blockHit.mp3");
-        setVolume(0.57);
     }
+
+    // To modify the volume, the function must be re-initialized. It can't have a global variable to control every minor sound.
     public static void collectBonus() {
-        playSound("src/main/resources/Sound Effects/collectBonus.mp3");
-        setVolume(0.2);
+        try {
+            Media sound = new Media(new File("src/main/resources/Sound Effects/collectBonus.mp3").toURI().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.setVolume(0.4);
+            mediaPlayer.play();
+        } catch (Exception e) {
+            System.err.println("Error playing sound effect: " + e.getMessage());
+        }
     }
+
 
     public static void soundMenu() {
         playSound("src/main/resources/Sound Effects/Menus/menuOpen.mp3");
@@ -100,12 +105,6 @@ public class SoundManager {
             backgroundMediaPlayer.play();
         } catch (Exception e) {
             System.err.println("Error playing background music: " + e.getMessage());
-        }
-    }
-
-    public static void stopBackgroundMusic() {
-        if (backgroundMediaPlayer != null) {
-            backgroundMediaPlayer.stop();
         }
     }
 

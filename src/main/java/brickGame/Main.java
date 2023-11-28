@@ -32,9 +32,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private static final int SCENE_HEIGHT = 700;
 
     // Game State Variables
-    protected int level = 9;
+    protected int level = 3;
     protected int score = 0;
-    private int heart = 1;
+    private int heart = 3;
     private int destroyedBlockCount = 0;
 
     // Paddle Variables
@@ -55,8 +55,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     // Game Mechanics Variables
     private boolean loadFromSave = false;
-    private long time = 0;
-    private long goldTime = 0;
+    private volatile long time = 0;
+    private volatile long goldTime = 0;
 
     // UI Components
     Pane root;
@@ -84,9 +84,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     // RandomBlock Temporary Variables
     long paddleWidthChangeTime;
-    boolean paddleWidthChanged;
+    private volatile boolean paddleWidthChanged;
     long ballSizeChangeTime;
-    boolean ballSizeChanged;
+    private volatile boolean ballSizeChanged;
     int originalPaddleWidth;
     int originalBALL_RADIUS;
     long paddleWidthChangeDuration = 0;
@@ -97,11 +97,19 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     protected final ArrayList<Block> blocks = new ArrayList<>();
     private final ArrayList<Bonus> chocos = new ArrayList<>();
     protected final Color[] colors = new Color[]{
-            Color.MAGENTA, Color.RED, Color.GOLD, Color.CORAL,
-            Color.AQUA, Color.VIOLET, Color.GREENYELLOW,
-            Color.ORANGE, Color.PINK,
-            Color.TOMATO,
+            Color.rgb(0, 0, 128),          // Dark Blue
+            Color.rgb(255, 255, 255),      // White
+            Color.rgb(255, 223, 186),      // Peach
+            Color.rgb(135, 206, 250),      // Light Sky Blue
+            Color.rgb(255, 165, 0),        // Orange
+            Color.rgb(147, 112, 219),      // Medium Purple
+            Color.rgb(0, 128, 128),        // Teal
+            Color.rgb(255, 69, 0),         // Red-Orange
+            Color.rgb(128, 0, 128),        // Purple
+            Color.rgb(176, 196, 222)       // Light Steel Blue
     };
+
+
 
     // File Paths for Saving and Loading
     public static final String SAVE_PATH = "./save/save.mdds";
@@ -184,7 +192,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         if (!loadFromSave) {
             level++;
             if (level > 1) {
-                new Score().showMessage("Level Up :)", this);
+                new Score().showMessage(this);
             }
 
             //11
@@ -622,7 +630,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         });
     }
 
-    private void updateGameObjects() {
+    private synchronized void updateGameObjects() {
         Platform.runLater(() -> {
             rect.setX(paddleMoveX);
             rect.setY(paddleMoveY);
@@ -767,23 +775,41 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         originalPaddleWidth = paddleWidth;
         // Randomly decide whether to increase or decrease the paddle width
         boolean increaseWidth = rand.nextBoolean();
+        int sizeChange = rand.nextInt(6) + 20; // Random size change between 20 and 25
         if (increaseWidth) {
-            paddleWidth += rand.nextInt(6) + 20; // Increase width
+            paddleWidth += sizeChange; // Increase width
         } else {
-            paddleWidth -= rand.nextInt(6) + 20; // Decrease width
-            paddleWidth = Math.max(paddleWidth, 20); // Ensure the paddle width doesn't go below a reasonable minimum
+            paddleWidth -= sizeChange; // Decrease width
+            paddleWidth = Math.max(paddleWidth, 20); // Ensure a minimum width
         }
+
+        // Adjust paddle position to maintain its center alignment
+        paddleMoveX -= sizeChange / 2;
+        // Ensure the paddle stays within the game boundaries
+        paddleMoveX = Math.max(paddleMoveX, 0);
+        paddleMoveX = Math.min(paddleMoveX, SCENE_WIDTH - paddleWidth);
+
         rect.setWidth(paddleWidth);
+        rect.setX(paddleMoveX); // Update the paddle's position
+
         paddleWidthChangeTime = System.currentTimeMillis();
-        paddleWidthChangeDuration = (rand.nextInt(6) + 5) * 1000;
+        paddleWidthChangeDuration = (rand.nextInt(6) + 5) * 1000; // Duration for the size change effect
         paddleWidthChanged = true;
         System.out.println("Paddle width changed from " + originalPaddleWidth + " to " + paddleWidth + " for " + (paddleWidthChangeDuration / 1000) + " seconds.");
     }
 
 
-    private void applyBallSizeEffect(Random rand) {
+
+    private synchronized void applyBallSizeEffect(Random rand) {
         originalBALL_RADIUS = ballRadius;
+        ballPosX = Math.max(ballPosX, ballRadius); // Prevent moving off left edge
+        ballPosX = Math.min(ballPosX, SCENE_WIDTH - ballRadius); // Prevent moving off right edge
+        ballPosY = Math.max(ballPosY, ballRadius); // Prevent moving off top edge
+        ballPosY = Math.min(ballPosY, SCENE_HEIGHT - ballRadius); // Prevent moving off bottom edge
         double newBallRadius = ballRadius + rand.nextInt(11) - 5;
+        // Recompute the ball's center position to account for the change in radius
+        ballPosX += (newBallRadius - ballRadius);
+        ballPosY += (newBallRadius - ballRadius);
         ball.setRadius(newBallRadius);
         ballSizeChangeTime = System.currentTimeMillis();
         ballSizeChangeDuration = (rand.nextInt(6) + 5) * 1000;
