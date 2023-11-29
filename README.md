@@ -1,18 +1,25 @@
 # Block Breaker Game
 ## Compilation Instructions:
 - Provide a clear, step-by-step guide on how to compile the code to produce the application. Include any dependencies or special settings required.
-  
-- src, pom, gitignore
-- 
+
 ## Implemented and Working Properly:
 - List the features that have been successfully implemented and are functioning as expected. Provide a brief description of each.
 
 ## Implemented but Not Working Properly:
-- List any features that have been implemented but are not working correctly. Explain the issues you encountered, and if possible, the steps you took to address them.
+Everything is working properly.
 
 ## Features Not Implemented:
-- 
+- **Feature**: Pause button
+  - **Issue**: Main menu did pause very smoothly, no need for a dedicated button
 
+- **Feature**: Custom sound menu to tweak every sound in the game
+  - **Issue**: Seems unnecessary when I modified each sound to be pleasing. I all-ready demonstrated the knowledge of modifying sound with one slider. I also could not make the menu look good.
+
+- **Feature**: Pause Menu Image, fade out of the pause menu, fixing score, custom paddle and ball chosen by the user, custom level difficulty
+  - **Issue**: The features above (and those unmentioned) were implemented but did not fit the theme and style of the game, as such were removed.
+
+- **Feature**:
+  - **Issue**:
 
 ## New Java Classes:
 - Enumerate any new Java classes that you introduced for the assignment. Include a brief description of each class's purpose and its location in the code.
@@ -21,61 +28,55 @@
 - List the Java classes you modified from the provided code base. Describe the changes you made and explain why these modifications were necessary.
 
 ## Unexpected Problems:
+All issues not mentioned here were uninteresting to describe. These are the major issues and fixes with unique solutions.
 ### Collision Detection
 - **Issue**: Collision detection is problematic.
-  - **Solution**: Partially resolved by incorporating the ball radius into the 'checkHitToBlock' function, allowing blocks to detect and disappear upon collision with the ball.
+  - **Solution**: Partially resolved by incorporating the ball radius into the 'checkHitToBlock' function, allowing blocks to detect and disappear upon collision with the ball. From there, add many collision checks and redundancy to account for any change in ball movement. ballRadius is added to all relevant items that collide with the ball to ensure smooth gameplay.
 
-### Pause Menu Addition
-- **Issue**: Adding a pause menu led to access modifier changes and problems with automatic closing when loading the game.
-  - **Solution**: Changed access modifiers from private to protected for access in the same package. Menu should automatically close when loading the game.
-
-### Loading Game Issues
-- **Issue**: Loading the game caused various issues like block changes, increased ball velocity, and level progression problems. Reopening the game after minimizing the pause menu displayed only the pause menu.
-  - **Solution**: Investigate and fix the issues related to loading game and pause menu behavior.
-
-### Button Commands Loop
-- **Issue**: Running commands on buttons sometimes triggered a feedback loop with repeated 'esc' key actions. Moving code from the main menu to functions caused cascading issues.
-  - **Solution**: Analyze and address the feedback loop issue and refactor code to prevent cascading problems.
-
-### Window Size Limitation
-- **Issue**: Attempting to limit the window size caused problems with the pause menu and sound effects.
-  - **Solution**: Investigate the issue with window size limitation and resolve the problems with the pause menu and sound effects.
+### Movement Game Issues
+- **Issue**: The ball, paddle, and all gui items with velocity would randomly disappear or have strange properties.
+  - **Solution**: Rewrite every function to connect it to threads instead of being interdependent to other non-related states.
 
 ### Persistent Pause Menu
 - **Issue**: The pause menu remained in place when the game screen was moved.
-  - **Solution**: Resolved by adjusting the position of the pause menu based on the game screen's position.
-
-### Game Engine After Life
-- **Issue**: The game engine ran after every life, causing problems with the pause menu.
-  - **Solution**: Investigate and fix the issue related to the game engine running after a life is lost, potentially due to concurrent access to an array.
-
-### Block Collision
-- **Issue**: Block collision was completely broken and required a rewrite of the handleBlockCollisions function.
-  - **Solution**: Analyze the block collision issue and rewrite the function to ensure proper collision handling.
+  - **Solution**: Resolved by adjusting the position of the pause menu based on the game screen's position, and utilizing the game scene as the primary scene.
 
 ### Score Freeze
 - **Issue**: The score sometimes froze in place, and falling objects gained unexpected physics.
-  - **Solution**: Investigate and resolve the issues related to score freezing and unexpected physics in falling objects.
-
-### Ball Disappearance
-- **Issue**: The ball occasionally disappeared during gameplay.
-  - **Solution**: Implement additional checks and fixes to prevent the ball from disappearing unexpectedly.
+  - **Solution**: Rewrite all physics related to score, and added multiple checks in order to account for all variables.
 
 ### Fading Out
-- **Issue**: Fading out didn't work as expected, and there were issues with the sound menu.
-  - **Solution**: Review and address the problems related to fading out and sound menu behavior.
+- **Issue**: Fading out didn't work as expected while in the pause and sound menu.
+  - **Solution**: The animation for opening the sound menu was colliding with the new animation for closing the sound menu. This issue was fixed by setting a fixed duration on the animation time.
 
-### Background Function Bug
-- **Issue**: Loading the game caused issues with the background function.
-  - **Solution**: Investigate and fix the background function issue, which may involve checking why it increases by 1.
+### Difficulty Launching Main Menu
+- **Issue**: The main menu would open after every level up in game
+  - **Solution**: A new thread is being created for every element continuously. Removing new threads from being constantly created and only utilizing the start function for running the Main Menu once fixed the issue.
 
-### Visual Glitches
-- **Issue**: Visual glitches like afterimages for the paddle and objects stuck in the air were observed.
-  - **Solution**: Multiple problems present themselves. The threads clog up the memory in this game very quickly because they are created every time a level is created and an object is initialized. 
-  - Large image files seems to have a hard time rendering in the game. Clear up the memory and lower the image quality.
+### Index Out Of Bounds
+- **Issue**: Randomly got index out of bounds error
+  - **Solution**: Related to the blocks and arraylist, the board setup has been customized with new levels and the function for block detection was completely rewritten.
+
+### Phasing Through Blocks
+- **Issue**: Creating custom levels meant all blocks past the row level increment equal to the row of blocks are visible but have no collision detection.
+  - **Solution**: 
+  ```java
+    if (ballPosY + BALL_RADIUS >= Block.getPaddingTop() && ballPosY - BALL_RADIUS <= (Block.getHeight() * (level + 1)) + Block.getPaddingTop()) {
+    ``` 
+  was included in the code, meaning that all blocks past that level would be counted as blocks but only be visible with no borders. Removing and rewriting this line broke the collision detection, requiring a complete rewrite of the collision detection functions.
+
+### Invalid URL
+- **Issue**: Java URL syntax varies from one function to another without consistency.
+  - **Solution**: Added redundancy links in case the primary syntax fails.
+  
+###
+- **Issue**:
+  - **Solution**:
 
 
 ## Credits
+The items that are not listed below were hand created by me.
+
 ### Images
 #### General Assets
 - [Paddle Design](https://kenney.nl/assets/shape-characters)

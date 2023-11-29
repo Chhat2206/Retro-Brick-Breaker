@@ -20,7 +20,7 @@ public class GameEngine {
 
     public void setFps(int fps) {
         if (fps > 0) {
-            this.frameTimeMillis = 1000 / fps;
+            this.frameTimeMillis = (int) (1000.0 / fps);
         } else {
             throw new IllegalArgumentException("FPS must be greater than 0");
         }

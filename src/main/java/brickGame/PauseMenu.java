@@ -65,13 +65,13 @@ public class PauseMenu {
     private static void addButtonsToLayout(Main main, GameEngine engine) {
 
         Button resumeButton = createButton("Resume", e -> {
-//            fadeOutMenu();
-//            SoundManager.buttonClickSound();
+            SoundManager.buttonClickSound();
             engine.start();
             pauseStage.close();
         });
 
         soundButton = createButton("Sound Settings", e -> {
+            SoundManager.buttonClickSound();
             soundMenuOpen();
             SoundMenu.display();
         });
@@ -97,22 +97,22 @@ public class PauseMenu {
         });
 
         Button loadButton = createButton("Load Game", e -> {
-//            fadeOutMenu();
-//            SoundManager.buttonClickSound();
+            fadeOutMenu();
+            SoundManager.buttonClickSound();
             main.loadGame(main.primaryStage);
-            System.out.println("Game Loaded");
+            System.out.println("\u001B[34m" + "Game Loaded" + "\u001B[0m"); // Blue text
             pauseStage.close();
         });
 
         Button restartButton = createButton("Restart Game", e -> {
             SoundManager.buttonClickSound();
             main.restartGame();
+            System.out.println("\u001B[36m" + "Game Restarted" + "\u001B[0m"); // Cyan colored text
             pauseStage.close();
         });
 
         Button quitButton = createButton("Quit", e -> {
             SoundManager.buttonClickSound();
-            System.out.println("Game Quit");
             System.exit(0);
         });
 
@@ -152,9 +152,9 @@ public class PauseMenu {
         FadeTransition fadeOut = new FadeTransition(Duration.millis(500), pauseLayout);
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0);
-        fadeOut.setOnFinished(event -> pauseStage.close());
         fadeOut.play();
     }
+
 
     protected static void soundMenuOpen() {
         FadeTransition fadeOut = new FadeTransition(Duration.millis(500), pauseLayout);
@@ -166,15 +166,6 @@ public class PauseMenu {
 
     public static void highlightSoundSystemButton() {
         soundButton.setStyle("-fx-background-color: #f0f0f0; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
-    }
-
-    private static void animateButtonPress(Button button) {
-        ScaleTransition st = new ScaleTransition(Duration.millis(100), button);
-        st.setToX(0.9);
-        st.setToY(0.9);
-        st.setAutoReverse(true);
-        st.setCycleCount(2);
-        st.play();
     }
 
     public static double getPauseStageX() {

@@ -54,28 +54,28 @@ public class GameBoardManager {
 
     private void createLevel1Layout() {
         // Create a space ship to take you on your journey
-//        int[][] spaceShip = {
-//                {0, 0, 1, 1, 1, 1, 1, 0, 0},
-//                {0, 1, 0, 0, 0, 0, 0, 1, 0},
-//                {1, 0, 0, 1, 0, 1, 0, 0, 1},
-//                {1, 0, 0, 1, 0, 1, 0, 0, 1},
-//                {1, 0, 1, 1, 1, 1, 1, 0, 1}
-//        };
-//
-//        for (int j = 0; j < 5; j++) {
-//            for (int i = 0; i < 9; i++) {
-//                if (spaceShip[j][i] == 1) {
-//                    int blockType = determineBlockType(random.nextInt(100));
-//                    mainInstance.blocks.add(new Block(i, j, mainInstance.colors[j % mainInstance.colors.length], blockType));
-//                }
-//            }
-//        }
-//    }
-        int row = 6;
-        int column = 2;
-        int blockType = determineBlockType(random.nextInt(100));
-        mainInstance.blocks.add(new Block(row, column, mainInstance.colors[column % mainInstance.colors.length], blockType));
+        int[][] spaceShip = {
+                {0, 0, 1, 1, 1, 1, 1, 0, 0},
+                {0, 1, 0, 0, 0, 0, 0, 1, 0},
+                {1, 0, 0, 1, 0, 1, 0, 0, 1},
+                {1, 0, 0, 1, 0, 1, 0, 0, 1},
+                {1, 0, 1, 1, 1, 1, 1, 0, 1}
+        };
+
+        for (int j = 0; j < 5; j++) {
+            for (int i = 0; i < 9; i++) {
+                if (spaceShip[j][i] == 1) {
+                    int blockType = determineBlockType(random.nextInt(100));
+                    mainInstance.blocks.add(new Block(i, j, mainInstance.colors[j % mainInstance.colors.length], blockType));
+                }
+            }
+        }
     }
+//        int row = 6;
+//        int column = 2;
+//        int blockType = determineBlockType(random.nextInt(100));
+//        mainInstance.blocks.add(new Block(row, column, mainInstance.colors[column % mainInstance.colors.length], blockType));
+//    }
 
 
     private void createLevel2Layout() {

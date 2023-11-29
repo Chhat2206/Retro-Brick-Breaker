@@ -74,13 +74,6 @@ public class SoundMenu {
         return muteButton;
     }
 
-    private static void fadeInMenu() {
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(500), soundLayout);
-        fadeIn.setFromValue(0);
-        fadeIn.setToValue(1);
-        fadeIn.play();
-    }
-
     private static void addVolumeControls() {
         VBox volumeControls = new VBox(10); // Changed from HBox to VBox
         volumeControls.setAlignment(Pos.CENTER);
@@ -95,6 +88,7 @@ public class SoundMenu {
     private static void addCloseButton() {
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> {
+            SoundManager.buttonClickSound();
             PauseMenu.resetSoundButtonStyle();
             soundStage.close();
             PauseMenu.fadeInMenu();

@@ -41,10 +41,19 @@ public class MainMenu {
         logoView.setTranslateY(50);
         root.getChildren().add(logoView);
 
-        // Create buttons with increased size
-        Button startNewGameButton = createButton("/images/Main Menu/newGame.png", e -> startNewGame(), 230, 90);
-        Button loadGameButton = createButton("/images/Main Menu/loadGame.png", e -> startTransition(primaryStage, () -> mainGame.loadGame(primaryStage)), 230, 90);
-        Button exitButton = createButton("/images/Main Menu/quitGame.png", e -> Platform.exit(), 230, 90);
+        Button startNewGameButton = createButton("/images/Main Menu/newGame.png", e -> {
+            System.out.println("\u001B[32m" + "Starting New Game" + "\u001B[0m"); // Green text
+            startNewGame();
+        }, 230, 90);
+
+        Button loadGameButton = createButton("/images/Main Menu/loadGame.png", e -> {
+            System.out.println("\u001B[34m" + "Loading Game" + "\u001B[0m"); // Blue text
+            startTransition(primaryStage, () -> mainGame.loadGame(primaryStage));
+        }, 230, 90);
+
+        Button exitButton = createButton("/images/Main Menu/quitGame.png", e -> {
+            Platform.exit();
+        }, 230, 90);
 
         menuOptions.getChildren().addAll(startNewGameButton, loadGameButton, exitButton);
         root.getChildren().add(menuOptions);
