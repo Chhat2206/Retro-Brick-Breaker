@@ -14,10 +14,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-
 import java.util.*;
-
-
 import java.io.*;
 
 
@@ -201,13 +198,13 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public void newGame(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
-//level++;
             if (level > 1) {
                 new Score().showMessage(this);
             }
 
             //11
             if (level == 11) {
+                SoundManager.winSound();
                 YouWinScreen.display(this, primaryStage);
                 return;
             }
@@ -409,8 +406,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private void calculateBallVelocity() {
         double relation = (ballPosX - centerBreakX) / ((double) paddleWidth / 2);
-        ballVelocityX = Math.abs(relation) * MAX_VELOCITY_X; // MAX_VELOCITY_X can be a constant defining max horizontal velocity
-        ballVelocityY = Math.sqrt(Math.pow(MAX_VELOCITY, 2) - Math.pow(ballVelocityX, 2)); // MAX_VELOCITY is the maximum speed of the ball
+//        ballVelocityX = Math.abs(relation) * MAX_VELOCITY_X; // MAX_VELOCITY_X can be a constant defining max horizontal velocity
+//        ballVelocityY = Math.sqrt(Math.pow(MAX_VELOCITY, 2) - Math.pow(ballVelocityX, 2)); // MAX_VELOCITY is the maximum speed of the ball
 
         // Ensure relation is not too small to avoid division by zero
         if (Math.abs(relation) < 0.001) {
@@ -473,6 +470,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private void checkDestroyedCount() {
         if (destroyedBlockCount == blocks.size()) {
+            SoundManager.levelUp();
             level++;
             nextLevel();
         }
@@ -744,6 +742,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             handleGoldenTimeBlock();
         } else if (block.type == Block.BLOCK_HEART) {
             heart++;
+            SoundManager.heartBonus();
         }
     }
 
@@ -782,9 +781,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 // Update the Y position to simulate falling
                 choco.y += fallSpeed;
 
-                Platform.runLater(() -> {
-                    choco.choco.setY(choco.y);
-                });
+                Platform.runLater(() -> choco.choco.setY(choco.y));
             }
         }
     }

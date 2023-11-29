@@ -84,8 +84,9 @@ The items that are not listed below were hand created by me.
 ### Sound Effects
 #### Background Music
 - [backgroundMusicSoftPiano](https://pixabay.com/sound-effects/soft-piano-100-bpm-121529/)
-- [backgroundMusicSoftPiano](https://pixabay.com/sound-effects/8bit-music-for-game-68698/)
 - [backgroundMusicCosmic](https://pixabay.com/sound-effects/spaceship-ambience-with-effects-21420/)
+- [backgroundMusicAnimePiano](https://pixabay.com/sound-effects/the-last-piano-112677/)
+- [backgroundMusicMorningVibes](https://pixabay.com/sound-effects/good-morning-heaven-no-drums-55690/)
 
 #### Menus
 - [mainMenuOpen](https://pixabay.com/sound-effects/game-start-6104/)
@@ -104,3 +105,4 @@ The items that are not listed below were hand created by me.
 - [ballHitFloor](https://pixabay.com/sound-effects/jazz-bass-open-e-39297/)
 - [paddleBounce](https://pixabay.com/sound-effects/stop-13692/)
 - [buttonClickSound](https://pixabay.com/sound-effects/click-for-game-menu-131903/)
+- [heartBonus](https://pixabay.com/sound-effects/hospital-monitor-151929/)
