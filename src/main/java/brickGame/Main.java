@@ -50,7 +50,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private int destroyedBlockCount = 0;
 
     // Paddle Variables
-    private static final int PADDLE_SPEED = 3;
+    private static final int PADDLE_SPEED = 3; //8
     private double paddleMoveX = 250.0;
     private double paddleMoveY = 680.0f;
     private final int halfPaddleWidth = paddleWidth / 2;
@@ -138,6 +138,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private UIManager uiManager;
+    private long lastFrameTime = System.nanoTime();
 
     /**
      * The start method is the main entry point for the JavaFX application.
@@ -151,6 +152,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         mainMenu.display();
     }
 
+    /**
+     * Initializes the ball object with default properties and position.
+     */
     private void initializeGameObjects() {
         initializeBall();
         createPaddle();
@@ -314,7 +318,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         paddleMoveTimer.start();
     }
 
-
+    /**
+     * Creates the paddle and sets its initial properties and position.
+     */
     private void initializeBall() {
         ballPosX = SCENE_WIDTH / 2.0;
         ballPosY = SCENE_HEIGHT * 0.7 ;
@@ -324,6 +330,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     }
 
+    /**
+     * Creates the paddle and sets its initial properties and position.
+     */
     private void createPaddle() {
         rect = new Rectangle();
         rect.setWidth(paddleWidth);
@@ -334,6 +343,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         rect.setFill(pattern);
     }
 
+    /**
+     * Resets flags that track ball collisions with various objects.
+     * Ensures proper response to new collisions after a collision has occurred.
+     */
     private void resetCollideFlags() {
         collideToBreak = false;
         collideToBreakAndMoveToRight = false;
@@ -344,6 +357,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         collideToLeftBlock = false;
         collideToTopBlock = false;
     }
+
+    /**
+     * Sets the physics properties to the ball, including its movement and collision behavior.
+     */
     private void setPhysicsToBall() {
         updateBallPosition();
         checkCollisionWithWalls();
@@ -997,7 +1014,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Performs physics calculations and updates game state on each game loop iteration.
+     * Callback method invoked by the game engine on every physics update.
+     * It handles the core physics calculations for the game, such as ball movement and collision detection.
      */
     @Override
     public void onPhysicsUpdate() {

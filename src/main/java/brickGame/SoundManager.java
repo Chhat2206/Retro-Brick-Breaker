@@ -18,9 +18,7 @@ public class SoundManager {
     static {
         Collections.addAll(musicFiles,
                 "src/main/resources/Sound Effects/Background Music/backgroundMusicCosmic.mp3",
-                "src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3",
-                "src/main/resources/Sound Effects/Background Music/backgroundMusicMorningVibes.mp3",
-                "src/main/resources/Sound Effects/Background Music/backgroundMusicAnimePiano.mp3");
+                "src/main/resources/Sound Effects/Background Music/backgroundMusicSoftPiano.mp3");
     }
 
     /**

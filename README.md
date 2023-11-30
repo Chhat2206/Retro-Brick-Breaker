@@ -105,6 +105,8 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 - [x] Restart and main menu buttons with custom UI and clean design
 
 ## Implemented but Not Working Properly:
+- ⚠️ **Block Visual Glitch**: Occasionally, block visuals may persist on the screen after a collision, despite the block being non-existent. This causes no physical obstruction, and the game progresses normally once all actual blocks are removed. Temporarily pausing the game (stopping and restarting the game engine) resolves this issue. The occurrence is rare.
+- ⚠️ **Paddle Movement Framerate Dependency**: The paddle's movement speed is tied to the user's frame rate per second (fps). Consequently, on systems with less than 60hz, the paddle movement appears slower, while it seems faster on systems exceeding 60hz. The game is optimized for 60 frames per second, which is the most common standard.
 
 
 ## Features Not Implemented:
@@ -114,8 +116,8 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 - **Feature**: Custom sound menu to tweak every sound in the game
   - **Issue**: Seems unnecessary when I modified each sound to be pleasing. I all-ready demonstrated the knowledge of modifying sound with one slider. I also could not make the menu look good.
 
-- **Feature**: Pause Menu Image, fade out of the pause menu, fixing score, custom paddle and ball chosen by the user, custom level difficulty
-  - **Issue**: The features above (and those unmentioned) were implemented but did not fit the theme and style of the game, as such were removed.
+- **Feature**: Pause Menu Image, fade out of the pause menu, fixing score, custom paddle and ball chosen by the user, custom level difficulty, original game assets such as unique forest and under water theme, many music pieces such as 8bit pop and looping piano.
+  - **Issue**: The features above (and those unmentioned) were implemented but did not fit the theme and style of the game, as such were removed. The music in particular was removed if the loop got annoying after level 3. Many pieces were removed as a result. The ones left fit the game's theme.
 
 ## New Java Classes
 In this project, several new Java classes were introduced to enhance the game's functionality. Below is a brief description of each class and its purpose:
@@ -194,8 +196,6 @@ The items that are not listed below were hand created by me.
 #### Background Music
 - [backgroundMusicSoftPiano](https://pixabay.com/sound-effects/soft-piano-100-bpm-121529/)
 - [backgroundMusicCosmic](https://pixabay.com/sound-effects/spaceship-ambience-with-effects-21420/)
-- [backgroundMusicAnimePiano](https://pixabay.com/sound-effects/the-last-piano-112677/)
-- [backgroundMusicMorningVibes](https://pixabay.com/sound-effects/good-morning-heaven-no-drums-55690/)
 
 #### Menus
 - [mainMenuOpen](https://pixabay.com/sound-effects/game-start-6104/)
