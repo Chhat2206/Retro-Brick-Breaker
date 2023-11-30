@@ -46,7 +46,63 @@ Follow these steps to compile and run your Java application using IntelliJ IDEA,
 Your Java application should now compile and run seamlessly using JavaFX 21.01 and Amazon Corretto JDK 19.0.2 within IntelliJ IDEA. Make any necessary adjustments to match your project structure and requirements.
 
 ## Implemented and Working Properly:
-- List the features that have been successfully implemented and are functioning as expected. Provide a brief description of each.
+
+### General
+- [x] Removing the ability to resize the window
+
+### Main Menu
+- [x] Custom main menu favicon, custom title, custom brick breaker logo
+- [x] Three custom buttons with save game, load game, and quit
+- [x] Custom sound effect when opening the game
+- [x] Clean transition effect when starting or loading the game
+- [x] Blue highlight when hovering over a button
+
+### Game
+- [x] Many custom hand-selected random themes for the game
+- [x] Custom block colors
+- [x] 10 custom levels
+- [x] 10 custom backgrounds
+- [x] Custom paddle creation
+- [x] Coin icon and heart icon
+- [x] New favicon and title
+- [x] Blur effect behind the level coins and heart menu
+- [x] Custom ball icon and custom heart blocks
+- [x] Random block and gold block
+- [x] Custom sound effect for every action in the game
+- [x] Custom level-up animation and sound effect for leveling up
+- [x] Custom paddle movement for smoother gameplay
+- [x] Custom ball movement mechanics for improved flow
+- [x] Randomization with 3 options: changing paddle width, changing ball width, and giving a random amount of bonus
+- [x] Unique space border effect for the ball hovering over the paddle
+- [x] Custom bonus icon dropped by the question block
+- [x] Modified bonus icon behavior when the pause menu is open
+
+### Pause and Sound Menu
+- [x] Both menus follow the screen when it's moved
+- [x] Custom gradients and transparent grey hue surrounding buttons
+- [x] Clean animations for opening and closing menus with sound effects
+
+#### Pause menu
+- [x] Custom blue effect when the pause menu is open
+- [x] Custom sound effect for opening the pause menu
+- [x] Custom buttons with highlighting
+- [x] Smooth resume game functionality
+- [x] Save game turns white into 'Game Saved' for around 1 second
+- [x] Load and restart game buttons work as expected
+- [x] Sound Settings open the sound menu and turn white while the sound menu is opened
+
+#### Sound Menu
+- [x] Positioned perfectly next to the pause menu
+- [x] Transparency of the pause menu when opened
+- [x] Clean slider for controlling background music volume
+- [x] Mute/unmute background music functionality
+- [x] Clean close button to fade out the sound menu
+
+### YouWinScreen and GameOverScreen
+- [x] Custom gradients and dark background
+- [x] Centered on the screen and follows the primary stage
+- [x] Custom score display with images and sound effects for win/lose scenarios
+- [x] Restart and main menu buttons with custom UI and clean design
 
 ## Implemented but Not Working Properly:
 

@@ -33,7 +33,7 @@ public class PauseMenu {
      * @param primaryStage The primary stage of the game.
      */
     public static void display(Main main, GameEngine engine, Stage primaryStage) {
-
+        initializePauseMenuBlur(primaryStage);
         initializePauseStage();
         configurePauseLayout();
         addButtonsToLayout(main, engine);
@@ -43,8 +43,9 @@ public class PauseMenu {
         scene.getStylesheets().addAll("/css/defaultMenu.css", "/css/pauseMenu.css");
         pauseStage.setScene(scene);
 
+
         positionPauseMenuOverGame(primaryStage);
-        initializePauseMenuBlur(primaryStage);
+
 
         engine.stop();
         fadeInMenu();
@@ -56,8 +57,9 @@ public class PauseMenu {
             }
         });
 
-        disablePauseMenuBlur(primaryStage);
+
         pauseStage.showAndWait();
+        disablePauseMenuBlur(primaryStage);
     }
 
     /**
