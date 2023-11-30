@@ -8,6 +8,10 @@ import javafx.scene.shape.Rectangle;
 
 import java.io.Serializable;
 
+/**
+ * Represents a block in the brick-breaking game.
+ * Blocks can have different colors and types, and they can be destroyed by the ball.
+ */
 public class Block implements Serializable {
     private static final Block block = new Block(-1, -1, Color.TRANSPARENT, 99);
 
@@ -26,13 +30,14 @@ public class Block implements Serializable {
     private final int paddingHeight = 50;
     public Rectangle rect;
 
-
+    // Constants for different types of block hits
     public static int NO_HIT = -1;
     public static final int HIT_RIGHT = 0;
     public static final int HIT_BOTTOM = 1;
     public static final int HIT_LEFT = 2;
     public static final int HIT_TOP = 3;
 
+    // Constants for different types of blocks
     public static int BLOCK_NORMAL = 99;
     public static int BLOCK_RANDOM = 100;
     public static int BLOCK_GOLDEN_TIME = 101;

@@ -1,5 +1,6 @@
 package brickGame;
 
+
 import brickGame.menus.MainMenu;
 import brickGame.screens.YouWinScreen;
 import javafx.animation.AnimationTimer;
@@ -19,14 +20,13 @@ import javafx.stage.Stage;
 import java.util.*;
 import java.io.*;
 
+
 /**
  * The Main class represents the main entry point for the Brick Game application.
  * It handles the game's logic, UI components, and user input.
- *
  * The game features a paddle, a ball, blocks to destroy, and various power-up bonuses.
  * Players aim to clear all blocks in each level while keeping the ball from falling to the floor
  * and managing their heart lives. The game progresses through levels of increasing difficulty.
- *
  * This class extends the Application class and implements EventHandler<KeyEvent> and GameEngine.OnAction interfaces.
  *
  * @author Chhat
@@ -242,7 +242,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         if (level == 11) {
             SoundManager.winSound();
             YouWinScreen.display(this, primaryStage);
-            return;
         }
     }
 

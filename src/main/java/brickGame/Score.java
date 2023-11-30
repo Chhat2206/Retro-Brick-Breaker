@@ -21,17 +21,16 @@ public class Score {
     /**
      * Creates a styled label for displaying text with specified coordinates and CSS style.
      *
-     * @param text  The text to be displayed on the label.
-     * @param x     The X-coordinate of the label's position.
-     * @param y     The Y-coordinate of the label's position.
-     * @param style The CSS style to be applied to the label.
+     * @param text The text to be displayed on the label.
+     * @param x    The X-coordinate of the label's position.
+     * @param y    The Y-coordinate of the label's position.
      * @return A styled label with the specified text, position, and style.
      */
-    private Label createStyledLabel(String text, double x, double y, String style) {
+    private Label createStyledLabel(String text, double x, double y) {
         Label label = new Label(text);
         label.setTranslateX(x);
         label.setTranslateY(y);
-        label.getStyleClass().add(style);
+        label.getStyleClass().add("score-label");
         return label;
     }
 
@@ -45,7 +44,7 @@ public class Score {
      */
     public void show(final double x, final double y, int score, final Main main) {
         String sign = score >= 0 ? "+" : "";
-        final Label label = createStyledLabel(sign + score, x, y, "score-label"); // Apply CSS class "score-label"
+        final Label label = createStyledLabel(sign + score, x, y); // Apply CSS class "score-label"
 
         Platform.runLater(() -> main.root.getChildren().add(label));
 

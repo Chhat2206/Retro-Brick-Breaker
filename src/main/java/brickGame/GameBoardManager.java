@@ -7,8 +7,8 @@ import java.util.Random;
  * in the Brick Game.
  */
 public class GameBoardManager {
-    private Main mainInstance;
-    private Random random;
+    private final Main mainInstance;
+    private final Random random;
 
     /**
      * Constructs a new GameBoardManager with a reference to the Main instance.

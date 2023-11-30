@@ -1,12 +1,55 @@
 # Block Breaker Game
-## Compilation Instructions:
-- Provide a clear, step-by-step guide on how to compile the code to produce the application. Include any dependencies or special settings required.
+## Compilation Instructions with IntelliJ IDEA, JavaFX 21.01, and Amazon Corretto JDK 19.0.2
+
+Follow these steps to compile and run your Java application using IntelliJ IDEA, JavaFX 21.01, and Amazon Corretto JDK 19.0.2:
+
+1. **Install IntelliJ IDEA:**
+  - If not already installed, download and install IntelliJ IDEA from the [official website](https://www.jetbrains.com/idea/download/).
+  - Follow the installation instructions for your operating system.
+  - This project was created in Intellij Student Edition, but any Intellij version should work.
+
+2. **Clone Your GitHub Repository in IntelliJ IDEA:**
+  - Open IntelliJ IDEA.
+  - Click on "Check out from Version Control" on the welcome screen, or go to "File" > "New" > "Project from Version Control" > "Git."
+  - Enter ```java https://github.com/Chhat2206/COMP2042_CW_hfycs2.git``` and follow the prompts to clone it.
+
+3. **Set Up Project Structure:**
+  - Ensure that your Java source code is organized according to the standard Java project structure within your IntelliJ project.
+
+4. **Configure SDK and Libraries:**
+  - Configure Amazon Corretto JDK 19.0.2 as your project's JDK:
+    - Go to "File" > "Project Structure."
+    - Under "Project," select your "Project SDK" and set it to Amazon Corretto JDK 19.0.2.
+    - Ensure that the "Project language level" is set appropriately (e.g., Java 8 or higher).
+
+5. **Add JavaFX Library:**
+  - Add the JavaFX library to your project:
+    - Go to "File" > "Project Structure."
+    - Under "Project Settings," select "Libraries" and click the "+" icon to add a new library.
+    - Choose "Java" and navigate to the `lib` directory within your JavaFX SDK 21.01 installation directory.
+    - Click "OK" to add the JavaFX library.
+
+5.5. (Optional) **Create a Run Configuration:**
+  - Set up a run configuration for your Java application:
+    - Right-click on your main application class (e.g., `Main.java`) in the project explorer.
+    - Select "Create 'Main'" from the context menu (or use the name of your main class).
+    - In the Run Configuration dialog, ensure that the main class is selected correctly.
+    - Under "VM options," add the following to specify the JavaFX module path and modules:
+    ```plaintext
+    --module-path /path/to/javafx-sdk-21.01/lib --add-modules javafx.controls,javafx.fxml
+    ```
+    - Replace `/path/to/javafx-sdk-21.01` with the actual path to your JavaFX SDK 21.01 installation directory.
+
+7. **Compile and Run Your Application:**
+  - Click the "Run" button in IntelliJ IDEA or use the keyboard shortcut (typically Shift + F10) to compile and run your Java application.
+
+Your Java application should now compile and run seamlessly using JavaFX 21.01 and Amazon Corretto JDK 19.0.2 within IntelliJ IDEA. Make any necessary adjustments to match your project structure and requirements.
 
 ## Implemented and Working Properly:
 - List the features that have been successfully implemented and are functioning as expected. Provide a brief description of each.
 
 ## Implemented but Not Working Properly:
-Everything is working properly.
+
 
 ## Features Not Implemented:
 - **Feature**: Pause button
@@ -18,11 +61,7 @@ Everything is working properly.
 - **Feature**: Pause Menu Image, fade out of the pause menu, fixing score, custom paddle and ball chosen by the user, custom level difficulty
   - **Issue**: The features above (and those unmentioned) were implemented but did not fit the theme and style of the game, as such were removed.
 
-- **Feature**:
-  - **Issue**:
-
 ## New Java Classes
-
 In this project, several new Java classes were introduced to enhance the game's functionality. Below is a brief description of each class and its purpose:
 
 ### SoundManager
@@ -87,11 +126,6 @@ All issues not mentioned here were uninteresting to describe. These are the majo
 ### Invalid URL
 - **Issue**: Java URL syntax varies from one function to another without consistency.
   - **Solution**: Added redundancy links in case the primary syntax fails.
-  
-###
-- **Issue**:
-  - **Solution**:
-
 
 ## Credits
 The items that are not listed below were hand created by me.
