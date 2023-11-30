@@ -1,5 +1,7 @@
-package brickGame;
+package brickGame.screens;
 
+import brickGame.Main;
+import brickGame.menus.MainMenu;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,11 +19,21 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+/**
+ * The YouWinScreen class is responsible for displaying the "You Win" screen when the player wins the game.
+ * It provides methods to configure and display this screen.
+ */
 public class YouWinScreen {
 
     private static Stage youWinStage;
     private static VBox youWinLayout;
 
+    /**
+     * Displays the "You Win" screen, allowing the player to restart the game or return to the main menu.
+     *
+     * @param main        The Main instance associated with the game.
+     * @param primaryStage The primary stage of the game.
+     */
     public static void display(Main main, Stage primaryStage) {
         initializeYouWinStage();
         configureYouWinLayout();
@@ -40,6 +52,9 @@ public class YouWinScreen {
         youWinStage.showAndWait();
     }
 
+    /**
+     * Initializes the "You Win" stage with a transparent background.
+     */
     private static void initializeYouWinStage() {
         youWinStage = new Stage();
         youWinStage.initModality(Modality.APPLICATION_MODAL);
@@ -47,12 +62,21 @@ public class YouWinScreen {
         youWinStage.setTitle("You Win");
     }
 
+    /**
+     * Configures the layout for the "You Win" screen, setting alignment and style.
+     */
     private static void configureYouWinLayout() {
         youWinLayout = new VBox(20);
         youWinLayout.setAlignment(Pos.CENTER);
         youWinLayout.getStyleClass().add("you-win-layout");
     }
 
+    /**
+     * Adds UI elements (such as images, labels, and buttons) to the "You Win" layout.
+     *
+     * @param main        The Main instance associated with the game.
+     * @param primaryStage The primary stage of the game.
+     */
     private static void addElementsToLayout(Main main, Stage primaryStage) {
         // Load the "You Win" image
         Image youWinImage = new Image("/images/Screens/youWin.png");
@@ -60,7 +84,7 @@ public class YouWinScreen {
         youWinImageView.setFitWidth(150);
         youWinImageView.setFitHeight(140);
 
-        int score = main.score;
+        int score = main.getScore();
 
         Label scoreLabel = new Label("Score: " + score);
         Button restartButton = createButton("Play Again", e -> {
@@ -79,6 +103,13 @@ public class YouWinScreen {
         youWinLayout.getChildren().addAll(youWinImageView, scoreLabel, restartButton, returnButton);
     }
 
+    /**
+     * Creates a default JavaFX button with default action handler.
+     *
+     * @param text   The text to be displayed on the button.
+     * @param action The event handler to be executed when the button is clicked.
+     * @return The created button.
+     */
     private static Button createButton(String text, EventHandler<ActionEvent> action) {
         Button button = new Button(text);
         button.setOnAction(action);
@@ -86,16 +117,29 @@ public class YouWinScreen {
         return button;
     }
 
+    /**
+     * Positions the "You Win" menu over the game's primary stage.
+     *
+     * @param primaryStage The primary stage of the game.
+     */
     private static void positionYouWinMenuOverGame(Stage primaryStage) {
         youWinStage.setX(primaryStage.getX() + primaryStage.getWidth() / 3.8 - youWinLayout.getPrefWidth() / 2);
         youWinStage.setY(primaryStage.getY() + primaryStage.getHeight() / 4 - youWinLayout.getPrefHeight() / 2);
     }
 
+    /**
+     * Initializes a Gaussian blur effect on the game's primary stage, providing a visual effect for the "You Win" screen.
+     *
+     * @param primaryStage The primary stage of the game.
+     */
     private static void initializeBlur(Stage primaryStage) {
         GaussianBlur blur = new GaussianBlur(4);
         primaryStage.getScene().getRoot().setEffect(blur);
     }
 
+    /**
+     * Animates the fade-in effect for the "You Win" screen.
+     */
     private static void fadeInMenu() {
         FadeTransition fadeIn = new FadeTransition(Duration.millis(500), youWinLayout);
         fadeIn.setFromValue(0.3);
@@ -103,6 +147,9 @@ public class YouWinScreen {
         fadeIn.play();
     }
 
+    /**
+     * Animates the fade-out effect for the "You Win" screen and closes the stage.
+     */
     private static void fadeOutMenu() {
         FadeTransition fadeOut = new FadeTransition(Duration.millis(500), youWinLayout);
         fadeOut.setFromValue(1);

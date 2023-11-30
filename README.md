@@ -21,8 +21,27 @@ Everything is working properly.
 - **Feature**:
   - **Issue**:
 
-## New Java Classes:
-- Enumerate any new Java classes that you introduced for the assignment. Include a brief description of each class's purpose and its location in the code.
+## New Java Classes
+
+In this project, several new Java classes were introduced to enhance the game's functionality. Below is a brief description of each class and its purpose:
+
+### SoundManager
+- **Purpose:** Manages all music and sound effects in the game. It allows other classes to access and control sound effects throughout the game.
+
+### MainMenu
+- **Purpose:** Handles the main menu interface, including the display of menu options and navigation.
+
+### PauseMenu
+- **Purpose:** Manages the pause menu, providing options like resume, settings, or exit when the game is paused.
+
+### GameBoardManager
+- **Purpose:** Controls the game board logic, including the layout, piece movements, and game state management.
+
+### UIManager
+- **Purpose:** Manages the user interface elements, coordinating between different screens and UI components.
+
+### YouWinScreen
+- **Purpose:** Displays the victory screen when a player wins, showing scores and options for next steps.
 
 ## Modified Java Classes:
 - List the Java classes you modified from the provided code base. Describe the changes you made and explain why these modifications were necessary.

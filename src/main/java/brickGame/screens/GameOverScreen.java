@@ -1,5 +1,7 @@
-package brickGame;
+package brickGame.screens;
 
+import brickGame.Main;
+import brickGame.menus.MainMenu;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -60,7 +62,7 @@ public class GameOverScreen {
         gameOverImageView.setFitWidth(150);
         gameOverImageView.setFitHeight(140);
 
-        int score = main.score;
+        int score = main.getScore();
 
         Label scoreLabel = new Label("Score: " + score);
         Button restartButton = createButton("Restart", e -> {

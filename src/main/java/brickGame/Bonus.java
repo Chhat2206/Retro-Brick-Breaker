@@ -5,7 +5,6 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 import java.io.Serializable;
-import java.util.Random;
 
 public class Bonus implements Serializable {
     public Rectangle choco;
