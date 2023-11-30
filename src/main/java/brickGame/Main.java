@@ -1,5 +1,8 @@
 package brickGame;
 
+
+import brickGame.menus.MainMenu;
+import brickGame.screens.YouWinScreen;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -14,27 +17,36 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-
 import java.util.*;
-
-
 import java.io.*;
 
 
+/**
+ * The Main class represents the main entry point for the Brick Game application.
+ * It handles the game's logic, UI components, and user input.
+ * The game features a paddle, a ball, blocks to destroy, and various power-up bonuses.
+ * Players aim to clear all blocks in each level while keeping the ball from falling to the floor
+ * and managing their heart lives. The game progresses through levels of increasing difficulty.
+ * This class extends the Application class and implements EventHandler<KeyEvent> and GameEngine.OnAction interfaces.
+ *
+ * @author Chhat
+ * @version 1.0
+ * @since 9 December 2023
+ */
 public class Main extends Application implements EventHandler<KeyEvent>, GameEngine.OnAction {
     // Constants
     private static final int LEFT  = 1;
     private static final int RIGHT = 2;
     private static int paddleWidth = 90;
     private static final int PADDLE_HEIGHT = 14;
-    private static final int ballRadius = 10;
+    private static int ballRadius = 10;
     private static final int SCENE_WIDTH = 500;
     private static final int SCENE_HEIGHT = 700;
 
     // Game State Variables
-    protected int level = 0;
-    protected int score = 0;
-    private int heart = 1;
+    protected int level = 1;
+    private int score = 0;
+    private int heart = 3;
     private int destroyedBlockCount = 0;
 
     // Paddle Variables
@@ -51,12 +63,13 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private Circle ball;
     private double ballPosX;
     private double ballPosY;
-    // Example renamed from vX
+    double fallSpeed = 2.0;
+
 
     // Game Mechanics Variables
     private boolean loadFromSave = false;
-    private long time = 0;
-    private long goldTime = 0;
+    private volatile long time = 0;
+    private volatile long goldTime = 0;
 
     // UI Components
     Pane root;
@@ -84,9 +97,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     // RandomBlock Temporary Variables
     long paddleWidthChangeTime;
-    boolean paddleWidthChanged;
+    private volatile boolean paddleWidthChanged;
     long ballSizeChangeTime;
-    boolean ballSizeChanged;
+    private volatile boolean ballSizeChanged;
     int originalPaddleWidth;
     int originalBALL_RADIUS;
     long paddleWidthChangeDuration = 0;
@@ -97,11 +110,19 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     protected final ArrayList<Block> blocks = new ArrayList<>();
     private final ArrayList<Bonus> chocos = new ArrayList<>();
     protected final Color[] colors = new Color[]{
-            Color.MAGENTA, Color.RED, Color.GOLD, Color.CORAL,
-            Color.AQUA, Color.VIOLET, Color.GREENYELLOW,
-            Color.ORANGE, Color.PINK,
-            Color.TOMATO,
+            Color.rgb(0, 0, 128),          // Dark Blue
+            Color.rgb(255, 255, 255),      // White
+            Color.rgb(255, 223, 186),      // Peach
+            Color.rgb(135, 206, 250),      // Light Sky Blue
+            Color.rgb(255, 165, 0),        // Orange
+            Color.rgb(147, 112, 219),      // Medium Purple
+            Color.rgb(0, 128, 128),        // Teal
+            Color.rgb(255, 69, 0),         // Red-Orange
+            Color.rgb(128, 0, 128),        // Purple
+            Color.rgb(176, 196, 222)       // Light Steel Blue
     };
+
+
 
     // File Paths for Saving and Loading
     public static final String SAVE_PATH = "./save/save.mdds";
@@ -118,6 +139,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private UIManager uiManager;
 
+    /**
+     * The start method is the main entry point for the JavaFX application.
+     * It initializes the game by displaying the main menu.
+     *
+     * @param primaryStage The primary stage where the game's scenes will be displayed.
+     */
     @Override
     public void start(Stage primaryStage) {
         MainMenu mainMenu = new MainMenu(primaryStage, this);
@@ -140,12 +167,22 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private void createUIComponents() {
         root = new Pane();
         this.uiManager = new UIManager(root);
-        String backgroundImagePath = "/images/Background Images/backgroundImage-" + level + ".png";
-        // Restart game has issues when utilizing this code, fix in the future
-        this.uiManager.makeBackgroundImage(backgroundImagePath);
-        this.uiManager.makeHeartScore(heart, score, level);
+        updateBackgroundImage();
+        this.uiManager.makeHeartScore(heart, getScore(), level);
         root.getChildren().addAll(rect, ball);
     }
+
+    private void updateBackgroundImage() {
+        String backgroundImagePath = "/images/Background Images/backgroundImage-" + level + ".png";
+        // Check if the resource exists
+        if (getClass().getResource(backgroundImagePath) == null) {
+            System.err.println("Background image not found for level " + level + ": " + backgroundImagePath);
+            // Optionally, set a default background image
+            backgroundImagePath = "/images/Background Images/defaultBackground.png";
+        }
+        this.uiManager.makeBackgroundImage(backgroundImagePath);
+    }
+
 
     private void setUpBlocks() {
         if (!loadFromSave) {
@@ -176,24 +213,18 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         engine.setOnAction(this);
         engine.setFps(120);
         engine.start();
+        this.loadFromSave = false;
     }
 
+    /**
+     * Main method to start a new game session.
+     *
+     * @param primaryStage The primary stage for displaying the game.
+     */
     public void newGame(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
-        if (!loadFromSave) {
-            level++;
-            if (level > 1) {
-                new Score().showMessage("Level Up :)", this);
-            }
-
-            //11
-            if (level == 11) {
-                YouWinScreen.display(this, primaryStage);
-                return;
-            }
-        }
-
+        checkLevels();
         initializeGameObjects();
         setUpGameBoard();
         createUIComponents();
@@ -202,6 +233,23 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         startGameEngine();
     }
 
+
+    private void checkLevels() {
+        if (level > 1) {
+            new Score().showMessage(this);
+        }
+
+        if (level == 11) {
+            SoundManager.winSound();
+            YouWinScreen.display(this, primaryStage);
+        }
+    }
+
+    /**
+     * Handles user keyboard input events such as moving the paddle and pausing the game.
+     *
+     * @param event The KeyEvent representing the user's keyboard input.
+     */
     @Override
     public void handle(KeyEvent event) {
         if (event.getEventType() == KeyEvent.KEY_PRESSED) {
@@ -214,10 +262,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private void handleKeyPressed(KeyEvent event) {
         switch (event.getCode()) {
             case A:
+            case LEFT:
                 leftKeyPressed = true;
                 movePaddleX(LEFT);
                 break;
             case D:
+            case RIGHT:
                 rightKeyPressed = true;
                 movePaddleX(RIGHT);
                 break;
@@ -231,9 +281,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private void handleKeyReleased(KeyEvent event) {
         switch (event.getCode()) {
             case A:
+            case LEFT:
                 leftKeyPressed = false;
                 break;
             case D:
+
+            case RIGHT:
                 rightKeyPressed = false;
                 break;
         }
@@ -264,7 +317,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private void initializeBall() {
         ballPosX = SCENE_WIDTH / 2.0;
-        ballPosY = SCENE_HEIGHT / 2.0;
+        ballPosY = SCENE_HEIGHT * 0.7 ;
         ball = new Circle();
         ball.setRadius(ballRadius);
         ball.setFill(new ImagePattern(new Image("/images/ball.png")));
@@ -367,11 +420,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         double nextX = ballPosX + (goRightBall ? ballVelocityX : -ballVelocityX);
         double nextY = ballPosY + (goDownBall ? ballVelocityY : -ballVelocityY);
 
+
         // Check for collision in the path between current position and next position, to fix the bug where it phases through the paddle
         if (nextY + ballRadius >= paddleMoveY && nextY - ballRadius <= paddleMoveY + PADDLE_HEIGHT) {
-            if (nextX + ballRadius >= paddleMoveX && nextX - ballRadius <= paddleMoveX + paddleWidth) {
-                return true;
-            }
+            return nextX + ballRadius >= paddleMoveX && nextX - ballRadius <= paddleMoveX + paddleWidth;
         }
         return false;
     }
@@ -386,8 +438,23 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private void calculateBallVelocity() {
         double relation = (ballPosX - centerBreakX) / ((double) paddleWidth / 2);
-        ballVelocityX = Math.abs(relation) * MAX_VELOCITY_X; // MAX_VELOCITY_X can be a constant defining max horizontal velocity
-        ballVelocityY = Math.sqrt(Math.pow(MAX_VELOCITY, 2) - Math.pow(ballVelocityX, 2)); // MAX_VELOCITY is the maximum speed of the ball
+//        ballVelocityX = Math.abs(relation) * MAX_VELOCITY_X; // MAX_VELOCITY_X can be a constant defining max horizontal velocity
+//        ballVelocityY = Math.sqrt(Math.pow(MAX_VELOCITY, 2) - Math.pow(ballVelocityX, 2)); // MAX_VELOCITY is the maximum speed of the ball
+
+        // Ensure relation is not too small to avoid division by zero
+        if (Math.abs(relation) < 0.001) {
+            relation = 0.001 * Math.signum(relation);
+        }
+
+        ballVelocityX = Math.abs(relation) * MAX_VELOCITY_X; // Ensure this doesn't exceed MAX_VELOCITY_X
+        ballVelocityX = Math.min(ballVelocityX, MAX_VELOCITY_X);
+
+        // Calculate ballVelocityY ensuring it's not NaN
+        double velocityYSquared = Math.pow(MAX_VELOCITY, 2) - Math.pow(ballVelocityX, 2);
+        if (velocityYSquared < 0) {
+            velocityYSquared = 0;
+        }
+        ballVelocityY = Math.sqrt(velocityYSquared);
 
         // Add spin effect based on paddle movement
         if (leftKeyPressed) {
@@ -435,20 +502,25 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private void checkDestroyedCount() {
         if (destroyedBlockCount == blocks.size()) {
+            SoundManager.levelUp();
+            level++;
             nextLevel();
         }
     }
 
+    /**
+     * Saves the current game state to a file for later retrieval.
+     */
     protected void saveGame() {
         new Thread(() -> {
-            new File(savePathDir).mkdirs();
+            new File(savePathDir);
             File file = new File(SAVE_PATH);
             ObjectOutputStream outputStream = null;
             try {
                 outputStream = new ObjectOutputStream(new FileOutputStream(file));
 
                 outputStream.writeInt(level);
-                outputStream.writeInt(score);
+                outputStream.writeInt(getScore());
                 outputStream.writeInt(heart);
                 outputStream.writeInt(destroyedBlockCount);
                 outputStream.writeDouble(ballPosX);
@@ -499,7 +571,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     }
 
-    protected void loadGame(Stage primaryStage) {
+    /**
+     * Loads a previously saved game state from the save file.
+     *
+     * @param primaryStage The primary stage where the loaded game will be displayed.
+     */
+    public void loadGame(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
         File saveFile = new File(SAVE_PATH);
@@ -525,7 +602,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         collideToLeftBlock = gameState.collideToLeftBlock;
         collideToTopBlock = gameState.collideToTopBlock;
         level = gameState.level;
-        score = gameState.score;
+        setScore(gameState.score);
         heart = gameState.heart;
         destroyedBlockCount = gameState.destroyedBlockCount;
         ballPosX = gameState.xBall;
@@ -539,6 +616,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
         blocks.clear();
         chocos.clear();
+
 
         if (this.root == null) {
             this.root = new Pane();
@@ -558,8 +636,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
         loadFromSave = true;
         newGame(primaryStage);
+
     }
 
+    /**
+     * Handles level progression and game state when advancing to the next level.
+     */
     private void nextLevel() {
         Platform.runLater(() -> {
             try {
@@ -575,7 +657,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 chocos.clear();
                 destroyedBlockCount = 0;
                 newGame(primaryStage);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -585,9 +666,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public void restartGame() {
 
         try {
-            level = 0;
+            level = 1;
             heart = 3;
-            score = 0;
+            setScore(0);
             ballVelocityX = 1.000;
             destroyedBlockCount = 0;
             resetCollideFlags();
@@ -605,6 +686,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }
     }
 
+    /**
+     * Updates the game objects' positions and handles collision and collision detection in each frame.
+     */
     @Override
     public void onUpdate() {
         resetTemporaryChanges();
@@ -616,13 +700,13 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private void updateUIComponents() {
         Platform.runLater(() -> {
-            uiManager.setScore(score);
+            uiManager.setScore(getScore());
             Label heartLabelFromUIManager = uiManager.getHeartLabel();
             heartLabelFromUIManager.setText("Hearts: " + heart);
         });
     }
 
-    private void updateGameObjects() {
+    private synchronized void updateGameObjects() {
         Platform.runLater(() -> {
             rect.setX(paddleMoveX);
             rect.setY(paddleMoveY);
@@ -671,7 +755,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
 
     private void handleBlockHit(Block block, int hitCode) {
-        score += 1;
+        setScore(getScore() + 1);
         new Score().show(block.x, block.y, 1, this);
 
         block.rect.setVisible(false);
@@ -704,18 +788,21 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             handleGoldenTimeBlock();
         } else if (block.type == Block.BLOCK_HEART) {
             heart++;
+            SoundManager.heartBonus();
         }
     }
 
     private void handleRandomBlock(Block block) {
-        final Bonus choco = new Bonus(block.row, block.column);
-        choco.timeCreated = time;
-        Platform.runLater(() -> root.getChildren().add(choco.choco));
-        chocos.add(choco);
+        Platform.runLater(() -> {
+            final Bonus choco = new Bonus(block.row, block.column);
+            choco.timeCreated = time;
+            root.getChildren().add(choco.choco);
+            chocos.add(choco);
+        });
     }
 
     private void handleGoldenTimeBlock() {
-        goldTime = time;
+        goldTime = System.currentTimeMillis();
         ball.setFill(new ImagePattern(new Image("/images/goldBall.png")));
         SoundManager.goldBallPowerUp();
         isGoldStatus = true;
@@ -732,99 +819,211 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 continue;
             }
 
-            if (choco.y >= paddleMoveY && choco.y <= paddleMoveY + PADDLE_HEIGHT && choco.x >= paddleMoveX && choco.x <= paddleMoveX + paddleWidth) {
+            if (choco.y >= paddleMoveY && choco.y <= paddleMoveY + PADDLE_HEIGHT
+                    && choco.x >= paddleMoveX && choco.x <= paddleMoveX + paddleWidth) {
                 applyBonusEffect(choco);
                 iterator.remove();
             } else {
-                choco.y += ((time - choco.timeCreated) / 1000.000) + 1.000;
+                // Update the Y position to simulate falling
+                choco.y += fallSpeed;
+
+                Platform.runLater(() -> choco.choco.setY(choco.y));
             }
         }
     }
 
+    /**
+     * Applies the effect of collecting a bonus item when the ball collides with it.
+     *
+     * @param choco The bonus item that was collected.
+     */
     private void applyBonusEffect(Bonus choco) {
         SoundManager.collectBonus();
+
         choco.taken = true;
         choco.choco.setVisible(false);
 
         Random rand = new Random();
-        int effect = rand.nextInt(3); // Assuming 3 different types of bonuses
+        int effect = rand.nextInt(3);
 
         switch (effect) {
             case 0:
-                applyPaddleSizeEffect(rand);
+                Platform.runLater(() -> applyPaddleSizeEffect(rand));
                 break;
             case 1:
-                applyScoreEffect(rand);
+                Platform.runLater(() -> applyScoreEffect(rand));
                 break;
             case 2:
-                applyBallSizeEffect(rand);
+                Platform.runLater(() -> applyBallSizeEffect(rand));
                 break;
         }
         new Score().show(choco.x, choco.y, 3, this);
     }
 
+    /**
+     * Applies the effect of changing the paddle size when a "Paddle Size" bonus is collected.
+     *
+     * @param rand A random number generator for determining the effect.
+     */
     private void applyPaddleSizeEffect(Random rand) {
+        // Store the original paddle width before the change
         originalPaddleWidth = paddleWidth;
-        // Randomly decide whether to increase or decrease the paddle width
+
+        // Compute a random size change and update the paddle width and position accordingly
+        int sizeChange = computeSizeChange(rand);
+        updatePaddleWidth(sizeChange);
+        updatePaddlePosition(sizeChange);
+
+        // Log the paddle size change and its duration
+        logPaddleSizeChange(rand);
+    }
+
+    /**
+     * Computes a random size change for the paddle.
+     *
+     * @param rand A random number generator for determining the size change.
+     * @return The size changes value.
+     */
+    private int computeSizeChange(Random rand) {
+        // Determine whether to increase or decrease the paddle width
         boolean increaseWidth = rand.nextBoolean();
-        if (increaseWidth) {
-            paddleWidth += rand.nextInt(6) + 20; // Increase width
-        } else {
-            paddleWidth -= rand.nextInt(6) + 20; // Decrease width
-            paddleWidth = Math.max(paddleWidth, 20); // Ensure the paddle width doesn't go below a reasonable minimum
+        int sizeChange = rand.nextInt(6) + 20; // Random size change between 20 and 25
+
+        // If decreasing width, make sizeChange negative and ensure a minimum width
+        if (!increaseWidth) {
+            sizeChange = -sizeChange;
+            paddleWidth = Math.max(paddleWidth + sizeChange, 20);
         }
+
+        return sizeChange;
+    }
+
+
+    /**
+     * Updates the paddle width based on the given size change.
+     *
+     * @param sizeChange The change in paddle width.
+     */
+    private void updatePaddleWidth(int sizeChange) {
+        paddleWidth += sizeChange;
         rect.setWidth(paddleWidth);
+    }
+
+
+    /**
+     * Updates the paddle position based on the given size change.
+     *
+     * @param sizeChange The change in paddle width that affects its position.
+     */
+    private void updatePaddlePosition(int sizeChange) {
+        // Calculate a change factor to adjust the paddle's X position
+        double changeFactor = (double) sizeChange / 2;
+
+        // Ensure the paddle stays within the scene boundaries
+        paddleMoveX -= changeFactor;
+        paddleMoveX = Math.max(paddleMoveX, 0);
+        paddleMoveX = Math.min(paddleMoveX, SCENE_WIDTH - paddleWidth);
+    }
+
+
+    /**
+     * Logs the paddle size change and its duration to the console.
+     *
+     * @param rand A random number generator for determining the duration.
+     */
+    private void logPaddleSizeChange(Random rand) {
         paddleWidthChangeTime = System.currentTimeMillis();
-        paddleWidthChangeDuration = (rand.nextInt(6) + 5) * 1000;
+        paddleWidthChangeDuration = (rand.nextInt(6) + 5) * 1000; // Random duration between 5 and 10 seconds
         paddleWidthChanged = true;
-        System.out.println("Paddle width changed from " + originalPaddleWidth + " to " + paddleWidth + " for " + (paddleWidthChangeDuration / 1000) + " seconds.");
+        System.out.println("\u001B[35m" + "Paddle width changed from " + originalPaddleWidth + " to " + paddleWidth + " for " + (paddleWidthChangeDuration / 1000) + " seconds." + "\u001B[0m");
     }
 
 
     private void applyBallSizeEffect(Random rand) {
         originalBALL_RADIUS = ballRadius;
-        double newBallRadius = ballRadius + rand.nextInt(11) - 5;
+        updateBallPositionBonus();
+        double newBallRadius = computeNewBallRadius(rand);
         ball.setRadius(newBallRadius);
+
+        logBallSizeChange(rand);
+    }
+
+    private void updateBallPositionBonus() {
+        ballPosX = Math.max(ballPosX, ballRadius);
+        ballPosX = Math.min(ballPosX, SCENE_WIDTH - ballRadius);
+        ballPosY = Math.max(ballPosY, ballRadius);
+        ballPosY = Math.min(ballPosY, SCENE_HEIGHT - ballRadius);
+    }
+
+    private double computeNewBallRadius(Random rand) {
+        double newBallRadius = ballRadius + rand.nextInt(11) - 5;
+        ballPosX += (newBallRadius - ballRadius);
+        ballPosY += (newBallRadius - ballRadius);
+        return newBallRadius;
+    }
+
+    private void logBallSizeChange(Random rand) {
         ballSizeChangeTime = System.currentTimeMillis();
         ballSizeChangeDuration = (rand.nextInt(6) + 5) * 1000;
         ballSizeChanged = true;
-        System.out.println("Ball size changed from " + originalBALL_RADIUS + " to " + newBallRadius + " for " + (ballSizeChangeDuration / 1000) + " seconds.");
+
+        System.out.println("\u001B[31m" + "Ball size changed from " + originalBALL_RADIUS + " to " + ball.getRadius() + " for " + (ballSizeChangeDuration / 1000) + " seconds." + "\u001B[0m");
     }
 
     private void applyScoreEffect(Random rand) {
-        int bonusPoints = rand.nextInt(6) + 3; // Random bonus points between 3 to 8
-        score += bonusPoints;
-        System.out.println("Bonus " + bonusPoints + " points!");
+        int bonusPoints = rand.nextInt(6) + 3;
+        setScore(getScore() + bonusPoints);
+        logScoreEffect(bonusPoints);
     }
 
-
-    @Override
-    public void onPhysicsUpdate() {
-        checkDestroyedCount();
-        setPhysicsToBall();
-        if (time - goldTime > 5000) {
-            ball.setFill(new ImagePattern(new Image("/images/ball.png")));
-            isGoldStatus = false;
-        }
+    private void logScoreEffect(int bonusPoints) {
+        System.out.println("\u001B[33m" + "Bonus " + bonusPoints + " points!" + "\u001B[0m");
     }
-
 
     private void resetTemporaryChanges() {
         long currentTime = System.currentTimeMillis();
+
         if (paddleWidthChanged && (currentTime - paddleWidthChangeTime) >= paddleWidthChangeDuration) {
             paddleWidth = originalPaddleWidth;
             rect.setWidth(paddleWidth);
             paddleWidthChanged = false;
         }
+
         if (ballSizeChanged && (currentTime - ballSizeChangeTime) >= ballSizeChangeDuration) {
+            ballRadius = originalBALL_RADIUS;
             ball.setRadius(ballRadius);
             ballSizeChanged = false;
         }
     }
+
+    /**
+     * Performs physics calculations and updates game state on each game loop iteration.
+     */
+    @Override
+    public void onPhysicsUpdate() {
+        checkDestroyedCount();
+        setPhysicsToBall();
+        if (isGoldStatus && (System.currentTimeMillis() - goldTime) > 5000) {
+            ball.setFill(new ImagePattern(new Image("/images/ball.png")));
+            isGoldStatus = false;
+        }
+    }
+
+    /**
+     * Callback method for tracking game time.
+     *
+     * @param time The current game time in milliseconds.
+     */
     @Override
     public void onTime(long time) {
         this.time = time;
     }
 
+    public int getScore() {
+        return score;
+    }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
 }

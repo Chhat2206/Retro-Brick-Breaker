@@ -32,7 +32,9 @@ public class GameState {
     public double vX;
     public ArrayList<BlockSerializable> blocks = new ArrayList<>();
 
-
+    /**
+     * Reads the game state from a saved file, populating the fields of this object for the loadGame function to use.
+     */
     public void read() {
         try {
             ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(Main.SAVE_PATH));

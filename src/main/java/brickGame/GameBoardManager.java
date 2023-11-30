@@ -2,15 +2,28 @@ package brickGame;
 
 import java.util.Random;
 
+/**
+ * The GameBoardManager class manages the setup of the game board layout for different levels
+ * in the Brick Game.
+ */
 public class GameBoardManager {
-    private Main mainInstance;
-    private Random random;
+    private final Main mainInstance;
+    private final Random random;
 
+    /**
+     * Constructs a new GameBoardManager with a reference to the Main instance.
+     *
+     * @param mainInstance The Main instance of the game.
+     */
     public GameBoardManager(Main mainInstance) {
         this.mainInstance = mainInstance;
         this.random = new Random();
     }
 
+    /**
+     * Sets up the game board layout based on the current level.
+     * Clears existing blocks and generates a new layout.
+     */
     protected void setupGameBoard() {
         mainInstance.blocks.clear();
         switch (mainInstance.level) {
@@ -50,14 +63,40 @@ public class GameBoardManager {
         }
     }
 
+    /**
+     * Creates the layout for Level 1, which represents a space ship.
+     * This layout consists of a space ship shape.
+     */
     private void createLevel1Layout() {
-        // Simple row of blocks
-        for (int i = 0; i < 5; i++) {
-            int blockType = determineBlockType(random.nextInt(100));
-            mainInstance.blocks.add(new Block(0, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+        // Create a space ship to take you on your journey
+        int[][] spaceShip = {
+                {0, 0, 1, 1, 1, 1, 1, 0, 0},
+                {0, 1, 0, 0, 0, 0, 0, 1, 0},
+                {1, 0, 0, 1, 0, 1, 0, 0, 1},
+                {1, 0, 0, 1, 0, 1, 0, 0, 1},
+                {1, 0, 1, 1, 1, 1, 1, 0, 1}
+        };
+
+        for (int j = 0; j < 5; j++) {
+            for (int i = 0; i < 9; i++) {
+                if (spaceShip[j][i] == 1) {
+                    int blockType = determineBlockType(random.nextInt(100));
+                    mainInstance.blocks.add(new Block(i, j, mainInstance.colors[j % mainInstance.colors.length], blockType));
+                }
+            }
         }
     }
+//        int row = 6;
+//        int column = 2;
+//        int blockType = determineBlockType(random.nextInt(100));
+//        mainInstance.blocks.add(new Block(row, column, mainInstance.colors[column % mainInstance.colors.length], blockType));
+//    }
 
+
+    /**
+     * Creates the layout for Level 2, which represents an X shape pattern.
+     * This layout forms an X shape with blocks.
+     */
     private void createLevel2Layout() {
         // X shape
         for (int j = 0; j < 12; j++) {
@@ -70,17 +109,26 @@ public class GameBoardManager {
         }
     }
 
-
+    /**
+     * Creates the layout for Level 3, which consists of random dots scattered on the board.
+     * This layout generates random dots with some sparsity.
+     */
     private void createLevel3Layout() {
-    // Pyramid Shape
-        for (int j = 0; j < 12; j++) {
-        for (int i = Math.max(0, j - 7); i < Math.min(5, 12 - j); i++) {
-            int blockType = determineBlockType(random.nextInt(100));
-            mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+        // Random Dots
+        for (int j = 0; j < 13; j++) {
+            for (int i = 0; i < 5; i++) {
+                if (random.nextBoolean() && random.nextBoolean()) { // Double randomness for sparser dots
+                    int blockType = determineBlockType(random.nextInt(100));
+                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                }
+            }
         }
     }
-}
 
+    /**
+     * Creates the layout for Level 4, which represents a checkerboard pattern.
+     * This layout forms a checkerboard pattern with blocks.
+     */
     private void createLevel4Layout() {
         // Checkerboard pattern
         for (int j = 0; j < 12; j++) {
@@ -93,14 +141,15 @@ public class GameBoardManager {
         }
     }
 
+    /**
+     * Creates the layout for Level 5, which consists of vertical lines.
+     * This layout generates vertical lines with blocks.
+     */
     private void createLevel5Layout() {
-        // Circle shape
-        int centerX = 2;
-        int centerY = 6; // Adjusted for 12 vertical blocks
-        int radius = 3; // Adjusted radius
-        for (int j = 0; j < 12; j++) {
+        // Vertical Lines
+        for (int j = 0; j < 13; j++) {
             for (int i = 0; i < 5; i++) {
-                if (Math.pow(i - centerX, 2) + Math.pow(j - centerY, 2) <= Math.pow(radius, 2)) {
+                if (i % 2 == 0) { // Every alternate column
                     int blockType = determineBlockType(random.nextInt(100));
                     mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
                 }
@@ -108,11 +157,15 @@ public class GameBoardManager {
         }
     }
 
+    /**
+     * Creates the layout for Level 6, which represents a horizontal zigzag pattern.
+     * This layout forms a horizontal zigzag with blocks.
+     */
     private void createLevel6Layout() {
-        // Alternative Columns
+        // Horizontal Zigzag
         for (int j = 0; j < 13; j++) {
             for (int i = 0; i < 5; i++) {
-                if (j % 2 == 0) {
+                if ((j / 2 + i) % 2 == 0) {
                     int blockType = determineBlockType(random.nextInt(100));
                     mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
                 }
@@ -120,11 +173,15 @@ public class GameBoardManager {
         }
     }
 
+    /**
+     * Creates the layout for Level 7, which represents a vertical zip zag pattern.
+     * This layout forms a vertical zip zag with blocks.
+     */
     private void createLevel7Layout() {
-        // Vertical Stripes
+        // Verticle Zip Zag
         for (int j = 0; j < 13; j++) {
             for (int i = 0; i < 5; i++) {
-                if (j % 2 == 0) {
+                if ((i / 2 + j) % 2 == 0) {
                     int blockType = determineBlockType(random.nextInt(100));
                     mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
                 }
@@ -132,37 +189,26 @@ public class GameBoardManager {
         }
     }
 
+    /**
+     * Creates the layout for Level 8, which represents a space ship pattern.
+     * This layout generates a space ship pattern with blocks.
+     */
     private void createLevel8Layout() {
-        // Spiral Pattern - LOL DID NOT WORK
-        int minRow = 0, maxRow = 12, minCol = 0, maxCol = 4;
-        while (minRow < maxRow && minCol < maxCol) {
-            for (int i = minCol; i < maxCol; i++) {
-                int blockType = determineBlockType(random.nextInt(100));
-                mainInstance.blocks.add(new Block(minRow, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
-            }
-            minRow++;
-            for (int i = minRow; i < maxRow; i++) {
-                int blockType = determineBlockType(random.nextInt(100));
-                mainInstance.blocks.add(new Block(i, maxCol - 1, mainInstance.colors[(maxCol - 1) % mainInstance.colors.length], blockType));
-            }
-            maxCol--;
-            if (minRow < maxRow) {
-                for (int i = maxCol - 1; i >= minCol; i--) {
+        // Space Ship!
+        for (int j = 0; j < 13; j++) {
+            for (int i = 0; i < 5; i++) {
+                if (j % 3 == 0 || i % 2 == 0) {
                     int blockType = determineBlockType(random.nextInt(100));
-                    mainInstance.blocks.add(new Block(maxRow - 1, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
                 }
-                maxRow--;
-            }
-            if (minCol < maxCol) {
-                for (int i = maxRow - 1; i >= minRow; i--) {
-                    int blockType = determineBlockType(random.nextInt(100));
-                    mainInstance.blocks.add(new Block(i, minCol, mainInstance.colors[minCol % mainInstance.colors.length], blockType));
-                }
-                minCol++;
             }
         }
     }
 
+    /**
+     * Creates the layout for Level 9, which represents a zigzag pattern.
+     * This layout forms a zigzag pattern with blocks.
+     */
     private void createLevel9Layout() {
         // Zig Zag
         for (int j = 0; j < 13; j++) {
@@ -175,6 +221,10 @@ public class GameBoardManager {
         }
     }
 
+    /**
+     * Creates the layout for Level 10, which represents a diamond shape pattern.
+     * This layout forms a diamond shape with blocks.
+     */
     private void createLevel10Layout() {
         // Diamond Shape
         int midRow = 6;
@@ -190,10 +240,16 @@ public class GameBoardManager {
     }
 
 
+//        int row = 6;
+//        int column = 2;
+//        int blockType = determineBlockType(random.nextInt(100));
+//        mainInstance.blocks.add(new Block(row, column, mainInstance.colors[column % mainInstance.colors.length], blockType));
+//    }
 
-
-
-
+    /**
+     * Creates the default game board layout when the level is not recognized or specified.
+     * This layout is used as a fallback if the level number is not recognized by the game.
+     */
     private void createDefaultLayout() { // Worst case if program fails. Best case, it will never be utilized.
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < mainInstance.level + 1; j++) {
@@ -210,6 +266,12 @@ public class GameBoardManager {
         }
     }
 
+    /**
+     * Determines the block type based on a randomized value.
+     *
+     * @param randomValue The random value used to determine the block type.
+     * @return The type of block to be generated.
+     */
     private int determineBlockType(int randomValue) {
         if (randomValue < 10) {
             return Block.BLOCK_RANDOM;

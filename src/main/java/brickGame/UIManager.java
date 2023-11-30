@@ -5,18 +5,43 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-
+/**
+ * The UIManager class manages the user interface elements for a game.
+ * It provides methods for setting background images and displaying labels for
+ * game-related information such as level, score, and hearts.
+ */
 public class UIManager {
 
+    /**
+     * The root pane where the UI elements are displayed.
+     */
     private final Pane root;
+
+    /**
+     * The label that displays the current heart count.
+     */
     private Label heartLabel;
+
+    /**
+     * The label that displays the current score.
+     */
     private Label scoreLabel;
 
 
+    /**
+     * Creates a new UIManager with the specified root pane.
+     *
+     * @param root The root pane where UI elements will be displayed.
+     */
     public UIManager(Pane root) {
         this.root = root;
     }
 
+    /**
+     * Sets the background image for the UI.
+     *
+     * @param imagePath The path to the background image.
+     */
     public void makeBackgroundImage(String imagePath) {
         Image bgImage = new Image(imagePath);
         BackgroundImage backgroundImage = new BackgroundImage(bgImage,
@@ -27,6 +52,13 @@ public class UIManager {
         this.root.setBackground(new Background(backgroundImage));
     }
 
+    /**
+     * Displays labels for the heart count, score, and level.
+     *
+     * @param heart The current heart count.
+     * @param score The current score.
+     * @param level The current level.
+     */
     public void makeHeartScore(int heart, int score, int level) {
 
         // Level label setup
@@ -62,10 +94,20 @@ public class UIManager {
     }
 
 
+    /**
+     * Gets the label displaying the heart count.
+     *
+     * @return The heart count label.
+     */
     public Label getHeartLabel() {
         return heartLabel;
     }
 
+    /**
+     * Sets the score and updates the score label.
+     *
+     * @param score The new score to be displayed.
+     */
     public void setScore(int score) {
         Platform.runLater(() -> {
             if (scoreLabel != null) {
@@ -73,7 +115,5 @@ public class UIManager {
             }
         });
     }
-
-
 
 }

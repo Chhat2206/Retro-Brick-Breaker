@@ -5,4 +5,8 @@ module brickGame {
 
     opens brickGame to javafx.fxml;
     exports brickGame;
+    exports brickGame.screens;
+    opens brickGame.screens to javafx.fxml;
+    exports brickGame.menus;
+    opens brickGame.menus to javafx.fxml;
 }
