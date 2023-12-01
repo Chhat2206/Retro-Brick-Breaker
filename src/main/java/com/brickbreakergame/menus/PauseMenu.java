@@ -1,5 +1,8 @@
-package brickGame;
+package com.brickbreakergame.menus;
 
+import com.brickbreakergame.GameEngine;
+import com.brickbreakergame.Main;
+import com.brickbreakergame.managers.SoundManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -24,6 +27,7 @@ public class PauseMenu {
     private static Stage pauseStage;
     private static VBox pauseLayout;
     private static Button soundButton;
+
 
     /**
      * Displays the pause menu with options for resuming the game, managing sound settings, saving, loading, restarting, and quitting.
@@ -123,7 +127,7 @@ public class PauseMenu {
         Button loadButton = createButton("Load Game", e -> {
             fadeOutMenu();
             SoundManager.buttonClickSound();
-            main.loadGame(main.primaryStage);
+            main.loadGame(Main.getPrimaryStage());
             System.out.println("\u001B[34m" + "Game Loaded" + "\u001B[0m"); // Blue text
             pauseStage.close();
         });
@@ -190,7 +194,7 @@ public class PauseMenu {
     /**
      * Animates the fade-in effect for the pause menu.
      */
-    protected static void fadeInMenu() {
+    public static void fadeInMenu() {
         FadeTransition fadeIn = new FadeTransition(Duration.millis(500), pauseLayout);
         fadeIn.setFromValue(0.3);
         fadeIn.setToValue(1);
@@ -258,4 +262,6 @@ public class PauseMenu {
     public static void resetSoundButtonStyle() {
         soundButton.setStyle("");
     }
+
+
 }

@@ -1,4 +1,4 @@
-package brickGame;
+package com.brickbreakergame;
 
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;

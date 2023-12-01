@@ -1,6 +1,7 @@
-package brickGame;
+package com.brickbreakergame;
 
 
+import com.brickbreakergame.managers.SoundManager;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;

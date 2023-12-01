@@ -108,7 +108,6 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 - ⚠️ **Block Visual Glitch**: Occasionally, block visuals may persist on the screen after a collision, despite the block being non-existent. This causes no physical obstruction, and the game progresses normally once all actual blocks are removed. Temporarily pausing the game (stopping and restarting the game engine) resolves this issue. The occurrence is rare.
 - ⚠️ **Paddle Movement Framerate Dependency**: The paddle's movement speed is tied to the user's frame rate per second (fps). Consequently, on systems with less than 60hz, the paddle movement appears slower, while it seems faster on systems exceeding 60hz. The game is optimized for 60 frames per second, which is the most common standard.
 
-
 ## Features Not Implemented:
 - **Feature**: Pause button
   - **Issue**: Main menu did pause very smoothly, no need for a dedicated button
@@ -120,25 +119,58 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
   - **Issue**: The features above (and those unmentioned) were implemented but did not fit the theme and style of the game, as such were removed. The music in particular was removed if the loop got annoying after level 3. Many pieces were removed as a result. The ones left fit the game's theme.
 
 ## New Java Classes
-In this project, several new Java classes were introduced to enhance the game's functionality. Below is a brief description of each class and its purpose:
 
+managers:
 ### SoundManager
 - **Purpose:** Manages all music and sound effects in the game. It allows other classes to access and control sound effects throughout the game.
+src/main/java/brickGame/managers/SoundManager.java
 
+### UIManager
+- **Purpose:** Manages the user interface elements, coordinating between different screens and UI components.
+src/main/java/brickGame/managers/UIManager.java
+
+menus:
 ### MainMenu
 - **Purpose:** Handles the main menu interface, including the display of menu options and navigation.
+src/main/java/brickGame/menus/MainMenu.java
 
 ### PauseMenu
 - **Purpose:** Manages the pause menu, providing options like resume, settings, or exit when the game is paused.
+  src/main/java/brickGame/menus/PauseMenu.java
+
+### Sound Menu
+src/main/java/brickGame/menus/SoundMenu.java
+
+screens:
+### Game Over Screen
+src/main/java/brickGame/screens/GameOverScreen.java
+
+### YouWinScreen
+- **Purpose:** Displays the victory screen when a player wins, showing scores and options for next steps.
+  src/main/java/brickGame/screens/YouWinScreen.java
+
+default:
+
+### Block
+
+### BlockSerializable
+
+### Bonus
 
 ### GameBoardManager
 - **Purpose:** Controls the game board logic, including the layout, piece movements, and game state management.
 
-### UIManager
-- **Purpose:** Manages the user interface elements, coordinating between different screens and UI components.
+### Game Engine
 
-### YouWinScreen
-- **Purpose:** Displays the victory screen when a player wins, showing scores and options for next steps.
+### Game State
+
+### Main
+
+### Score
+
+
+
+
 
 ## Modified Java Classes:
 - List the Java classes you modified from the provided code base. Describe the changes you made and explain why these modifications were necessary.

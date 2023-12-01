@@ -1,4 +1,4 @@
-package brickGame;
+package com.brickbreakergame.managers;
 
 import javafx.application.Platform;
 import javafx.scene.control.Label;

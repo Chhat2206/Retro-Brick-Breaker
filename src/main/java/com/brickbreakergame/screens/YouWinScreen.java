@@ -1,7 +1,7 @@
-package brickGame.screens;
+package com.brickbreakergame.screens;
 
-import brickGame.Main;
-import brickGame.menus.MainMenu;
+import com.brickbreakergame.Main;
+import com.brickbreakergame.menus.MainMenu;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

@@ -1,4 +1,4 @@
-package brickGame;
+package com.brickbreakergame.managers;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;

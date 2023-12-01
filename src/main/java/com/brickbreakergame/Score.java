@@ -1,6 +1,7 @@
-package brickGame;
+package com.brickbreakergame;
 
-import brickGame.screens.GameOverScreen;
+import com.brickbreakergame.managers.SoundManager;
+import com.brickbreakergame.screens.GameOverScreen;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;

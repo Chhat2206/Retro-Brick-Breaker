@@ -1,7 +1,7 @@
-package brickGame.menus;
+package com.brickbreakergame.menus;
 
-import brickGame.Main;
-import brickGame.SoundManager;
+import com.brickbreakergame.Main;
+import com.brickbreakergame.managers.SoundManager;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.scene.Scene;

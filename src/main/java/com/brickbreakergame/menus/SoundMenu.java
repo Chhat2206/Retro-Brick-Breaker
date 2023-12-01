@@ -1,5 +1,6 @@
-package brickGame;
+package com.brickbreakergame.menus;
 
+import com.brickbreakergame.managers.SoundManager;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

@@ -1,8 +1,11 @@
-package brickGame;
+package com.brickbreakergame;
 
 
-import brickGame.menus.MainMenu;
-import brickGame.screens.YouWinScreen;
+import com.brickbreakergame.managers.SoundManager;
+import com.brickbreakergame.managers.UIManager;
+import com.brickbreakergame.menus.MainMenu;
+import com.brickbreakergame.menus.PauseMenu;
+import com.brickbreakergame.screens.YouWinScreen;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -73,7 +76,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     // UI Components
     Pane root;
-    protected Stage primaryStage;
+    protected static Stage primaryStage;
 
     // Game Engine, GameBoardManager and Media
     private GameEngine engine;
@@ -138,7 +141,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private UIManager uiManager;
-    private long lastFrameTime = System.nanoTime();
 
     /**
      * The start method is the main entry point for the JavaFX application.
@@ -226,7 +228,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      * @param primaryStage The primary stage for displaying the game.
      */
     public void newGame(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+        Main.primaryStage = primaryStage;
 
         checkLevels();
         initializeGameObjects();
@@ -528,7 +530,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     /**
      * Saves the current game state to a file for later retrieval.
      */
-    protected void saveGame() {
+    public void saveGame() {
         new Thread(() -> {
             new File(savePathDir);
             File file = new File(SAVE_PATH);
@@ -594,7 +596,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      * @param primaryStage The primary stage where the loaded game will be displayed.
      */
     public void loadGame(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+        Main.primaryStage = primaryStage;
 
         File saveFile = new File(SAVE_PATH);
         if (!saveFile.exists()) {
@@ -1043,5 +1045,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public static Stage getPrimaryStage() {
+        return primaryStage;
     }
 }
