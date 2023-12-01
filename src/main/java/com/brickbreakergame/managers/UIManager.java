@@ -62,14 +62,14 @@ public class UIManager {
     public void makeHeartScore(int heart, int score, int level) {
 
         // Level label setup
-        Image levelImage = new Image("/images/Level.png");
+        Image levelImage = new Image("/images/level.png");
         ImageView levelImageView = new ImageView(levelImage);
         levelImageView.setFitHeight(25);
         levelImageView.setFitWidth(25);
         Label levelLabel = new Label("Level: " + level, levelImageView);
 
         // Score label setup
-        Image coinImage = new Image("/images/Coins.png");
+        Image coinImage = new Image("/images/coins.png");
         ImageView coinImageView = new ImageView(coinImage);
         coinImageView.setFitHeight(25);
         coinImageView.setFitWidth(25);

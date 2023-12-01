@@ -924,9 +924,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      * @param sizeChange The change in paddle width.
      */
     private void updatePaddleWidth(int sizeChange) {
-        paddleWidth += sizeChange;
-        rect.setWidth(paddleWidth);
+        if (paddleWidth + sizeChange >= 15) {
+            paddleWidth += sizeChange;
+            rect.setWidth(paddleWidth);
+        }
     }
+
 
 
     /**

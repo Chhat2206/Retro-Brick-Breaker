@@ -1,4 +1,5 @@
 # Block Breaker Game
+![Github Logo.png](documents%2FGithub%20Logo.png)
 ## Compilation Instructions with IntelliJ IDEA, JavaFX 21.01, and Amazon Corretto JDK 19.0.2
 
 Follow these steps to compile and run your Java application using IntelliJ IDEA, JavaFX 21.01, and Amazon Corretto JDK 19.0.2:
@@ -118,65 +119,79 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 - **Feature**: Pause Menu Image, fade out of the pause menu, fixing score, custom paddle and ball chosen by the user, custom level difficulty, original game assets such as unique forest and under water theme, many music pieces such as 8bit pop and looping piano.
   - **Issue**: The features above (and those unmentioned) were implemented but did not fit the theme and style of the game, as such were removed. The music in particular was removed if the loop got annoying after level 3. Many pieces were removed as a result. The ones left fit the game's theme.
 
-## New Java Classes
+# New Java Classes
 
-managers:
+## Managers
 ### SoundManager
 - **Purpose:** Manages all music and sound effects in the game. It allows other classes to access and control sound effects throughout the game.
-src/main/java/brickGame/managers/SoundManager.java
+- **Location:** `src/main/java/brickGame/managers/SoundManager.java`
 
 ### UIManager
 - **Purpose:** Manages the user interface elements, coordinating between different screens and UI components.
-src/main/java/brickGame/managers/UIManager.java
+- **Location:** `src/main/java/brickGame/managers/UIManager.java`
 
-menus:
+## Menus
 ### MainMenu
 - **Purpose:** Handles the main menu interface, including the display of menu options and navigation.
-src/main/java/brickGame/menus/MainMenu.java
+- **Location:** `src/main/java/brickGame/menus/MainMenu.java`
 
 ### PauseMenu
 - **Purpose:** Manages the pause menu, providing options like resume, settings, or exit when the game is paused.
-  src/main/java/brickGame/menus/PauseMenu.java
+- **Location:** `src/main/java/brickGame/menus/PauseMenu.java`
 
-### Sound Menu
-src/main/java/brickGame/menus/SoundMenu.java
+### SoundMenu
+- **Location:** `src/main/java/brickGame/menus/SoundMenu.java`
 
-screens:
-### Game Over Screen
-src/main/java/brickGame/screens/GameOverScreen.java
+## Screens
+### GameOverScreen
+- **Location:** `src/main/java/brickGame/screens/GameOverScreen.java`
 
 ### YouWinScreen
 - **Purpose:** Displays the victory screen when a player wins, showing scores and options for next steps.
-  src/main/java/brickGame/screens/YouWinScreen.java
+- **Location:** `src/main/java/brickGame/screens/YouWinScreen.java`
 
-default:
-
+## Default
 ### Block
+- **Purpose:** Represents a basic building unit in the game, potentially used for constructing levels, obstacles, or other elements.
+- **Location:** `src/main/java/brickGame/Block.java`
 
 ### BlockSerializable
+- **Purpose:** Extends the `Block` class with serialization capabilities, facilitating saving/loading of block states for game persistence.
+- **Location:** `src/main/java/brickGame/BlockSerializable.java`
 
 ### Bonus
+- **Purpose:** Manages bonus items or power-ups in the game, potentially affecting gameplay by providing advantages or special abilities.
+- **Location:** `src/main/java/brickGame/Bonus.java`
 
 ### GameBoardManager
 - **Purpose:** Controls the game board logic, including the layout, piece movements, and game state management.
+- **Location:** `src/main/java/brickGame/GameBoardManager.java`
 
-### Game Engine
+### GameEngine
+- **Purpose:** Core of the game's mechanics, handling the main game loop, state updates, and integration of various game components.
+- **Location:** `src/main/java/brickGame/GameEngine.java`
 
-### Game State
+### GameState
+- **Purpose:** Represents and manages the current state of the game, such as playing, paused, or game over, including state transitions.
+- **Location:** `src/main/java/brickGame/GameState.java`
 
 ### Main
+- **Purpose:** The entry point of the game application, initializing and starting the game.
+- **Location:** `src/main/java/brickGame/Main.java`
 
 ### Score
-
-
-
-
+- **Purpose:** Manages the scoring system of the game, tracking and updating player scores based on game events.
+- **Location:** `src/main/java/brickGame/Score.java`
 
 ## Modified Java Classes:
 - List the Java classes you modified from the provided code base. Describe the changes you made and explain why these modifications were necessary.
 
 ## Unexpected Problems:
 All issues not mentioned here were uninteresting to describe. These are the major issues and fixes with unique solutions.
+### Balancing Game
+- **Issue**: Balancing the game was a lot more tough than expected.
+    - **Solution**: A lot of playtesting and tweaking to make everything perfect.
+  
 ### Collision Detection
 - **Issue**: Collision detection is problematic.
   - **Solution**: Partially resolved by incorporating the ball radius into the 'checkHitToBlock' function, allowing blocks to detect and disappear upon collision with the ball. From there, add many collision checks and redundancy to account for any change in ball movement. ballRadius is added to all relevant items that collide with the ball to ensure smooth gameplay.
