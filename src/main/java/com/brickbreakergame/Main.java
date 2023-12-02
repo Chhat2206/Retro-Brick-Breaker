@@ -142,6 +142,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private UIManager uiManager;
+    GameController gameController = new GameController(this, primaryStage);
 
     /**
      * The start method is the main entry point for the JavaFX application.
@@ -382,7 +383,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      * Resets flags that track ball collisions with various objects.
      * Ensures proper response to new collisions after a collision has occurred.
      */
-    private void resetCollideFlags() {
+    public void resetCollideFlags() {
         collideToBreak = false;
         collideToBreakAndMoveToRight = false;
         collideToRightWall = false;
@@ -770,32 +771,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 e.printStackTrace();
             }
         });
-    }
-
-    /**
-     * Restarts the game, resetting the game state to the initial conditions.
-     */
-    public void restartGame() {
-        try {
-            level = 1;
-            heart = 3;
-            setScore(0);
-            ballVelocityX = 1.000;
-            destroyedBlockCount = 0;
-            resetCollideFlags();
-            goDownBall = true;
-            isGoldStatus = false;
-            isExistHeartBlock = false;
-            time = 0;
-            goldTime = 0;
-            blocks.clear();
-            chocos.clear();
-
-
-            newGame(primaryStage);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -1217,11 +1192,98 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     /**
      * Returns the primary stage of the game.
-     * Returns the primary stage of the game.
      *
      * @return The primary stage used in the game.
      */
     public static Stage getPrimaryStage() {
         return primaryStage;
     }
+    /**
+     * Sets the current game level.
+     * @param level The level to be set for the game.
+     */
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    /**
+     * Sets the number of hearts (lives) for the player.
+     * @param heart The number of hearts to be set.
+     */
+    public void setHeart(int heart) {
+        this.heart = heart;
+    }
+
+    /**
+     * Sets the velocity of the ball in the X direction.
+     * @param ballVelocityX The X velocity to be set for the ball.
+     */
+    public void setBallVelocityX(double ballVelocityX) {
+        this.ballVelocityX = ballVelocityX;
+    }
+
+    /**
+     * Sets the number of blocks destroyed in the game.
+     * @param destroyedBlockCount The count of destroyed blocks to be set.
+     */
+    public void setDestroyedBlockCount(int destroyedBlockCount) {
+        this.destroyedBlockCount = destroyedBlockCount;
+    }
+
+    /**
+     * Sets the flag indicating the direction of the ball's movement.
+     * @param goDownBall True to set the ball to move downwards, false otherwise.
+     */
+    public void setGoDownBall(boolean goDownBall) {
+        this.goDownBall = goDownBall;
+    }
+
+    /**
+     * Sets the status of the 'Gold' mode in the game.
+     * @param isGoldStatus True to activate 'Gold' mode, false to deactivate.
+     */
+    public void setIsGoldStatus(boolean isGoldStatus) {
+        this.isGoldStatus = isGoldStatus;
+    }
+
+    /**
+     * Sets the status of the existence of the heart block in the game.
+     * @param isExistHeartBlock True to indicate the presence of a heart block, false otherwise.
+     */
+    public void setIsExistHeartBlock(boolean isExistHeartBlock) {
+        this.isExistHeartBlock = isExistHeartBlock;
+    }
+
+    /**
+     * Sets the current game time.
+     * @param time The time to be set in the game.
+     */
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    /**
+     * Sets the time when the golden time block was hit.
+     * @param goldTime The time to be set for when the golden time block was activated.
+     */
+    public void setGoldTime(long goldTime) {
+        this.goldTime = goldTime;
+    }
+
+    /**
+     * Gets the list of blocks currently in the game.
+     * @return The list of Block objects.
+     */
+    public ArrayList<Block> getBlocks() {
+        return blocks;
+    }
+
+    /**
+     * Gets the list of chocos (bonuses) currently in the game.
+     * @return The list of Bonus objects.
+     */
+    public ArrayList<Bonus> getChocos() {
+        return chocos;
+    }
+
 }
