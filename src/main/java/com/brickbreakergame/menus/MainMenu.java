@@ -1,4 +1,5 @@
 package com.brickbreakergame.menus;
+import com.brickbreakergame.managers.AnimationManager;
 
 import com.brickbreakergame.Main;
 import com.brickbreakergame.managers.SoundManager;
@@ -30,6 +31,8 @@ public class MainMenu {
      * Reference to the main game application.
      */
     private final Main mainGame;
+
+    private final AnimationManager animationManager = new AnimationManager();
 
     /**
      * Creates a new MainMenu instance.
@@ -69,7 +72,7 @@ public class MainMenu {
 
         Button loadGameButton = createButton("/images/Main Menu/loadGame.png", e -> {
             System.out.println("\u001B[34m" + "Loading Game" + "\u001B[0m"); // Blue text
-            startTransition(primaryStage, () -> mainGame.loadGame(primaryStage));
+            animationManager.startTransition(primaryStage, () -> mainGame.loadGame(primaryStage));
         }, 230, 90);
 
         Button exitButton = createButton("/images/Main Menu/quitGame.png", e -> Platform.exit(), 230, 90);
@@ -141,39 +144,10 @@ public class MainMenu {
             return;
         }
 
-        startTransition(primaryStage, () -> {
+        animationManager.startTransition(primaryStage, () -> {
             Main game = new Main();
             game.newGame(primaryStage);
         });
-    }
-
-    /**
-     * Initiates a transition animation when switching between the main menu and game scene.
-     *
-     * @param stage          The stage where the transition occurs.
-     * @param afterTransition A runnable to be executed after the transition completes.
-     */
-    private void startTransition(Stage stage, Runnable afterTransition) {
-        if (stage == null || stage.getScene() == null || stage.getScene().getRoot() == null) {
-            System.err.println("Stage, Scene, or Root is null. Cannot proceed with transition.");
-            return;
-        }
-
-        TranslateTransition translateOut = new TranslateTransition(Duration.seconds(.2), stage.getScene().getRoot());
-        translateOut.setFromX(0);
-        translateOut.setToX(-stage.getWidth());
-
-        translateOut.setOnFinished(e -> {
-            afterTransition.run();
-
-            Scene newScene = stage.getScene();
-            TranslateTransition translateIn = new TranslateTransition(Duration.seconds(.1), newScene.getRoot());
-            translateIn.setFromX(stage.getWidth()); // Start from the right
-            translateIn.setToX(0); // Move to the original position
-            translateIn.play();
-        });
-
-        translateOut.play();
     }
 
 }

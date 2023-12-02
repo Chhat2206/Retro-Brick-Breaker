@@ -1,4 +1,6 @@
 package com.brickbreakergame.menus;
+import com.brickbreakergame.managers.AnimationManager;
+import com.brickbreakergame.menus.PauseMenu;
 
 import com.brickbreakergame.managers.SoundManager;
 import javafx.geometry.Pos;
@@ -22,7 +24,7 @@ public class SoundMenu {
     private static boolean isMuted = false;
     private static Stage soundStage;
     private static VBox soundLayout;
-
+    private static AnimationManager animationManager = new AnimationManager();
     /**
      * Displays the sound settings menu with volume controls and a mute/unmute button.
      */
@@ -115,9 +117,10 @@ public class SoundMenu {
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> {
             SoundManager.buttonClickSound();
-            PauseMenu.resetSoundButtonStyle();
+            PauseMenu.resetSoundButtonStyle(); // Assuming this resets the sound button style in PauseMenu
             soundStage.close();
-            PauseMenu.fadeInMenu();
+            // Use AnimationManager to fade in the PauseMenu
+            animationManager.fadeInMenu(PauseMenu.getPauseLayout()); // Replace with correct layout
         });
 
         soundLayout.getChildren().add(closeButton);

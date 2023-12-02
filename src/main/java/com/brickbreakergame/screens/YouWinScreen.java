@@ -1,8 +1,9 @@
 package com.brickbreakergame.screens;
+import com.brickbreakergame.managers.AnimationManager;
+
 
 import com.brickbreakergame.Main;
 import com.brickbreakergame.menus.MainMenu;
-import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -17,7 +18,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 
 /**
  * The YouWinScreen class is responsible for displaying the "You Win" screen when the player wins the game.
@@ -27,6 +27,7 @@ public class YouWinScreen {
 
     private static Stage youWinStage;
     private static VBox youWinLayout;
+    private static AnimationManager animationManager = new AnimationManager();
 
     /**
      * Displays the "You Win" screen, allowing the player to restart the game or return to the main menu.
@@ -47,7 +48,8 @@ public class YouWinScreen {
         positionYouWinMenuOverGame(primaryStage);
         initializeBlur(primaryStage);
 
-        fadeInMenu();
+        // Use AnimationManager to fade in the menu
+        animationManager.fadeInMenu(youWinLayout);
 
         youWinStage.showAndWait();
     }
@@ -88,16 +90,16 @@ public class YouWinScreen {
 
         Label scoreLabel = new Label("Score: " + score);
         Button restartButton = createButton("Play Again", e -> {
-            fadeOutMenu();
+            // Use AnimationManager to fade out the menu
+            animationManager.fadeOutMenu(youWinLayout, youWinStage);
             main.restartGame();
-            youWinStage.close();
         });
 
         Button returnButton = createButton("Return to Main Menu", e -> {
-            fadeOutMenu();
+            // Use AnimationManager to fade out the menu
+            animationManager.fadeOutMenu(youWinLayout, youWinStage);
             MainMenu mainMenu = new MainMenu(primaryStage, main);
             mainMenu.display();
-            youWinStage.close();
         });
 
         youWinLayout.getChildren().addAll(youWinImageView, scoreLabel, restartButton, returnButton);
@@ -135,26 +137,5 @@ public class YouWinScreen {
     private static void initializeBlur(Stage primaryStage) {
         GaussianBlur blur = new GaussianBlur(4);
         primaryStage.getScene().getRoot().setEffect(blur);
-    }
-
-    /**
-     * Animates the fade-in effect for the "You Win" screen.
-     */
-    private static void fadeInMenu() {
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(500), youWinLayout);
-        fadeIn.setFromValue(0.3);
-        fadeIn.setToValue(1);
-        fadeIn.play();
-    }
-
-    /**
-     * Animates the fade-out effect for the "You Win" screen and closes the stage.
-     */
-    private static void fadeOutMenu() {
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(500), youWinLayout);
-        fadeOut.setFromValue(1);
-        fadeOut.setToValue(0);
-        fadeOut.setOnFinished(event -> youWinStage.close());
-        fadeOut.play();
     }
 }

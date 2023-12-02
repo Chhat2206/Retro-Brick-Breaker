@@ -1,8 +1,8 @@
 package com.brickbreakergame.screens;
+import com.brickbreakergame.managers.AnimationManager;
 
 import com.brickbreakergame.Main;
 import com.brickbreakergame.menus.MainMenu;
-import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -17,7 +17,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 
 /**
  * The `GameOverScreen` class represents the game over screen displayed when the game ends.
@@ -28,6 +27,7 @@ public class GameOverScreen {
 
     private static Stage gameOverStage;
     private static VBox gameOverLayout;
+    private static AnimationManager animationManager = new AnimationManager();
 
     /**
      * Displays the game over screen.
@@ -48,7 +48,7 @@ public class GameOverScreen {
         positionGameOverMenuOverGame(primaryStage);
         initializeBlur(primaryStage);
 
-        fadeInMenu();
+        animationManager.fadeInMenu(gameOverLayout);
 
         gameOverStage.showAndWait();
     }
@@ -89,16 +89,14 @@ public class GameOverScreen {
 
         Label scoreLabel = new Label("Score: " + score);
         Button restartButton = createButton("Restart", e -> {
-            fadeOutMenu();
+            animationManager.fadeOutMenu(gameOverLayout, gameOverStage);
             main.restartGame();
-            gameOverStage.close();
         });
 
         Button returnButton = createButton("Return to Main Menu", e -> {
-            fadeOutMenu();
+            animationManager.fadeOutMenu(gameOverLayout, gameOverStage);
             MainMenu mainMenu = new MainMenu(primaryStage, main);
             mainMenu.display();
-            gameOverStage.close();
         });
 
         gameOverLayout.getChildren().addAll(gameOverImageView, scoreLabel, restartButton, returnButton);
@@ -138,24 +136,4 @@ public class GameOverScreen {
         primaryStage.getScene().getRoot().setEffect(blur);
     }
 
-    /**
-     * Fades in the game over menu with a smooth animation.
-     */
-    private static void fadeInMenu() {
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(500), gameOverLayout);
-        fadeIn.setFromValue(0.3);
-        fadeIn.setToValue(1);
-        fadeIn.play();
-    }
-
-    /**
-     * Fades out the game over menu with a smooth animation and closes the game over stage when finished.
-     */
-    private static void fadeOutMenu() {
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(500), gameOverLayout);
-        fadeOut.setFromValue(1);
-        fadeOut.setToValue(0);
-        fadeOut.setOnFinished(event -> gameOverStage.close());
-        fadeOut.play();
-    }
 }

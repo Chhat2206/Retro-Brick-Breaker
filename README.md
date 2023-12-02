@@ -1,4 +1,4 @@
-# Block Breaker Game
+# Brick Breaker Game
 ![Github Logo.png](documents%2FGithub%20Logo.png)
 ## Compilation Instructions with IntelliJ IDEA, JavaFX 21.01, and Amazon Corretto JDK 19.0.2
 
@@ -63,13 +63,13 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 - [x] Custom block colors
 - [x] 10 custom levels
 - [x] 10 custom backgrounds
+- [x] Custom sound effects for every action in the game.
 - [x] Custom paddle creation
-- [x] Coin icon and heart icon
+- [x] Coin icon, level icon and heart icon
 - [x] New favicon and title
 - [x] Blur effect behind the level coins and heart menu
 - [x] Custom ball icon and custom heart blocks
-- [x] Random block and gold block
-- [x] Custom sound effect for every action in the game
+- [x] Modified the random block and gold block to be very clean
 - [x] Custom level-up animation and sound effect for leveling up
 - [x] Custom paddle movement for smoother gameplay
 - [x] Custom ball movement mechanics for improved flow
@@ -77,6 +77,8 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 - [x] Unique space border effect for the ball hovering over the paddle
 - [x] Custom bonus icon dropped by the question block
 - [x] Modified bonus icon behavior when the pause menu is open
+- [x] Custom colors when showcasing a power-up bonus for cuter ui
+- [x] Cool animation when player loses and gains a heart
 
 ### Pause and Sound Menu
 - [x] Both menus follow the screen when it's moved
@@ -106,9 +108,9 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 - [x] Restart and main menu buttons with custom UI and clean design
 
 ## Implemented but Not Working Properly:
-- ⚠️ **Block Visual Glitch**: Occasionally, block visuals may persist on the screen after a collision, despite the block being non-existent. This causes no physical obstruction, and the game progresses normally once all actual blocks are removed. Temporarily pausing the game (stopping and restarting the game engine) resolves this issue. The occurrence is rare.
-- ⚠️ **Paddle Movement Framerate Dependency**: The paddle's movement speed is tied to the user's frame rate per second (fps). Consequently, on systems with less than 60hz, the paddle movement appears slower, while it seems faster on systems exceeding 60hz. The game is optimized for 60 frames per second, which is the most common standard.
-
+- ⚠️ **Block Visual Glitch**: Occasionally, block visuals may persist on the screen after a collision, despite the block being non-existent. This causes no physical obstruction, and the game progresses normally once all actual blocks are removed. Temporarily pausing the game (stopping and restarting the game engine) resolves this issue. The occurrence is rare. It has only been observed in level 4 in my testing.
+  - **Steps to counter**: I implemented threads to every block and attempted to stop and start back the engine before every level to prevent the issue. That caused the game to look frozen while generating new levels, so the idea was scrapped. I rewrote the ball movement function, paddle function which helped reduce the frequency but did not work. I created a new thread each time a powerup occured, which caused the game to lag immensely.
+  
 ## Features Not Implemented:
 - **Feature**: Pause button
   - **Issue**: Main menu did pause very smoothly, no need for a dedicated button
@@ -117,7 +119,7 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
   - **Issue**: Seems unnecessary when I modified each sound to be pleasing. I all-ready demonstrated the knowledge of modifying sound with one slider. I also could not make the menu look good.
 
 - **Feature**: Pause Menu Image, fade out of the pause menu, fixing score, custom paddle and ball chosen by the user, custom level difficulty, original game assets such as unique forest and under water theme, many music pieces such as 8bit pop and looping piano.
-  - **Issue**: The features above (and those unmentioned) were implemented but did not fit the theme and style of the game, as such were removed. The music in particular was removed if the loop got annoying after level 3. Many pieces were removed as a result. The ones left fit the game's theme.
+  - **Issue**: The features above (and those unmentioned) were implemented but did not fit the theme and style of the game, as such were removed. The music in particular was removed if the loop got annoying after level 3. Many pieces were removed as a result. The ones left were modified and recreated to fit the game's theme.
 
 # New Java Classes
 
@@ -163,7 +165,7 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 - **Purpose:** Manages bonus items or power-ups in the game, potentially affecting gameplay by providing advantages or special abilities.
 - **Location:** `src/main/java/brickGame/Bonus.java`
 
-### GameBoardManager
+### GameBoard
 - **Purpose:** Controls the game board logic, including the layout, piece movements, and game state management.
 - **Location:** `src/main/java/brickGame/GameBoardManager.java`
 
@@ -201,7 +203,7 @@ All issues not mentioned here were uninteresting to describe. These are the majo
   - **Solution**: Rewrite every function to connect it to threads instead of being interdependent to other non-related states.
 
 ### Persistent Pause Menu
-- **Issue**: The pause menu remained in place when the game screen was moved.
+- **Issue**: The pause menu remained in place when the game screen was moved and did not show the game menu when minimized and reopened.
   - **Solution**: Resolved by adjusting the position of the pause menu based on the game screen's position, and utilizing the game scene as the primary scene.
 
 ### Score Freeze
@@ -231,6 +233,7 @@ All issues not mentioned here were uninteresting to describe. These are the majo
 ### Invalid URL
 - **Issue**: Java URL syntax varies from one function to another without consistency.
   - **Solution**: Added redundancy links in case the primary syntax fails.
+
 
 ## Credits
 The items that are not listed below were hand created by me.

@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+
 /**
  * The UIManager class manages the user interface elements for a game.
  * It provides methods for setting background images and displaying labels for
@@ -12,20 +13,10 @@ import javafx.scene.layout.*;
  */
 public class UIManager {
 
-    /**
-     * The root pane where the UI elements are displayed.
-     */
     private final Pane root;
-
-    /**
-     * The label that displays the current heart count.
-     */
     private Label heartLabel;
-
-    /**
-     * The label that displays the current score.
-     */
     private Label scoreLabel;
+    private Label levelLabel;
 
 
     /**
@@ -60,39 +51,18 @@ public class UIManager {
      * @param level The current level.
      */
     public void makeHeartScore(int heart, int score, int level) {
-
         // Level label setup
-        Image levelImage = new Image("/images/level.png");
-        ImageView levelImageView = new ImageView(levelImage);
-        levelImageView.setFitHeight(25);
-        levelImageView.setFitWidth(25);
-        Label levelLabel = new Label("Level: " + level, levelImageView);
+        createLevelLabel(level);
 
         // Score label setup
-        Image coinImage = new Image("/images/coins.png");
-        ImageView coinImageView = new ImageView(coinImage);
-        coinImageView.setFitHeight(25);
-        coinImageView.setFitWidth(25);
-        scoreLabel = new Label("Coins: " + score, coinImageView);
+        createScoreLabel(score);
 
         // Heart label setup
-        Image heartImage = new Image("/images/heart.png");
-        ImageView heartImageView = new ImageView(heartImage);
-        heartImageView.setFitHeight(25);
-        heartImageView.setFitWidth(25);
-        heartLabel = new Label("Heart: " + heart, heartImageView);
+        createHeartLabel(heart);
 
-        // Create an HBox container for the labels
-        HBox labelsContainer = new HBox(10); // Adjust spacing as needed
-        labelsContainer.setTranslateX(44);
-        labelsContainer.getChildren().addAll(levelLabel, scoreLabel, heartLabel);
-
-        // Apply the CSS style to the container
-        labelsContainer.getStyleClass().add("label-container"); // Define the style in CSS
-        // Add the container to the root
-        root.getChildren().add(labelsContainer);
+        // Create an HBox container for the labels and add them to the root
+        arrangeLabelsOnUI();
     }
-
 
     /**
      * Gets the label displaying the heart count.
@@ -116,4 +86,38 @@ public class UIManager {
         });
     }
 
+    private void createLevelLabel(int level) {
+        Image levelImage = new Image("/images/level.png");
+        ImageView levelImageView = new ImageView(levelImage);
+        levelImageView.setFitHeight(25);
+        levelImageView.setFitWidth(25);
+        levelLabel = new Label("Level: " + level, levelImageView);
+    }
+
+
+    private void createScoreLabel(int score) {
+        Image coinImage = new Image("/images/coins.png");
+        ImageView coinImageView = new ImageView(coinImage);
+        coinImageView.setFitHeight(25);
+        coinImageView.setFitWidth(25);
+        scoreLabel = new Label("Coins: " + score, coinImageView);
+        root.getChildren().add(scoreLabel); // Adding the score label to the root pane
+    }
+
+    private void createHeartLabel(int heart) {
+        Image heartImage = new Image("/images/heart.png");
+        ImageView heartImageView = new ImageView(heartImage);
+        heartImageView.setFitHeight(25);
+        heartImageView.setFitWidth(25);
+        heartLabel = new Label("Hearts: " + heart, heartImageView);
+        root.getChildren().add(heartLabel); // Adding the heart label to the root pane
+    }
+
+    private void arrangeLabelsOnUI() {
+        HBox labelsContainer = new HBox(10); // Adjust spacing as needed
+        labelsContainer.setTranslateX(44);
+        labelsContainer.getChildren().addAll(levelLabel, scoreLabel, heartLabel); // Include levelLabel here
+        labelsContainer.getStyleClass().add("label-container"); // Define the style in CSS
+        root.getChildren().add(labelsContainer); // Adding the container to the root pane
+    }
 }

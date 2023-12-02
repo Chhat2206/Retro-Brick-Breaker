@@ -1,4 +1,5 @@
 package com.brickbreakergame.menus;
+import com.brickbreakergame.managers.AnimationManager;
 
 import com.brickbreakergame.GameEngine;
 import com.brickbreakergame.Main;
@@ -27,6 +28,7 @@ public class PauseMenu {
     private static Stage pauseStage;
     private static VBox pauseLayout;
     private static Button soundButton;
+    private static AnimationManager animationManager = new AnimationManager();
 
 
     /**
@@ -52,7 +54,7 @@ public class PauseMenu {
 
 
         engine.stop();
-        fadeInMenu();
+        animationManager.fadeInMenu(pauseLayout);
 
         // Brings the primary stage up when scene is minimized and reopened
         primaryStage.focusedProperty().addListener((observable, oldValue, newValue) -> {
@@ -113,8 +115,6 @@ public class PauseMenu {
             saveButton.setText("Game Saved");
             saveButton.setStyle("-fx-background-color: #f0f0f0; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0); -fx-text-fill: black;");
 
-
-
             PauseTransition pause = new PauseTransition(Duration.seconds(2));
             pause.setOnFinished(event -> {
                 SoundManager.buttonClickSound();
@@ -125,7 +125,7 @@ public class PauseMenu {
         });
 
         Button loadButton = createButton("Load Game", e -> {
-            fadeOutMenu();
+            animationManager.fadeOutMenu(pauseLayout, pauseStage);
             SoundManager.buttonClickSound();
             main.loadGame(Main.getPrimaryStage());
             System.out.println("\u001B[34m" + "Game Loaded" + "\u001B[0m"); // Blue text
@@ -192,33 +192,10 @@ public class PauseMenu {
     }
 
     /**
-     * Animates the fade-in effect for the pause menu.
-     */
-    public static void fadeInMenu() {
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(500), pauseLayout);
-        fadeIn.setFromValue(0.3);
-        fadeIn.setToValue(1);
-        fadeIn.play();
-    }
-
-    /**
-     * Animates the fade-out effect for the pause menu.
-     */
-    private static void fadeOutMenu() {
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(500), pauseLayout);
-        fadeOut.setFromValue(1);
-        fadeOut.setToValue(0);
-        fadeOut.play();
-    }
-
-    /**
      * Opens the sound settings menu with a fade-out effect on the pause menu.
      */
     protected static void soundMenuOpen() {
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(500), pauseLayout);
-        fadeOut.setFromValue(1);
-        fadeOut.setToValue(0.3); // Fade to a lower opacity instead of completely invisible
-        fadeOut.play();
+        animationManager.fadeOutPartially(pauseLayout, 0.3); // Fade to a lower opacity
         highlightSoundSystemButton();
     }
 
@@ -263,5 +240,13 @@ public class PauseMenu {
         soundButton.setStyle("");
     }
 
-
+    /**
+     * Retrieves the VBox layout used in the pause menu.
+     * This layout is the container for all UI elements displayed in the pause menu.
+     *
+     * @return The VBox layout of the pause menu.
+     */
+    public static VBox getPauseLayout() {
+        return pauseLayout;
+    }
 }

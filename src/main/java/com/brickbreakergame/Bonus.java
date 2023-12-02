@@ -34,6 +34,4 @@ public class Bonus implements Serializable {
         choco.setFill(new ImagePattern(new Image(url)));
     }
 
-
-
 }
