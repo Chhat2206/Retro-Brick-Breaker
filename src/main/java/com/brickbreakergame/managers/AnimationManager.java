@@ -2,6 +2,7 @@ package com.brickbreakergame.managers;
 
 import javafx.animation.*;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -71,9 +72,8 @@ public class AnimationManager {
      * Animates the heart label to indicate a lost heart.
      *
      * @param heartLabel The label that displays the heart count.
-     * @param heartCount The current number of hearts.
      */
-    public void animateHeartLoss(Label heartLabel, int heartCount) {
+    public void animateHeartLoss(Label heartLabel) {
         Timeline timeline = new Timeline();
 
         // Define the color key frames
@@ -94,9 +94,8 @@ public class AnimationManager {
      * Animates the heart label to indicate an increase in heart count.
      *
      * @param heartLabel The label that displays the heart count.
-     * @param heartCount The current number of hearts.
      */
-    public void animateHeartIncrease(Label heartLabel, int heartCount) {
+    public void animateHeartIncrease(Label heartLabel) {
         Timeline timeline = new Timeline();
 
         // Define the color key frames
@@ -111,5 +110,29 @@ public class AnimationManager {
 
         timeline.getKeyFrames().addAll(kf1, kf2, kf3, kf4);
         timeline.play();
+    }
+
+
+    /**
+     * Cool animation for buttons involving scaling and fading.
+     *
+     * @param button The button to be animated.
+     * @param afterAnimation A runnable to be executed after the animation completes.
+     */
+    public void coolButtonAnimation(Button button, Runnable afterAnimation) {
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(300), button);
+        scaleTransition.setFromX(1);
+        scaleTransition.setToX(0.8);
+        scaleTransition.setFromY(1);
+        scaleTransition.setToY(0.8);
+
+        FadeTransition fadeTransition = new FadeTransition(Duration.millis(300), button);
+        fadeTransition.setFromValue(1.0);
+        fadeTransition.setToValue(0.0);
+
+        SequentialTransition sequentialTransition = new SequentialTransition(button, scaleTransition, fadeTransition);
+        sequentialTransition.setOnFinished(event -> afterAnimation.run());
+
+        sequentialTransition.play();
     }
 }

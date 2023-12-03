@@ -28,7 +28,7 @@ public class GameOverScreen {
 
     private static Stage gameOverStage;
     private static VBox gameOverLayout;
-    private static AnimationManager animationManager = new AnimationManager();
+    private static final AnimationManager animationManager = new AnimationManager();
 
     /**
      * Displays the game over screen.
@@ -45,11 +45,11 @@ public class GameOverScreen {
         Scene gameOverScene = new Scene(gameOverLayout, 250, 400);
         gameOverScene.setFill(Color.TRANSPARENT); // Make the scene transparent
         gameOverScene.getStylesheets().addAll("/css/gameOverScreen.css");
+
         gameOverStage.setScene(gameOverScene);
 
         positionGameOverMenuOverGame(primaryStage);
         initializeBlur(primaryStage);
-
         animationManager.fadeInMenu(gameOverLayout);
 
         gameOverStage.showAndWait();
@@ -90,20 +90,16 @@ public class GameOverScreen {
         int score = main.getScore();
 
         Label scoreLabel = new Label("Score: " + score);
-        Button restartButton = createButton("Restart", e -> {
-            animationManager.startTransition(primaryStage, () -> {
-                levelManager.restartGame();
-                gameOverStage.close(); // Close the game over stage
-            });
-        });
+        Button restartButton = createButton("Restart", e -> animationManager.startTransition(primaryStage, () -> {
+            levelManager.restartGame();
+            gameOverStage.close(); // Close the game over stage
+        }));
 
-        Button returnButton = createButton("Return to Main Menu", e -> {
-            animationManager.startTransition(primaryStage, () -> {
-                MainMenu mainMenu = new MainMenu(primaryStage, main);
-                mainMenu.display();
-                gameOverStage.close();
-            });
-        });
+        Button returnButton = createButton("Return to Main Menu", e -> animationManager.startTransition(primaryStage, () -> {
+            MainMenu mainMenu = new MainMenu(primaryStage, main);
+            mainMenu.display();
+            gameOverStage.close();
+        }));
 
         gameOverLayout.getChildren().addAll(gameOverImageView, scoreLabel, restartButton, returnButton);
     }
@@ -117,7 +113,7 @@ public class GameOverScreen {
      */
     private static Button createButton(String text, EventHandler<ActionEvent> action) {
         Button button = new Button(text);
-        button.setOnAction(action);
+        button.setOnAction(e -> animationManager.coolButtonAnimation(button, () -> action.handle(e)));
         button.getStyleClass().add("refined-button-effect"); // Apply the button style
         return button;
     }

@@ -205,8 +205,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
         scene.setOnKeyPressed(this);
         scene.setOnKeyReleased(this);
-        scene.getStylesheets().add("/css/main.css");
-        scene.getStylesheets().add("/css/score.css");
+        scene.getStylesheets().addAll("/css/main.css", "/css/score.css");
         primaryStage.setTitle("The Incredible Block Breaker Game");
         primaryStage.getIcons().add(new Image("/images/favicon.png"));
         primaryStage.setScene(scene);
@@ -436,7 +435,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 new Score().showGameOver(this);
                 engine.stop();
             } else {
-                animationManager.animateHeartLoss(uiManager.getHeartLabel(), heart);
+                animationManager.animateHeartLoss(uiManager.getHeartLabel());
             }
         }
     }
@@ -575,7 +574,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         if (destroyedBlockCount == blocks.size()) {
             this.levelManager = new LevelManager(this, primaryStage);
             SoundManager.levelUp();
-
             level++;
             levelManager.nextLevel();
         }
@@ -840,7 +838,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             handleGoldenTimeBlock();
         } else if (block.type == Block.BLOCK_HEART) {
             heart++;
-            animationManager.animateHeartIncrease(uiManager.getHeartLabel(), heart);
+            animationManager.animateHeartIncrease(uiManager.getHeartLabel());
             SoundManager.heartBonus();
         }
     }
@@ -925,31 +923,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         new Score().show(choco.x, choco.y, 3, this);
     }
 
-    /**
-     * Applies the effect of changing the paddle size when a "Paddle Size" bonus is collected.
-     *
-     * @param rand A random number generator for determining the effect.
-     */
     private void applyPaddleSizeEffect(Random rand) {
         // Store the original paddle width before the change
         originalPaddleWidth = paddleWidth;
 
-        // Compute a random size change and update the paddle width and position accordingly
-        int sizeChange = computeSizeChange(rand);
-        updatePaddleWidth(sizeChange);
-        updatePaddlePosition(sizeChange);
-
-        // Log the paddle size change and its duration
-        logPaddleSizeChange(rand);
-    }
-
-    /**
-     * Computes a random size change for the paddle.
-     *
-     * @param rand A random number generator for determining the size change.
-     * @return The size changes value.
-     */
-    private int computeSizeChange(Random rand) {
         // Determine whether to increase or decrease the paddle width
         boolean increaseWidth = rand.nextBoolean();
         int sizeChange = rand.nextInt(6) + 20; // Random size change between 20 and 25
@@ -959,115 +936,59 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             sizeChange = -sizeChange;
             paddleWidth = Math.max(paddleWidth + sizeChange, 20);
         }
-        return sizeChange;
-    }
 
-    /**
-     * Updates the paddle width based on the given size change.
-     *
-     * @param sizeChange The change in paddle width.
-     */
-    private void updatePaddleWidth(int sizeChange) {
+        // Update paddle width and position
         if (paddleWidth + sizeChange >= 15) {
             paddleWidth += sizeChange;
             rect.setWidth(paddleWidth);
+            paddleMoveX -= (double) sizeChange / 2;
+            paddleMoveX = Math.max(paddleMoveX, 0);
+            paddleMoveX = Math.min(paddleMoveX, SCENE_WIDTH - paddleWidth);
         }
-    }
-
-    /**
-     * Updates the paddle position based on the given size change.
-     *
-     * @param sizeChange The change in paddle width that affects its position.
-     */
-    private void updatePaddlePosition(int sizeChange) {
-        // Calculate a change factor to adjust the paddle's X position
-        double changeFactor = (double) sizeChange / 2;
-
-        // Ensure the paddle stays within the scene boundaries
-        paddleMoveX -= changeFactor;
-        paddleMoveX = Math.max(paddleMoveX, 0);
-        paddleMoveX = Math.min(paddleMoveX, SCENE_WIDTH - paddleWidth);
-    }
-
-
-    /**
-     * Logs the paddle size change and its duration to the console.
-     *
-     * @param rand A random number generator for determining the duration.
-     */
-    private void logPaddleSizeChange(Random rand) {
+        // Log the paddle size change and its duration
         paddleWidthChangeTime = System.currentTimeMillis();
         paddleWidthChangeDuration = (rand.nextInt(6) + 5) * 1000; // Random duration between 5 and 10 seconds
         paddleWidthChanged = true;
         System.out.println("\u001B[35m" + "Paddle width changed from " + originalPaddleWidth + " to " + paddleWidth + " for " + (paddleWidthChangeDuration / 1000) + " seconds." + "\u001B[0m");
     }
 
-    /**
-     * Applies the effect of changing the ball size when a "Ball Size" bonus is collected.
-     *
-     * @param rand A random number generator for determining the effect.
-     */
+
     private void applyBallSizeEffect(Random rand) {
+        // Store the original ball radius
         originalBALL_RADIUS = ballRadius;
-        updateBallPositionBonus();
-        double newBallRadius = computeNewBallRadius(rand);
+
+        // Compute the new ball radius
+        int sizeChange = rand.nextInt(11) - 5; // Random size change between -5 and +5
+        double newBallRadius = ballRadius + sizeChange;
+
+        // Ensure the ball stays within the scene boundaries
+        ballPosX = Math.max(ballPosX, newBallRadius);
+        ballPosX = Math.min(ballPosX, SCENE_WIDTH - newBallRadius);
+        ballPosY = Math.max(ballPosY, newBallRadius);
+        ballPosY = Math.min(ballPosY, SCENE_HEIGHT - newBallRadius);
+
+        // Update ball's radius
         ball.setRadius(newBallRadius);
 
-        logBallSizeChange(rand);
-    }
-
-    private void updateBallPositionBonus() {
-        ballPosX = Math.max(ballPosX, ballRadius);
-        ballPosX = Math.min(ballPosX, SCENE_WIDTH - ballRadius);
-        ballPosY = Math.max(ballPosY, ballRadius);
-        ballPosY = Math.min(ballPosY, SCENE_HEIGHT - ballRadius);
-    }
-
-    /**
-     * Computes a new radius for the ball when a ball size effect is applied.
-     *
-     * @param rand A random number generator for determining the new radius.
-     * @return The new ball radius.
-     */
-    private double computeNewBallRadius(Random rand) {
-        double newBallRadius = ballRadius + rand.nextInt(11) - 5;
-        ballPosX += (newBallRadius - ballRadius);
-        ballPosY += (newBallRadius - ballRadius);
-        return newBallRadius;
-    }
-
-    /**
-     * Logs changes to the ball size and the duration of the effect.
-     *
-     * @param rand A random number generator for determining the duration.
-     */
-    private void logBallSizeChange(Random rand) {
+        // Log the ball size change
         ballSizeChangeTime = System.currentTimeMillis();
-        ballSizeChangeDuration = (rand.nextInt(6) + 5) * 1000;
+        ballSizeChangeDuration = (rand.nextInt(6) + 5) * 1000; // Random duration between 5 and 10 seconds
         ballSizeChanged = true;
-
-        System.out.println("\u001B[31m" + "Ball size changed from " + originalBALL_RADIUS + " to " + ball.getRadius() + " for " + (ballSizeChangeDuration / 1000) + " seconds." + "\u001B[0m");
+        System.out.println("\u001B[31m" + "Ball size changed from " + originalBALL_RADIUS + " to " + newBallRadius + " for " + (ballSizeChangeDuration / 1000) + " seconds." + "\u001B[0m");
     }
 
-    /**
-     * Applies the effect of earning additional score when a "Score" bonus is collected.
-     *
-     * @param rand A random number generator for determining the bonus points.
-     */
+
     private void applyScoreEffect(Random rand) {
-        int bonusPoints = rand.nextInt(6) + 3;
-        setScore(getScore() + bonusPoints);
-        logScoreEffect(bonusPoints);
-    }
+        // Determine the number of bonus points
+        int bonusPoints = rand.nextInt(6) + 3; // Random bonus points between 3 and 8
 
-    /**
-     * Logs the effect of earning additional score.
-     *
-     * @param bonusPoints The number of bonus points earned.
-     */
-    private void logScoreEffect(int bonusPoints) {
+        // Update the score with the bonus points
+        setScore(getScore() + bonusPoints);
+
+        // Log the effect of earning additional score
         System.out.println("\u001B[33m" + "Bonus " + bonusPoints + " points!" + "\u001B[0m");
     }
+
 
     /**
      * Resets any temporary changes made to the game state, like altered paddle size or ball size thanks to the bonus.

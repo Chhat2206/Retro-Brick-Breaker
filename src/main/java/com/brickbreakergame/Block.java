@@ -21,10 +21,8 @@ public class Block implements Serializable {
     public boolean isDestroyed = false;
     Color color;
     public int type;
-
     public int x;
     public int y;
-
     private final int width = 80;
     private final int height = 30;
     private final int paddingTop = height * 2;

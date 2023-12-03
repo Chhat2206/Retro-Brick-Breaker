@@ -27,7 +27,7 @@ public class YouWinScreen {
 
     private static Stage youWinStage;
     private static VBox youWinLayout;
-    private static AnimationManager animationManager = new AnimationManager();
+    private static final AnimationManager animationManager = new AnimationManager();
 
 
     /**
@@ -91,18 +91,19 @@ public class YouWinScreen {
         int score = main.getScore();
 
         Label scoreLabel = new Label("Score: " + score);
-        Button restartButton = createButton("Play Again", e -> {
-            // Use AnimationManager to fade out the menu
-            animationManager.fadeOutMenu(youWinLayout, youWinStage);
-            levelManager.restartGame();
+        Button restartButton = createButton("Restart", e -> {
+            youWinStage.close();
+            animationManager.startTransition(primaryStage, levelManager::restartGame);
         });
 
         Button returnButton = createButton("Return to Main Menu", e -> {
-            // Use AnimationManager to fade out the menu
-            animationManager.fadeOutMenu(youWinLayout, youWinStage);
-            MainMenu mainMenu = new MainMenu(primaryStage, main);
-            mainMenu.display();
+            youWinStage.close();
+            animationManager.startTransition(primaryStage, () -> {
+                MainMenu mainMenu = new MainMenu(primaryStage, main);
+                mainMenu.display();
+            });
         });
+
 
         youWinLayout.getChildren().addAll(youWinImageView, scoreLabel, restartButton, returnButton);
     }
@@ -116,10 +117,11 @@ public class YouWinScreen {
      */
     private static Button createButton(String text, EventHandler<ActionEvent> action) {
         Button button = new Button(text);
-        button.setOnAction(action);
+        button.setOnAction(e -> animationManager.coolButtonAnimation(button, () -> action.handle(e)));
         button.getStyleClass().add("refined-button-effect");
         return button;
     }
+
 
     /**
      * Positions the "You Win" menu over the game's primary stage.

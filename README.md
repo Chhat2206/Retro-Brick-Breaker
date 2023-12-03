@@ -106,10 +106,11 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 - [x] Centered on the screen and follows the primary stage
 - [x] Custom score display with images and sound effects for win/lose scenarios
 - [x] Restart and main menu buttons with custom UI and clean design
+- [x] Custom animation when clicking the restart button or main menu button, both fading the button in and transitioning the scene cleanly in two seperate concurrent animations.
 
 ## Implemented but Not Working Properly:
-- ⚠️ **Block Visual Glitch**: Occasionally, block visuals may persist on the screen after a collision, despite the block being non-existent. This causes no physical obstruction, and the game progresses normally once all actual blocks are removed. Temporarily pausing the game (stopping and restarting the game engine) resolves this issue. The occurrence is rare. It has only been observed in level 4 in my testing.
-  - **Steps to counter**: I implemented threads to every block and attempted to stop and start back the engine before every level to prevent the issue. That caused the game to look frozen while generating new levels, so the idea was scrapped. I rewrote the ball movement function, paddle function which helped reduce the frequency but did not work. I created a new thread each time a powerup occured, which caused the game to lag immensely.
+- ⚠️ **YouWinScreen**: The implementation of the YouWinScreen has no major issues in both the animation and visuals. However, restarting the game or going to the main menu presents itself as an issue and will bug out the game.
+  - **Steps to counter**: 
   
 ## Features Not Implemented:
 - **Feature**: Pause button
