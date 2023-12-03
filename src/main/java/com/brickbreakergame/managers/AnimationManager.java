@@ -62,7 +62,7 @@ public class AnimationManager {
     public void fadeOutPartially(VBox layout, double toValue) {
         FadeTransition fadeOut = new FadeTransition(Duration.millis(500), layout);
         fadeOut.setFromValue(1);
-        fadeOut.setToValue(toValue); // Fade to a lower opacity
+        fadeOut.setToValue(toValue);
         fadeOut.play();
     }
 }

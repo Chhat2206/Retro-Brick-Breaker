@@ -1,6 +1,6 @@
 package com.brickbreakergame.screens;
 import com.brickbreakergame.managers.AnimationManager;
-import com.brickbreakergame.GameController;
+import com.brickbreakergame.managers.LevelManager;
 
 import com.brickbreakergame.Main;
 import com.brickbreakergame.menus.MainMenu;
@@ -39,8 +39,8 @@ public class GameOverScreen {
     public static void display(Main main, Stage primaryStage) {
         initializeGameOverStage();
         configureGameOverLayout();
-        GameController gameController = new GameController(main, primaryStage);
-        addElementsToLayout(main, primaryStage, gameController);
+        LevelManager levelManager = new LevelManager(main, primaryStage);
+        addElementsToLayout(main, primaryStage, levelManager);
 
         Scene gameOverScene = new Scene(gameOverLayout, 250, 400);
         gameOverScene.setFill(Color.TRANSPARENT); // Make the scene transparent
@@ -80,7 +80,7 @@ public class GameOverScreen {
      * @param main        The `Main` instance representing the game.
      * @param primaryStage The primary stage of the game.
      */
-    private static void addElementsToLayout(Main main, Stage primaryStage, GameController gameController) {
+    private static void addElementsToLayout(Main main, Stage primaryStage, LevelManager levelManager) {
         // Load the game over image
         Image gameOverImage = new Image("/images/Screens/youLose.png");
         ImageView gameOverImageView = new ImageView(gameOverImage);
@@ -92,7 +92,7 @@ public class GameOverScreen {
         Label scoreLabel = new Label("Score: " + score);
         Button restartButton = createButton("Restart", e -> {
             animationManager.fadeOutMenu(gameOverLayout, gameOverStage);
-            gameController.restartGame();
+            levelManager.restartGame();
         });
 
         Button returnButton = createButton("Return to Main Menu", e -> {

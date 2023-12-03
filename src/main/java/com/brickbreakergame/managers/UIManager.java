@@ -120,4 +120,25 @@ public class UIManager {
         labelsContainer.getStyleClass().add("label-container"); // Define the style in CSS
         root.getChildren().add(labelsContainer); // Adding the container to the root pane
     }
+
+    /**
+     * Updates the background image of the game based on the current level.
+     * @param level The current level of the game.
+     */
+    public void updateBackgroundImage(int level) {
+        String backgroundImagePath = "/images/Background Images/backgroundImage-" + level + ".png";
+        // Check if the resource exists
+        if (getClass().getResource(backgroundImagePath) == null) {
+            System.err.println("Background image not found for level " + level + ": " + backgroundImagePath);
+            // Optionally, set a default background image
+            backgroundImagePath = "/images/Background Images/defaultBackground.png";
+        }
+        Image bgImage = new Image(backgroundImagePath);
+        BackgroundImage backgroundImage = new BackgroundImage(bgImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                BackgroundSize.DEFAULT);
+        this.root.setBackground(new Background(backgroundImage));
+    }
 }

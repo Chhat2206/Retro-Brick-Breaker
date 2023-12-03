@@ -1,6 +1,6 @@
 package com.brickbreakergame.menus;
 import com.brickbreakergame.managers.AnimationManager;
-import com.brickbreakergame.GameController;
+import com.brickbreakergame.managers.LevelManager;
 
 import com.brickbreakergame.GameEngine;
 import com.brickbreakergame.Main;
@@ -43,8 +43,8 @@ public class PauseMenu {
         initializePauseMenuBlur(primaryStage);
         initializePauseStage();
         configurePauseLayout();
-        GameController gameController = new GameController(main, primaryStage);
-        addButtonsToLayout(main, engine, gameController);
+        LevelManager levelManager = new LevelManager(main, primaryStage);
+        addButtonsToLayout(main, engine, levelManager);
 
         Scene scene = new Scene(pauseLayout, 200, 400);
         scene.setFill(Color.TRANSPARENT);
@@ -94,7 +94,7 @@ public class PauseMenu {
      * @param main   The Main instance associated with the game.
      * @param engine The GameEngine instance controlling the game.
      */
-    private static void addButtonsToLayout(Main main, GameEngine engine, GameController gameController) {
+    private static void addButtonsToLayout(Main main, GameEngine engine, LevelManager levelManager) {
 
         Button resumeButton = createButton("Resume", e -> {
             SoundManager.buttonClickSound();
@@ -136,7 +136,7 @@ public class PauseMenu {
 
         Button restartButton = createButton("Restart Game", e -> {
             SoundManager.buttonClickSound();
-            gameController.restartGame();
+            levelManager.restartGame();
             System.out.println("\u001B[36m" + "Game Restarted" + "\u001B[0m"); // Cyan colored text
             pauseStage.close();
         });

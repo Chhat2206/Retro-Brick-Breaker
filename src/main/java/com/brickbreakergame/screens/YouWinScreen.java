@@ -1,6 +1,6 @@
 package com.brickbreakergame.screens;
 import com.brickbreakergame.managers.AnimationManager;
-import com.brickbreakergame.GameController;
+import com.brickbreakergame.managers.LevelManager;
 
 import com.brickbreakergame.Main;
 import com.brickbreakergame.menus.MainMenu;
@@ -39,8 +39,8 @@ public class YouWinScreen {
     public static void display(Main main, Stage primaryStage) {
         initializeYouWinStage();
         configureYouWinLayout();
-        GameController gameController = new GameController(main, primaryStage);
-        addElementsToLayout(main, primaryStage, gameController);
+        LevelManager levelManager = new LevelManager(main, primaryStage);
+        addElementsToLayout(main, primaryStage, levelManager);
 
         Scene youWinScene = new Scene(youWinLayout, 250, 400);
         youWinScene.setFill(Color.TRANSPARENT);
@@ -81,7 +81,7 @@ public class YouWinScreen {
      * @param main        The Main instance associated with the game.
      * @param primaryStage The primary stage of the game.
      */
-    private static void addElementsToLayout(Main main, Stage primaryStage, GameController gameController) {
+    private static void addElementsToLayout(Main main, Stage primaryStage, LevelManager levelManager) {
         // Load the "You Win" image
         Image youWinImage = new Image("/images/Screens/youWin.png");
         ImageView youWinImageView = new ImageView(youWinImage);
@@ -94,7 +94,7 @@ public class YouWinScreen {
         Button restartButton = createButton("Play Again", e -> {
             // Use AnimationManager to fade out the menu
             animationManager.fadeOutMenu(youWinLayout, youWinStage);
-            gameController.restartGame();
+            levelManager.restartGame();
         });
 
         Button returnButton = createButton("Return to Main Menu", e -> {

@@ -1,5 +1,6 @@
 package com.brickbreakergame;
 
+import com.brickbreakergame.managers.LevelManager;
 import com.brickbreakergame.managers.SoundManager;
 import com.brickbreakergame.managers.UIManager;
 import com.brickbreakergame.menus.MainMenu;
@@ -126,8 +127,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             Color.rgb(176, 196, 222)       // Light Steel Blue
     };
 
-
-
     // File Paths for Saving and Loading
     public static final String SAVE_PATH = "./save/save.mdds";
     public static final String savePathDir = "./save/";
@@ -142,7 +141,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private UIManager uiManager;
-    GameController gameController = new GameController(this, primaryStage);
+    private LevelManager levelManager;
+
+
 
     /**
      * The start method is the main entry point for the JavaFX application.
@@ -181,23 +182,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private void createUIComponents() {
         root = new Pane();
         this.uiManager = new UIManager(root);
-        updateBackgroundImage();
+        this.uiManager.updateBackgroundImage(level);
         this.uiManager.makeHeartScore(heart, getScore(), level);
         root.getChildren().addAll(rect, ball);
-    }
-
-    /**
-     * Updates the background image of the game based on the current level.
-     */
-    private void updateBackgroundImage() {
-        String backgroundImagePath = "/images/Background Images/backgroundImage-" + level + ".png";
-        // Check if the resource exists
-        if (getClass().getResource(backgroundImagePath) == null) {
-            System.err.println("Background image not found for level " + level + ": " + backgroundImagePath);
-            // Optionally, set a default background image
-            backgroundImagePath = "/images/Background Images/defaultBackground.png";
-        }
-        this.uiManager.makeBackgroundImage(backgroundImagePath);
     }
 
     /**
@@ -261,7 +248,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             new Score().showMessage(this);
         }
 
-        if (level == 2) {
+        if (level == 11) {
             SoundManager.winSound();
             YouWinScreen.display(this, primaryStage);
         }
@@ -612,10 +599,11 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      */
     private void checkDestroyedCount() {
         if (destroyedBlockCount == blocks.size()) {
+            this.levelManager = new LevelManager(this, primaryStage);
             SoundManager.levelUp();
 
             level++;
-            nextLevel();
+            levelManager.nextLevel();
         }
     }
 
@@ -749,29 +737,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     }
 
-    /**
-     * Handles level progression and game state when advancing to the next level.
-     */
-    private void nextLevel() {
-        Platform.runLater(() -> {
-            try {
-                ballVelocityX = 1.000;
-                resetCollideFlags();
-                goDownBall = true;
-                isGoldStatus = false;
-                isExistHeartBlock = false;
-                time = 0;
-                goldTime = 0;
-                engine.stop();
-                blocks.clear();
-                chocos.clear();
-                destroyedBlockCount = 0;
-                newGame(primaryStage);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
 
     /**
      * Updates the game objects' positions and handles collision and collision detection in each frame.
@@ -1284,6 +1249,21 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      */
     public ArrayList<Bonus> getChocos() {
         return chocos;
+    }
+
+    /**
+     * Retrieves the instance of the GameEngine.
+     * <p>
+     * This method provides access to the GameEngine object, which is responsible for
+     * managing the main loop of the game. It controls game timing, updates game states,
+     * and orchestrates the rendering process. By accessing the GameEngine, other components
+     * of the game can interact with the core game loop, such as starting, stopping, or
+     * pausing the game.
+     *
+     * @return The current instance of GameEngine being used by the game.
+     */
+    public GameEngine getEngine() {
+        return engine;
     }
 
 }
