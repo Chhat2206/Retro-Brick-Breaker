@@ -91,14 +91,18 @@ public class GameOverScreen {
 
         Label scoreLabel = new Label("Score: " + score);
         Button restartButton = createButton("Restart", e -> {
-            animationManager.fadeOutMenu(gameOverLayout, gameOverStage);
-            levelManager.restartGame();
+            animationManager.startTransition(primaryStage, () -> {
+                levelManager.restartGame();
+                gameOverStage.close(); // Close the game over stage
+            });
         });
 
         Button returnButton = createButton("Return to Main Menu", e -> {
-            animationManager.fadeOutMenu(gameOverLayout, gameOverStage);
-            MainMenu mainMenu = new MainMenu(primaryStage, main);
-            mainMenu.display();
+            animationManager.startTransition(primaryStage, () -> {
+                MainMenu mainMenu = new MainMenu(primaryStage, main);
+                mainMenu.display();
+                gameOverStage.close();
+            });
         });
 
         gameOverLayout.getChildren().addAll(gameOverImageView, scoreLabel, restartButton, returnButton);

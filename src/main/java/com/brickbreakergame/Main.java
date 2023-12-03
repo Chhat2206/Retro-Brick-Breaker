@@ -1,8 +1,6 @@
 package com.brickbreakergame;
 
-import com.brickbreakergame.managers.LevelManager;
-import com.brickbreakergame.managers.SoundManager;
-import com.brickbreakergame.managers.UIManager;
+import com.brickbreakergame.managers.*;
 import com.brickbreakergame.menus.MainMenu;
 import com.brickbreakergame.menus.PauseMenu;
 import com.brickbreakergame.screens.YouWinScreen;
@@ -20,7 +18,6 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.util.*;
 import java.io.*;
@@ -142,8 +139,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private UIManager uiManager;
     private LevelManager levelManager;
-
-
+    AnimationManager animationManager = new AnimationManager();
 
     /**
      * The start method is the main entry point for the JavaFX application.
@@ -170,8 +166,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      */
     private void setUpGameBoard() {
         if (!loadFromSave) {
-            GameBoard gameBoard = new GameBoard(this);
-            gameBoard.setupGameBoard();
+            GameBoardManager gameBoardManager = new GameBoardManager(this);
+            gameBoardManager.setupGameBoard();
         }
         primaryStage.setResizable(false);
     }
@@ -440,32 +436,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 new Score().showGameOver(this);
                 engine.stop();
             } else {
-                animateHeartLoss(heart);
+                animationManager.animateHeartLoss(uiManager.getHeartLabel(), heart);
             }
         }
     }
-
-    /**
-     * Animates the heart label to indicate a lost heart.
-     */
-    private void animateHeartLoss(int heartCount) {
-        Label heartLabel = uiManager.getHeartLabel();
-        Timeline timeline = new Timeline();
-
-        // Define the color key frames
-        KeyValue kv1 = new KeyValue(heartLabel.textFillProperty(), Color.RED);
-        KeyFrame kf1 = new KeyFrame(Duration.millis(250), kv1);
-        KeyValue kv2 = new KeyValue(heartLabel.textFillProperty(), Color.WHITE);
-        KeyFrame kf2 = new KeyFrame(Duration.millis(500), kv2);
-        KeyValue kv3 = new KeyValue(heartLabel.textFillProperty(), Color.RED);
-        KeyFrame kf3 = new KeyFrame(Duration.millis(750), kv3);
-        KeyValue kv4 = new KeyValue(heartLabel.textFillProperty(), Color.WHITE); // Original color
-        KeyFrame kf4 = new KeyFrame(Duration.millis(1000), kv4);
-
-        timeline.getKeyFrames().addAll(kf1, kf2, kf3, kf4);
-        timeline.play();
-    }
-
 
     /**
      * Handles the ball's collision with the left and right walls.
@@ -866,6 +840,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             handleGoldenTimeBlock();
         } else if (block.type == Block.BLOCK_HEART) {
             heart++;
+            animationManager.animateHeartIncrease(uiManager.getHeartLabel(), heart);
             SoundManager.heartBonus();
         }
     }
@@ -1264,6 +1239,45 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      */
     public GameEngine getEngine() {
         return engine;
+    }
+
+    /**
+     * Gets the current game level.
+     *
+     * @return The current level of the game.
+     */
+    public int getLevel() {
+        return level;
+    }
+
+    /**
+     * Gets the array of colors used in the game.
+     *
+     * @return The array of Color objects.
+     */
+    public Color[] getColors() {
+        return colors;
+    }
+
+    /**
+     * Checks if a heart block exists in the game.
+     *
+     * The heart block is a special game element that affects the gameplay
+     * by providing additional lives to the player when destroyed.
+     *
+     * @return True if a heart block exists in the current game level, false otherwise.
+     */
+    public boolean isHeartBlockExist() {
+        return isExistHeartBlock;
+    }
+
+    /**
+     * Sets the existence status of the heart block.
+     *
+     * @param existHeartBlock The new status of the heart block existence.
+     */
+    public void setExistHeartBlock(boolean existHeartBlock) {
+        this.isExistHeartBlock = existHeartBlock;
     }
 
 }

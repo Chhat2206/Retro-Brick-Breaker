@@ -1,9 +1,10 @@
 package com.brickbreakergame.managers;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -64,5 +65,51 @@ public class AnimationManager {
         fadeOut.setFromValue(1);
         fadeOut.setToValue(toValue);
         fadeOut.play();
+    }
+
+    /**
+     * Animates the heart label to indicate a lost heart.
+     *
+     * @param heartLabel The label that displays the heart count.
+     * @param heartCount The current number of hearts.
+     */
+    public void animateHeartLoss(Label heartLabel, int heartCount) {
+        Timeline timeline = new Timeline();
+
+        // Define the color key frames
+        KeyValue kv1 = new KeyValue(heartLabel.textFillProperty(), Color.RED);
+        KeyFrame kf1 = new KeyFrame(Duration.millis(250), kv1);
+        KeyValue kv2 = new KeyValue(heartLabel.textFillProperty(), Color.WHITE);
+        KeyFrame kf2 = new KeyFrame(Duration.millis(500), kv2);
+        KeyValue kv3 = new KeyValue(heartLabel.textFillProperty(), Color.RED);
+        KeyFrame kf3 = new KeyFrame(Duration.millis(750), kv3);
+        KeyValue kv4 = new KeyValue(heartLabel.textFillProperty(), Color.WHITE);
+        KeyFrame kf4 = new KeyFrame(Duration.millis(1000), kv4);
+
+        timeline.getKeyFrames().addAll(kf1, kf2, kf3, kf4);
+        timeline.play();
+    }
+
+    /**
+     * Animates the heart label to indicate an increase in heart count.
+     *
+     * @param heartLabel The label that displays the heart count.
+     * @param heartCount The current number of hearts.
+     */
+    public void animateHeartIncrease(Label heartLabel, int heartCount) {
+        Timeline timeline = new Timeline();
+
+        // Define the color key frames
+        KeyValue kv1 = new KeyValue(heartLabel.textFillProperty(), Color.GREEN);
+        KeyFrame kf1 = new KeyFrame(Duration.millis(250), kv1);
+        KeyValue kv2 = new KeyValue(heartLabel.textFillProperty(), Color.WHITE);
+        KeyFrame kf2 = new KeyFrame(Duration.millis(500), kv2);
+        KeyValue kv3 = new KeyValue(heartLabel.textFillProperty(), Color.GREEN);
+        KeyFrame kf3 = new KeyFrame(Duration.millis(750), kv3);
+        KeyValue kv4 = new KeyValue(heartLabel.textFillProperty(), Color.WHITE);
+        KeyFrame kf4 = new KeyFrame(Duration.millis(1000), kv4);
+
+        timeline.getKeyFrames().addAll(kf1, kf2, kf3, kf4);
+        timeline.play();
     }
 }

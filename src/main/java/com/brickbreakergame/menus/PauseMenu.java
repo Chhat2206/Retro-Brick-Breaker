@@ -136,8 +136,11 @@ public class PauseMenu {
 
         Button restartButton = createButton("Restart Game", e -> {
             SoundManager.buttonClickSound();
-            levelManager.restartGame();
-            System.out.println("\u001B[36m" + "Game Restarted" + "\u001B[0m"); // Cyan colored text
+            animationManager.startTransition(Main.getPrimaryStage(), () -> {
+                levelManager.restartGame();
+                System.out.println("\u001B[36m" + "Game Restarted" + "\u001B[0m"); // Cyan colored text
+            });
+
             pauseStage.close();
         });
 

@@ -1,4 +1,8 @@
-package com.brickbreakergame;
+package com.brickbreakergame.managers;
+
+import com.brickbreakergame.Block;
+import com.brickbreakergame.Main;
+import javafx.scene.paint.Color;
 
 import java.util.Random;
 
@@ -6,27 +10,31 @@ import java.util.Random;
  * The GameBoardManager class manages the setup of the game board layout for different levels
  * in the Brick Game.
  */
-public class GameBoard {
+public class GameBoardManager {
     private final Main mainInstance;
     private final Random random;
+    private Color[] gameColors;
+    private boolean existsHeartBlock;
 
     /**
      * Constructs a new GameBoardManager with a reference to the Main instance.
      *
      * @param mainInstance The Main instance of the game.
      */
-    public GameBoard(Main mainInstance) {
+    public GameBoardManager(Main mainInstance) {
         this.mainInstance = mainInstance;
         this.random = new Random();
+        this.gameColors = mainInstance.getColors(); // Initialize here
+        this.existsHeartBlock = mainInstance.isHeartBlockExist();
     }
 
     /**
      * Sets up the game board layout based on the current level.
      * Clears existing blocks and generates a new layout.
      */
-    protected void setupGameBoard() {
-        mainInstance.blocks.clear();
-        switch (mainInstance.level) {
+    public void setupGameBoard() {
+        mainInstance.getBlocks().clear();
+        switch (mainInstance.getLevel()) {
             case 1:
                 createLevel1Layout();
                 break;
@@ -89,7 +97,7 @@ public class GameBoard {
         int row = 6;
         int column = 2;
         int blockType = determineBlockType(random.nextInt(100));
-        mainInstance.blocks.add(new Block(row, column, mainInstance.colors[column % mainInstance.colors.length], blockType));
+        mainInstance.getBlocks().add(new Block(row, column, mainInstance.getColors()[column % mainInstance.getColors().length], blockType));
     }
 
 
@@ -103,8 +111,8 @@ public class GameBoard {
             int blockTypeLeft = determineBlockType(random.nextInt(100));
             int blockTypeRight = determineBlockType(random.nextInt(100));
             if (j < 5) {
-                mainInstance.blocks.add(new Block(j, j, mainInstance.colors[j % mainInstance.colors.length], blockTypeLeft));
-                mainInstance.blocks.add(new Block(j, 4 - j, mainInstance.colors[(4 - j) % mainInstance.colors.length], blockTypeRight));
+                mainInstance.getBlocks().add(new Block(j, j, mainInstance.getColors()[j % mainInstance.getColors().length], blockTypeLeft));
+                mainInstance.getBlocks().add(new Block(j, 4 - j, mainInstance.getColors()[(4 - j) % mainInstance.getColors().length], blockTypeRight));
             }
         }
     }
@@ -119,7 +127,7 @@ public class GameBoard {
             for (int i = 0; i < 5; i++) {
                 if (random.nextBoolean() && random.nextBoolean()) { // Double randomness for sparser dots
                     int blockType = determineBlockType(random.nextInt(100));
-                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                    mainInstance.getBlocks().add(new Block(j, i, mainInstance.getColors()[i % mainInstance.getColors().length], blockType));
                 }
             }
         }
@@ -135,7 +143,7 @@ public class GameBoard {
             for (int i = 0; i < 5; i++) {
                 if ((j + i) % 2 == 0) {
                     int blockType = determineBlockType(random.nextInt(100));
-                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                    mainInstance.getBlocks().add(new Block(j, i, mainInstance.getColors()[i % mainInstance.getColors().length], blockType));
                 }
             }
         }
@@ -151,7 +159,7 @@ public class GameBoard {
             for (int i = 0; i < 5; i++) {
                 if (i % 2 == 0) { // Every alternate column
                     int blockType = determineBlockType(random.nextInt(100));
-                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                    mainInstance.getBlocks().add(new Block(j, i, mainInstance.getColors()[i % mainInstance.getColors().length], blockType));
                 }
             }
         }
@@ -167,7 +175,7 @@ public class GameBoard {
             for (int i = 0; i < 5; i++) {
                 if ((j / 2 + i) % 2 == 0) {
                     int blockType = determineBlockType(random.nextInt(100));
-                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                    mainInstance.getBlocks().add(new Block(j, i, mainInstance.getColors()[i % mainInstance.getColors().length], blockType));
                 }
             }
         }
@@ -183,7 +191,7 @@ public class GameBoard {
             for (int i = 0; i < 5; i++) {
                 if ((i / 2 + j) % 2 == 0) {
                     int blockType = determineBlockType(random.nextInt(100));
-                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                    mainInstance.getBlocks().add(new Block(j, i, mainInstance.getColors()[i % mainInstance.getColors().length], blockType));
                 }
             }
         }
@@ -199,7 +207,7 @@ public class GameBoard {
             for (int i = 0; i < 5; i++) {
                 if (j % 3 == 0 || i % 2 == 0) {
                     int blockType = determineBlockType(random.nextInt(100));
-                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                    mainInstance.getBlocks().add(new Block(j, i, mainInstance.getColors()[i % mainInstance.getColors().length], blockType));
                 }
             }
         }
@@ -215,7 +223,7 @@ public class GameBoard {
             for (int i = 0; i < 5; i++) {
                 if ((j / 2 + i) % 2 == 0) {
                     int blockType = determineBlockType(random.nextInt(100));
-                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                    mainInstance.getBlocks().add(new Block(j, i, mainInstance.getColors()[i % mainInstance.getColors().length], blockType));
                 }
             }
         }
@@ -233,7 +241,7 @@ public class GameBoard {
             for (int i = 0; i < 5; i++) {
                 if (Math.abs(j - midRow) + Math.abs(i - midColumn) <= midColumn) {
                     int blockType = determineBlockType(random.nextInt(100));
-                    mainInstance.blocks.add(new Block(j, i, mainInstance.colors[i % mainInstance.colors.length], blockType));
+                    mainInstance.getBlocks().add(new Block(j, i, mainInstance.getColors()[i % mainInstance.getColors().length], blockType));
                 }
             }
         }
@@ -252,7 +260,7 @@ public class GameBoard {
      */
     private void createDefaultLayout() { // Worst case if program fails. Best case, it will never be utilized.
         for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < mainInstance.level + 1; j++) {
+            for (int j = 0; j < mainInstance.getLevel() + 1; j++) {
                 int r = random.nextInt(500); // Use the existing Random instance
 
                 if (r % 5 == 0) {
@@ -261,7 +269,7 @@ public class GameBoard {
 
                 int type = determineBlockType(r);
 
-                mainInstance.blocks.add(new Block(j, i, mainInstance.colors[r % (mainInstance.colors.length)], type));
+                mainInstance.getBlocks().add(new Block(j, i, mainInstance.getColors()[r % (mainInstance.getColors().length)], type));
             }
         }
     }
@@ -275,12 +283,13 @@ public class GameBoard {
     private int determineBlockType(int randomValue) {
         if (randomValue < 10) {
             return Block.BLOCK_RANDOM;
-        } else if (randomValue < 15 && !mainInstance.isExistHeartBlock) {
-            mainInstance.isExistHeartBlock = true;
+        } else if (randomValue < 15 && !mainInstance.isHeartBlockExist()) {
+            mainInstance.setExistHeartBlock(true); // Use the setter method here
             return Block.BLOCK_HEART;
         } else if (randomValue >= 15 && randomValue < 20) {
             return Block.BLOCK_GOLDEN_TIME;
         }
         return Block.BLOCK_NORMAL;
     }
+
 }
