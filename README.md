@@ -79,6 +79,7 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 - [x] Modified bonus icon behavior when the pause menu is open
 - [x] Custom colors when showcasing a power-up bonus for cuter ui
 - [x] Cool animation when player loses and gains a heart
+- [x] Set paddle to the middle in the new levels
 
 ### Pause and Sound Menu
 - [x] Both menus follow the screen when it's moved
@@ -110,7 +111,10 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 
 ## Implemented but Not Working Properly:
 - ⚠️ **YouWinScreen**: The implementation of the YouWinScreen has no major issues in both the animation and visuals. However, restarting the game or going to the main menu presents itself as an issue and will bug out the game.
-  - **Steps to counter**: 
+  - **Steps to counter**: Adding threads to the youwinscreen breaks the restart counter. Rewriting the function and adding redundancy did not change output behavior. Both gameoverscreen (which works perfectly) and youwinscreen have both been modified to be identical, but youwinscreen works while the gameoverscreen does not.
+
+- ⚠️ **YouWinScreen**: Restarting the game shows a duplicate of blocks for the level restarted
+    - **Steps to counter**: Added redundancy checks for the blocks everywhere, forcing a clear and only allowing one set to show up. Also combed through every code to see if anything duplicated twice and removed it. Issue is still not fixed. 
   
 ## Features Not Implemented:
 - **Feature**: Pause button
@@ -191,6 +195,10 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 
 ## Unexpected Problems:
 All issues not mentioned here were uninteresting to describe. These are the major issues and fixes with unique solutions.
+
+### Refactor Trouble
+I did not realise how much trouble moving my own refactored creation would give me. This is why I should have written it correctly in the first place. 
+
 ### Balancing Game
 - **Issue**: Balancing the game was a lot more tough than expected.
     - **Solution**: A lot of playtesting and tweaking to make everything perfect.

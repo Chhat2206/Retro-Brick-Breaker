@@ -42,8 +42,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private static int paddleWidth = 90;
     private static final int PADDLE_HEIGHT = 14;
     private static int ballRadius = 10;
-    private static final int SCENE_WIDTH = 500;
-    private static final int SCENE_HEIGHT = 700;
+    public static final int SCENE_WIDTH = 500;
+    public static final int SCENE_HEIGHT = 700;
 
     // Game State Variables
     protected int level = 1;
@@ -53,8 +53,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     // Paddle Variables
     private static final int PADDLE_SPEED = 3; //8
-    private double paddleMoveX = 250.0;
-    private double paddleMoveY = 680.0f;
+    private double paddleMoveX = 220.0;
+    private double paddleMoveY = 683.0f;
     private final int halfPaddleWidth = paddleWidth / 2;
     private double centerBreakX;
     private boolean leftKeyPressed = false;
@@ -97,15 +97,15 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private static final double MAX_VELOCITY = 4.0;   // Maximum overall velocity of the ball
     private static final double SPIN_EFFECT = 0.5;    // Effect of spin on ball's trajectory
 
-    // RandomBlock Temporary Variables
-    long paddleWidthChangeTime;
-    private volatile boolean paddleWidthChanged;
-    long ballSizeChangeTime;
-    private volatile boolean ballSizeChanged;
-    int originalPaddleWidth;
-    int originalBALL_RADIUS;
-    long paddleWidthChangeDuration = 0;
-    long ballSizeChangeDuration = 0;
+    // Bonus Variables
+    protected long paddleWidthChangeTime;
+    protected volatile boolean paddleWidthChanged;
+    protected long ballSizeChangeTime;
+    protected volatile boolean ballSizeChanged;
+    protected int originalPaddleWidth;
+    protected int originalBallRadius;
+    protected long paddleWidthChangeDuration = 0;
+    protected long ballSizeChangeDuration = 0;
 
     // Game Objects
     private Rectangle rect;
@@ -140,6 +140,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private UIManager uiManager;
     private LevelManager levelManager;
     AnimationManager animationManager = new AnimationManager();
+    Bonus bonus = createBonus(0, 0);
 
     /**
      * The start method is the main entry point for the JavaFX application.
@@ -715,12 +716,11 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      */
     @Override
     public void onUpdate() {
-        resetTemporaryChanges();
         updateUIComponents();
         updateGameObjects();
         handleBlockCollisions();
         handleBonusCollection();
-
+        bonus.resetTemporaryChanges();
     }
 
     /**
@@ -767,7 +767,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Repositions the ball after it has collided with a block.
+     * Repositions the ball after it has collided with a block. Makes the look very very clean.
      *
      * @param block   The block that the ball collided with.
      * @param hitCode The code indicating the side of the block hit by the ball.
@@ -775,19 +775,15 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private void repositionBallAfterCollision(Block block, int hitCode) {
         switch (hitCode) {
             case Block.HIT_BOTTOM:
-                // Reposition ball below the block
                 ballPosY = block.y + block.getHeight() + ballRadius;
                 break;
             case Block.HIT_TOP:
-                // Reposition ball above the block
                 ballPosY = block.y - ballRadius;
                 break;
             case Block.HIT_LEFT:
-                // Reposition ball to the left of the block
                 ballPosX = block.x - ballRadius;
                 break;
             case Block.HIT_RIGHT:
-                // Reposition ball to the right of the block
                 ballPosX = block.x + block.getWidth() + ballRadius;
                 break;
         }
@@ -851,7 +847,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      */
     private void handleRandomBlock(Block block) {
         Platform.runLater(() -> {
-            final Bonus choco = new Bonus(block.row, block.column);
+            final Bonus choco = new Bonus(block.row, block.column, this);
             choco.timeCreated = time;
             root.getChildren().add(choco.choco);
             chocos.add(choco);
@@ -884,7 +880,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
             if (choco.y >= paddleMoveY && choco.y <= paddleMoveY + PADDLE_HEIGHT
                     && choco.x >= paddleMoveX && choco.x <= paddleMoveX + paddleWidth) {
-                applyBonusEffect(choco);
+//                applyBonusEffect(choco);
+                choco.applyBonusEffect();
                 iterator.remove();
             } else {
                 // Update the Y position to simulate falling
@@ -895,118 +892,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }
     }
 
-    /**
-     * Applies the effect of collecting a bonus item.
-     *
-     * @param choco The bonus item that was collected.
-     */
-    private void applyBonusEffect(Bonus choco) {
-        SoundManager.collectBonus();
-
-        choco.taken = true;
-        choco.choco.setVisible(false);
-
-        Random rand = new Random();
-        int effect = rand.nextInt(3);
-
-        switch (effect) {
-            case 0:
-                Platform.runLater(() -> applyPaddleSizeEffect(rand));
-                break;
-            case 1:
-                Platform.runLater(() -> applyScoreEffect(rand));
-                break;
-            case 2:
-                Platform.runLater(() -> applyBallSizeEffect(rand));
-                break;
-        }
-        new Score().show(choco.x, choco.y, 3, this);
-    }
-
-    private void applyPaddleSizeEffect(Random rand) {
-        // Store the original paddle width before the change
-        originalPaddleWidth = paddleWidth;
-
-        // Determine whether to increase or decrease the paddle width
-        boolean increaseWidth = rand.nextBoolean();
-        int sizeChange = rand.nextInt(6) + 20; // Random size change between 20 and 25
-
-        // If decreasing width, make sizeChange negative and ensure a minimum width
-        if (!increaseWidth) {
-            sizeChange = -sizeChange;
-            paddleWidth = Math.max(paddleWidth + sizeChange, 20);
-        }
-
-        // Update paddle width and position
-        if (paddleWidth + sizeChange >= 15) {
-            paddleWidth += sizeChange;
-            rect.setWidth(paddleWidth);
-            paddleMoveX -= (double) sizeChange / 2;
-            paddleMoveX = Math.max(paddleMoveX, 0);
-            paddleMoveX = Math.min(paddleMoveX, SCENE_WIDTH - paddleWidth);
-        }
-        // Log the paddle size change and its duration
-        paddleWidthChangeTime = System.currentTimeMillis();
-        paddleWidthChangeDuration = (rand.nextInt(6) + 5) * 1000; // Random duration between 5 and 10 seconds
-        paddleWidthChanged = true;
-        System.out.println("\u001B[35m" + "Paddle width changed from " + originalPaddleWidth + " to " + paddleWidth + " for " + (paddleWidthChangeDuration / 1000) + " seconds." + "\u001B[0m");
-    }
-
-
-    private void applyBallSizeEffect(Random rand) {
-        // Store the original ball radius
-        originalBALL_RADIUS = ballRadius;
-
-        // Compute the new ball radius
-        int sizeChange = rand.nextInt(11) - 5; // Random size change between -5 and +5
-        double newBallRadius = ballRadius + sizeChange;
-
-        // Ensure the ball stays within the scene boundaries
-        ballPosX = Math.max(ballPosX, newBallRadius);
-        ballPosX = Math.min(ballPosX, SCENE_WIDTH - newBallRadius);
-        ballPosY = Math.max(ballPosY, newBallRadius);
-        ballPosY = Math.min(ballPosY, SCENE_HEIGHT - newBallRadius);
-
-        // Update ball's radius
-        ball.setRadius(newBallRadius);
-
-        // Log the ball size change
-        ballSizeChangeTime = System.currentTimeMillis();
-        ballSizeChangeDuration = (rand.nextInt(6) + 5) * 1000; // Random duration between 5 and 10 seconds
-        ballSizeChanged = true;
-        System.out.println("\u001B[31m" + "Ball size changed from " + originalBALL_RADIUS + " to " + newBallRadius + " for " + (ballSizeChangeDuration / 1000) + " seconds." + "\u001B[0m");
-    }
-
-
-    private void applyScoreEffect(Random rand) {
-        // Determine the number of bonus points
-        int bonusPoints = rand.nextInt(6) + 3; // Random bonus points between 3 and 8
-
-        // Update the score with the bonus points
-        setScore(getScore() + bonusPoints);
-
-        // Log the effect of earning additional score
-        System.out.println("\u001B[33m" + "Bonus " + bonusPoints + " points!" + "\u001B[0m");
-    }
-
-
-    /**
-     * Resets any temporary changes made to the game state, like altered paddle size or ball size thanks to the bonus.
-     */
-    private void resetTemporaryChanges() {
-        long currentTime = System.currentTimeMillis();
-
-        if (paddleWidthChanged && (currentTime - paddleWidthChangeTime) >= paddleWidthChangeDuration) {
-            paddleWidth = originalPaddleWidth;
-            rect.setWidth(paddleWidth);
-            paddleWidthChanged = false;
-        }
-
-        if (ballSizeChanged && (currentTime - ballSizeChangeTime) >= ballSizeChangeDuration) {
-            ballRadius = originalBALL_RADIUS;
-            ball.setRadius(ballRadius);
-            ballSizeChanged = false;
-        }
+    public Bonus createBonus(int row, int column) {
+        return new Bonus(row, column, this);
     }
 
     /**
@@ -1201,4 +1088,127 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         this.isExistHeartBlock = existHeartBlock;
     }
 
+    public void setPaddleMoveY(float paddleMoveY) {
+        this.paddleMoveY = paddleMoveY;
+    }
+
+    // Getter and setter for paddleWidth
+    public int getPaddleWidth() {
+        return paddleWidth;
+    }
+
+    public void setPaddleWidth(int width) {
+        paddleWidth = width;
+        rect.setWidth(width); // Assuming rect is the Rectangle representing the paddle
+    }
+
+    // Getter and setter for paddleMoveX
+    public double getPaddleMoveX() {
+        return paddleMoveX;
+    }
+
+    public void setPaddleMoveX(double x) {
+        paddleMoveX = x;
+        rect.setX(x); // Adjust the position of the paddle
+    }
+
+    // Getter and setter for originalPaddleWidth
+    public int getOriginalPaddleWidth() {
+        return originalPaddleWidth;
+    }
+
+    public void setOriginalPaddleWidth(int width) {
+        originalPaddleWidth = width;
+    }
+
+    // Getter and setter for paddleWidthChangeTime
+    public long getPaddleWidthChangeTime() {
+        return paddleWidthChangeTime;
+    }
+
+    public void setPaddleWidthChangeTime(long time) {
+        paddleWidthChangeTime = time;
+    }
+
+    // Getter and setter for paddleWidthChangeDuration
+    public long getPaddleWidthChangeDuration() {
+        return paddleWidthChangeDuration;
+    }
+
+    public void setPaddleWidthChangeDuration(long duration) {
+        paddleWidthChangeDuration = duration;
+    }
+
+    // Getter and setter for paddleWidthChanged
+    public boolean isPaddleWidthChanged() {
+        return paddleWidthChanged;
+    }
+
+    public void setPaddleWidthChanged(boolean changed) {
+        paddleWidthChanged = changed;
+    }
+
+    // Getter and setter for ballRadius
+    public double getBallRadius() {
+        return ball.getRadius();
+    }
+
+    public void setBallRadius(double radius) {
+        ball.setRadius(radius);
+    }
+
+    // Getter and setter for ballPosX
+    public double getBallPosX() {
+        return ball.getCenterX();
+    }
+
+    public void setBallPosX(double posX) {
+        ball.setCenterX(posX);
+    }
+
+    // Getter and setter for ballPosY
+    public double getBallPosY() {
+        return ball.getCenterY();
+    }
+
+    public void setBallPosY(double posY) {
+        ball.setCenterY(posY);
+    }
+
+    // Getter and setter for originalBallRadius
+    public double getOriginalBallRadius() {
+        return originalBallRadius;
+    }
+
+    public void setOriginalBallRadius(double radius) {
+        originalBallRadius = (int) radius;
+    }
+
+    // Getter and setter for ballSizeChangeTime
+    public long getBallSizeChangeTime() {
+        return ballSizeChangeTime;
+    }
+
+    public void setBallSizeChangeTime(long time) {
+        ballSizeChangeTime = time;
+    }
+
+    // Getter and setter for ballSizeChangeDuration
+    public long getBallSizeChangeDuration() {
+        return ballSizeChangeDuration;
+    }
+
+    public void setBallSizeChangeDuration(long duration) {
+        ballSizeChangeDuration = duration;
+    }
+
+    // Getter and setter for ballSizeChanged
+    public boolean isBallSizeChanged() {
+        return ballSizeChanged;
+    }
+
+    public void setBallSizeChanged(boolean changed) {
+        ballSizeChanged = changed;
+    }
 }
+

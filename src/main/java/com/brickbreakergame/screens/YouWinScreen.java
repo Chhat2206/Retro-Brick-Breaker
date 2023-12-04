@@ -49,8 +49,6 @@ public class YouWinScreen {
 
         positionYouWinMenuOverGame(primaryStage);
         initializeBlur(primaryStage);
-
-        // Use AnimationManager to fade in the menu
         animationManager.fadeInMenu(youWinLayout);
 
         youWinStage.showAndWait();
@@ -91,19 +89,16 @@ public class YouWinScreen {
         int score = main.getScore();
 
         Label scoreLabel = new Label("Score: " + score);
-        Button restartButton = createButton("Restart", e -> {
-            youWinStage.close();
-            animationManager.startTransition(primaryStage, levelManager::restartGame);
-        });
+        Button restartButton = createButton("Restart", e -> animationManager.startTransition(primaryStage, () -> {
+            levelManager.restartGame();
+            youWinStage.close(); // Close the game over stage
+        }));
 
-        Button returnButton = createButton("Return to Main Menu", e -> {
+        Button returnButton = createButton("Return to Main Menu", e -> animationManager.startTransition(primaryStage, () -> {
+            MainMenu mainMenu = new MainMenu(primaryStage, main);
+            mainMenu.display();
             youWinStage.close();
-            animationManager.startTransition(primaryStage, () -> {
-                MainMenu mainMenu = new MainMenu(primaryStage, main);
-                mainMenu.display();
-            });
-        });
-
+        }));
 
         youWinLayout.getChildren().addAll(youWinImageView, scoreLabel, restartButton, returnButton);
     }
