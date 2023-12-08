@@ -199,6 +199,9 @@ All issues not mentioned here were uninteresting to describe. These are the majo
 ### Refactor Trouble
 I did not realise how much trouble moving my own refactored creation would give me. This is why I should have written it correctly in the first place. 
 
+### Adding threads to gui and unique issues
+
+
 ### Balancing Game
 - **Issue**: Balancing the game was a lot more tough than expected.
     - **Solution**: A lot of playtesting and tweaking to make everything perfect.
@@ -245,7 +248,7 @@ I did not realise how much trouble moving my own refactored creation would give 
 
 
 ## Credits
-The items that are not listed below were hand created by me.
+The items that are not listed below were hand created by me with the help of Artificial Intelligence and hours of Photoshop.
 
 ### Images
 #### General Assets

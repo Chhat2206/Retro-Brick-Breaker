@@ -29,7 +29,7 @@ public class PauseMenu {
     private static Stage pauseStage;
     private static VBox pauseLayout;
     private static Button soundButton;
-    private static AnimationManager animationManager = new AnimationManager();
+    private static final AnimationManager animationManager = new AnimationManager();
 
 
     /**

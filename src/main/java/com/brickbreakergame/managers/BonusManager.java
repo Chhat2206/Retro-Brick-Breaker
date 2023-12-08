@@ -1,6 +1,9 @@
-package com.brickbreakergame;
+package com.brickbreakergame.managers;
 
-import com.brickbreakergame.managers.SoundManager;
+import com.brickbreakergame.Block;
+import com.brickbreakergame.Main;
+import com.brickbreakergame.Score;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -8,7 +11,7 @@ import javafx.scene.shape.Rectangle;
 import java.io.Serializable;
 import java.util.Random;
 
-public class Bonus implements Serializable {
+public class BonusManager implements Serializable {
     public Rectangle choco;
 
     public double x;
@@ -18,7 +21,7 @@ public class Bonus implements Serializable {
 
     private Main main; // Reference to Main class
 
-    public Bonus(int row, int column, Main main) {
+    public BonusManager(int row, int column, Main main) {
         this.main = main;
         x = (column * (Block.getWidth())) + Block.getPaddingH() + ((double) Block.getWidth() / 2) - 15;
         y = (row * (Block.getHeight())) + Block.getPaddingTop() + ((double) Block.getHeight() / 2) - 15;
@@ -50,13 +53,13 @@ public class Bonus implements Serializable {
 
         switch (effect) {
             case 0:
-                applyPaddleSizeEffect(rand);
+                Platform.runLater(() -> applyPaddleSizeEffect(rand));
                 break;
             case 1:
-                applyScoreEffect(rand);
+                Platform.runLater(() -> applyScoreEffect(rand));
                 break;
             case 2:
-                applyBallSizeEffect(rand);
+                Platform.runLater(() -> applyBallSizeEffect(rand));
                 break;
         }
         new Score().show(this.x, this.y, 3, main);
@@ -105,7 +108,7 @@ public class Bonus implements Serializable {
         main.setScore(main.getScore() + bonusPoints);
 
         // Log the effect of earning additional score
-        System.out.println("\u001B[33m" + "Bonus " + bonusPoints + " points!" + "\u001B[0m");
+        System.out.println("\u001B[33m" + "Score increased by " + bonusPoints + " points. New score: " + main.getScore() + "\u001B[0m");
     }
 
     private void applyBallSizeEffect(Random rand) {

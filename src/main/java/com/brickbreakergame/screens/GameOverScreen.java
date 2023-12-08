@@ -1,8 +1,8 @@
 package com.brickbreakergame.screens;
-import com.brickbreakergame.managers.AnimationManager;
-import com.brickbreakergame.managers.LevelManager;
 
 import com.brickbreakergame.Main;
+import com.brickbreakergame.managers.AnimationManager;
+import com.brickbreakergame.managers.LevelManager;
 import com.brickbreakergame.menus.MainMenu;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -10,7 +10,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -49,7 +48,7 @@ public class GameOverScreen {
         gameOverStage.setScene(gameOverScene);
 
         positionGameOverMenuOverGame(primaryStage);
-        initializeBlur(primaryStage);
+        animationManager.initializeBlur(primaryStage);
         animationManager.fadeInMenu(gameOverLayout);
 
         gameOverStage.showAndWait();
@@ -91,11 +90,13 @@ public class GameOverScreen {
 
         Label scoreLabel = new Label("Score: " + score);
         Button restartButton = createButton("Restart", e -> animationManager.startTransition(primaryStage, () -> {
+            System.out.println("\u001B[36m" + "Game Restarted" + "\u001B[0m"); // Cyan colored text
             levelManager.restartGame();
             gameOverStage.close(); // Close the game over stage
         }));
 
         Button returnButton = createButton("Return to Main Menu", e -> animationManager.startTransition(primaryStage, () -> {
+            System.out.println("\u001B[34m" + "Returned to Main Menu" + "\u001B[0m"); // Blue
             MainMenu mainMenu = new MainMenu(primaryStage, main);
             mainMenu.display();
             gameOverStage.close();
@@ -127,15 +128,4 @@ public class GameOverScreen {
         gameOverStage.setX(primaryStage.getX() + primaryStage.getWidth() / 3.8 - gameOverLayout.getPrefWidth() / 2);
         gameOverStage.setY(primaryStage.getY() + primaryStage.getHeight() / 4 - gameOverLayout.getPrefHeight() / 2);
     }
-
-    /**
-     * Initializes a Gaussian blur effect on the primary game window to create a visual overlay effect.
-     *
-     * @param primaryStage The primary stage of the game.
-     */
-    private static void initializeBlur(Stage primaryStage) {
-        GaussianBlur blur = new GaussianBlur(4);
-        primaryStage.getScene().getRoot().setEffect(blur);
-    }
-
 }

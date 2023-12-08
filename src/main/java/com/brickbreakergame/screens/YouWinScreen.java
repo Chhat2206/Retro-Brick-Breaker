@@ -48,7 +48,7 @@ public class YouWinScreen {
         youWinStage.setScene(youWinScene);
 
         positionYouWinMenuOverGame(primaryStage);
-        initializeBlur(primaryStage);
+        animationManager.initializeBlur(primaryStage);
         animationManager.fadeInMenu(youWinLayout);
 
         youWinStage.showAndWait();
@@ -90,11 +90,13 @@ public class YouWinScreen {
 
         Label scoreLabel = new Label("Score: " + score);
         Button restartButton = createButton("Restart", e -> animationManager.startTransition(primaryStage, () -> {
+            System.out.println("\u001B[36m" + "Game Restarted" + "\u001B[0m"); // Cyan colored text
             levelManager.restartGame();
             youWinStage.close(); // Close the game over stage
         }));
 
         Button returnButton = createButton("Return to Main Menu", e -> animationManager.startTransition(primaryStage, () -> {
+            System.out.println("\u001B[34m" + "Returned to Main Menu" + "\u001B[0m"); // Blue
             MainMenu mainMenu = new MainMenu(primaryStage, main);
             mainMenu.display();
             youWinStage.close();
@@ -128,13 +130,4 @@ public class YouWinScreen {
         youWinStage.setY(primaryStage.getY() + primaryStage.getHeight() / 4 - youWinLayout.getPrefHeight() / 2);
     }
 
-    /**
-     * Initializes a Gaussian blur effect on the game's primary stage, providing a visual effect for the "You Win" screen.
-     *
-     * @param primaryStage The primary stage of the game.
-     */
-    private static void initializeBlur(Stage primaryStage) {
-        GaussianBlur blur = new GaussianBlur(4);
-        primaryStage.getScene().getRoot().setEffect(blur);
-    }
 }

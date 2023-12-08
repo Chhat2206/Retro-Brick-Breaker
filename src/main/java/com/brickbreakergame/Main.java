@@ -41,7 +41,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private static final int RIGHT = 2;
     private static int paddleWidth = 90;
     private static final int PADDLE_HEIGHT = 14;
-    private static int ballRadius = 10;
+    private static final int ballRadius = 10;
     public static final int SCENE_WIDTH = 500;
     public static final int SCENE_HEIGHT = 700;
 
@@ -110,7 +110,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     // Game Objects
     private Rectangle rect;
     protected final ArrayList<Block> blocks = new ArrayList<>();
-    private final ArrayList<Bonus> chocos = new ArrayList<>();
+    private final ArrayList<BonusManager> chocos = new ArrayList<>();
     protected final Color[] colors = new Color[]{
             Color.rgb(0, 0, 128),          // Dark Blue
             Color.rgb(255, 255, 255),      // White
@@ -138,9 +138,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private UIManager uiManager;
-    private LevelManager levelManager;
     AnimationManager animationManager = new AnimationManager();
-    Bonus bonus = createBonus(0, 0);
+    BonusManager bonusManager = createBonus(0, 0);
 
     /**
      * The start method is the main entry point for the JavaFX application.
@@ -573,7 +572,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      */
     private void checkDestroyedCount() {
         if (destroyedBlockCount == blocks.size()) {
-            this.levelManager = new LevelManager(this, primaryStage);
+            LevelManager levelManager = new LevelManager(this, primaryStage);
             SoundManager.levelUp();
             level++;
             levelManager.nextLevel();
@@ -720,7 +719,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         updateGameObjects();
         handleBlockCollisions();
         handleBonusCollection();
-        bonus.resetTemporaryChanges();
+        bonusManager.resetTemporaryChanges();
     }
 
     /**
@@ -743,7 +742,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             rect.setY(paddleMoveY);
             ball.setCenterX(ballPosX);
             ball.setCenterY(ballPosY);
-            for (Bonus choco : chocos) {
+            for (BonusManager choco : chocos) {
                 choco.choco.setY(choco.y);
             }
         });
@@ -775,7 +774,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private void repositionBallAfterCollision(Block block, int hitCode) {
         switch (hitCode) {
             case Block.HIT_BOTTOM:
-                ballPosY = block.y + block.getHeight() + ballRadius;
+                ballPosY = block.y + Block.getHeight() + ballRadius;
                 break;
             case Block.HIT_TOP:
                 ballPosY = block.y - ballRadius;
@@ -784,7 +783,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 ballPosX = block.x - ballRadius;
                 break;
             case Block.HIT_RIGHT:
-                ballPosX = block.x + block.getWidth() + ballRadius;
+                ballPosX = block.x + Block.getWidth() + ballRadius;
                 break;
         }
     }
@@ -847,7 +846,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      */
     private void handleRandomBlock(Block block) {
         Platform.runLater(() -> {
-            final Bonus choco = new Bonus(block.row, block.column, this);
+            final BonusManager choco = new BonusManager(block.row, block.column, this);
             choco.timeCreated = time;
             root.getChildren().add(choco.choco);
             chocos.add(choco);
@@ -869,9 +868,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      * Handles the collection of bonuses and updates the game state accordingly.
      */
     private void handleBonusCollection() {
-        Iterator<Bonus> iterator = chocos.iterator();
+        Iterator<BonusManager> iterator = chocos.iterator();
         while (iterator.hasNext()) {
-            Bonus choco = iterator.next();
+            BonusManager choco = iterator.next();
 
             if (choco.y > SCENE_HEIGHT || choco.taken) {
                 iterator.remove();
@@ -892,8 +891,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }
     }
 
-    public Bonus createBonus(int row, int column) {
-        return new Bonus(row, column, this);
+    public BonusManager createBonus(int row, int column) {
+        return new BonusManager(row, column, this);
     }
 
     /**
@@ -1030,7 +1029,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      * Gets the list of chocos (bonuses) currently in the game.
      * @return The list of Bonus objects.
      */
-    public ArrayList<Bonus> getChocos() {
+    public ArrayList<BonusManager> getChocos() {
         return chocos;
     }
 
@@ -1069,7 +1068,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     /**
      * Checks if a heart block exists in the game.
-     *
+     * <p>
      * The heart block is a special game element that affects the gameplay
      * by providing additional lives to the player when destroyed.
      *
@@ -1211,4 +1210,3 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         ballSizeChanged = changed;
     }
 }
-

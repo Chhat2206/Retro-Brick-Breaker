@@ -4,6 +4,7 @@ import javafx.animation.*;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -134,5 +135,17 @@ public class AnimationManager {
         sequentialTransition.setOnFinished(event -> afterAnimation.run());
 
         sequentialTransition.play();
+    }
+
+    /**
+     * Initializes a Gaussian blur effect on the specified stage to create a visual overlay effect.
+     *
+     * @param stage The stage to apply the blur effect.
+     */
+    public void initializeBlur(Stage stage) {
+        GaussianBlur blur = new GaussianBlur(4); // Blur intensity
+        if (stage != null && stage.getScene() != null) {
+            stage.getScene().getRoot().setEffect(blur);
+        }
     }
 }
