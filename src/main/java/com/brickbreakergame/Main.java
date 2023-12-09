@@ -67,7 +67,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private double ballPosY;
     double fallSpeed = 2.0;
 
-
     // Game Mechanics Variables
     private boolean loadFromSave = false;
     private volatile long time = 0;
@@ -141,6 +140,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     AnimationManager animationManager = new AnimationManager();
     BonusManager bonusManager = createBonus(0, 0);
 
+    private GameState gameState = new GameState();
+
     /**
      * The start method is the main entry point for the JavaFX application.
      * It initializes the game by displaying the main menu.
@@ -151,6 +152,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public void start(Stage primaryStage) {
         MainMenu mainMenu = new MainMenu(primaryStage, this);
         mainMenu.display();
+        gameState = new GameState();
     }
 
     /**
@@ -341,11 +343,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      */
     private void initializeBall() {
         ballPosX = SCENE_WIDTH / 2.0;
-        ballPosY = SCENE_HEIGHT * 0.7 ;
+        ballPosY = SCENE_HEIGHT * 0.9 ;
         ball = new Circle();
         ball.setRadius(ballRadius);
         ball.setFill(new ImagePattern(new Image("/images/ball.png")));
-
     }
 
     /**
@@ -579,68 +580,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }
     }
 
-    /**
-     * Saves the current game state to a file for later retrieval.
-     */
-    public void saveGame() {
-        new Thread(() -> {
-            new File(savePathDir);
-            File file = new File(SAVE_PATH);
-            ObjectOutputStream outputStream = null;
-            try {
-                outputStream = new ObjectOutputStream(new FileOutputStream(file));
-
-                outputStream.writeInt(level);
-                outputStream.writeInt(getScore());
-                outputStream.writeInt(heart);
-                outputStream.writeInt(destroyedBlockCount);
-                outputStream.writeDouble(ballPosX);
-                outputStream.writeDouble(ballPosY);
-                outputStream.writeDouble(paddleMoveX);
-                outputStream.writeDouble(paddleMoveY);
-                outputStream.writeDouble(centerBreakX);
-                outputStream.writeLong(time);
-                outputStream.writeLong(goldTime);
-                outputStream.writeDouble(ballVelocityX);
-                outputStream.writeBoolean(isExistHeartBlock);
-                outputStream.writeBoolean(isGoldStatus);
-                outputStream.writeBoolean(goDownBall);
-                outputStream.writeBoolean(goRightBall);
-                outputStream.writeBoolean(collideToBreak);
-                outputStream.writeBoolean(collideToBreakAndMoveToRight);
-                outputStream.writeBoolean(collideToRightWall);
-                outputStream.writeBoolean(collideToLeftWall);
-                outputStream.writeBoolean(collideToRightBlock);
-                outputStream.writeBoolean(collideToBottomBlock);
-                outputStream.writeBoolean(collideToLeftBlock);
-                outputStream.writeBoolean(collideToTopBlock);
-
-                ArrayList<BlockSerializable> blockSerializable = new ArrayList<>();
-                for (Block block : blocks) {
-                    if (block.isDestroyed) {
-                        continue;
-                    }
-                    blockSerializable.add(new BlockSerializable(block.row, block.column, block.type));
-                    BlockSerializable serializedBlock = new BlockSerializable(block.row, block.column, block.type);
-                    serializedBlock.colorIndex = Arrays.asList(colors).indexOf(block.color); // Save color index
-                    blockSerializable.add(serializedBlock);
-                }
-                outputStream.writeObject(blockSerializable);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    assert outputStream != null;
-                    outputStream.flush();
-                    outputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
-    }
 
     /**
      * Loads a previously saved game state from the save file.
@@ -704,11 +643,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             });
         }
 
+        paddleMoveX = SCENE_WIDTH / 2.0 - paddleWidth / 2.0; // Moves paddle back to default location for very clean look
+
         loadFromSave = true;
         newGame(primaryStage);
 
     }
-
 
     /**
      * Updates the game objects' positions and handles collision and collision detection in each frame.
@@ -903,6 +843,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public void onPhysicsUpdate() {
         checkDestroyedCount();
         setPhysicsToBall();
+        checkGoldStatus();
+    }
+
+    private void checkGoldStatus() {
         if (isGoldStatus && (System.currentTimeMillis() - goldTime) > 5000) {
             ball.setFill(new ImagePattern(new Image("/images/ball.png")));
             isGoldStatus = false;
@@ -1208,5 +1152,90 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     public void setBallSizeChanged(boolean changed) {
         ballSizeChanged = changed;
+    }
+
+    public int getHeart() {
+        return heart;
+    }
+
+    public int getDestroyedBlockCount() {
+        return destroyedBlockCount;
+    }
+
+    public double getPaddleMoveY() {
+        return paddleMoveY;
+    }
+    public double getCenterBreakX() {
+        return centerBreakX;
+    }
+
+
+    public long getTime() {
+        return time;
+    }
+
+    public long getGoldTime() {
+        return goldTime;
+    }
+
+    public double getBallVelocityX() {
+        return ballVelocityX;
+    }
+
+    // Boolean state variables
+    public boolean isExistHeartBlock() {
+        return isExistHeartBlock;
+    }
+
+    public boolean isGoldStatus() {
+        return isGoldStatus;
+    }
+
+
+    public boolean isGoDownBall() {
+        return goDownBall;
+    }
+
+    public boolean isGoRightBall() {
+        return goRightBall;
+    }
+
+    public boolean isCollideToBreak() {
+        return collideToBreak;
+    }
+
+
+    public boolean isCollideToBreakAndMoveToRight() {
+        return collideToBreakAndMoveToRight;
+    }
+
+
+    public boolean isCollideToRightWall() {
+        return collideToRightWall;
+    }
+
+
+    public boolean isCollideToLeftWall() {
+        return collideToLeftWall;
+    }
+
+    public boolean isCollideToRightBlock() {
+        return collideToRightBlock;
+    }
+
+    public boolean isCollideToBottomBlock() {
+        return collideToBottomBlock;
+    }
+
+    public boolean isCollideToLeftBlock() {
+        return collideToLeftBlock;
+    }
+
+    public boolean isCollideToTopBlock() {
+        return collideToTopBlock;
+    }
+
+    public GameState getGameState() {
+        return this.gameState; // Assuming gameState is the variable name in Main class
     }
 }

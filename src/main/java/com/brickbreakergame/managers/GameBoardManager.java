@@ -13,8 +13,6 @@ import java.util.Random;
 public class GameBoardManager {
     private final Main mainInstance;
     private final Random random;
-    private Color[] gameColors;
-    private boolean existsHeartBlock;
 
     /**
      * Constructs a new GameBoardManager with a reference to the Main instance.
@@ -24,8 +22,7 @@ public class GameBoardManager {
     public GameBoardManager(Main mainInstance) {
         this.mainInstance = mainInstance;
         this.random = new Random();
-        this.gameColors = mainInstance.getColors(); // Initialize here
-        this.existsHeartBlock = mainInstance.isHeartBlockExist();
+        Color[] gameColors = mainInstance.getColors(); // Initialize here
     }
 
     /**

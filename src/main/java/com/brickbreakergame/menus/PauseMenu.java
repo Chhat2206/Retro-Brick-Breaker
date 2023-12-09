@@ -113,7 +113,7 @@ public class PauseMenu {
 
         saveButton.setOnAction(e -> {
             SoundManager.buttonClickSound();
-            main.saveGame();
+            main.getGameState().saveGame(main);
             saveButton.setText("Game Saved");
             saveButton.setStyle("-fx-background-color: #f0f0f0; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0); -fx-text-fill: black;");
 

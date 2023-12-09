@@ -79,7 +79,7 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 - [x] Modified bonus icon behavior when the pause menu is open
 - [x] Custom colors when showcasing a power-up bonus for cuter ui
 - [x] Cool animation when player loses and gains a heart
-- [x] Set paddle to the middle in the new levels
+- [x] Set paddle to the middle in the new levels and when loading game
 
 ### Pause and Sound Menu
 - [x] Both menus follow the screen when it's moved
@@ -201,7 +201,7 @@ I did not realise how much trouble moving my own refactored creation would give 
 
 ### Adding threads to gui and unique issues
 
-
+### Moving loadgame to gamestate class broke the main loadgame screen, even while the loadgame worked fine in the pause menu. BNecause of that, i reverted the changes as I had no time left to find a fix. 
 ### Balancing Game
 - **Issue**: Balancing the game was a lot more tough than expected.
     - **Solution**: A lot of playtesting and tweaking to make everything perfect.

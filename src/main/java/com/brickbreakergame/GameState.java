@@ -1,8 +1,6 @@
 package com.brickbreakergame;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.ArrayList;
 
 public class GameState {
@@ -31,6 +29,7 @@ public class GameState {
     public long goldTime;
     public double vX;
     public ArrayList<BlockSerializable> blocks = new ArrayList<>();
+
 
     /**
      * Reads the game state from a saved file, populating the fields of this object for the loadGame function to use.
@@ -74,6 +73,55 @@ public class GameState {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * Saves the current game state to a file for later retrieval.
+     * This method is now part of the GameState class.
+     */
+    public void saveGame(Main mainInstance) {
+        new Thread(() -> {
+            new File(Main.savePathDir);
+            File file = new File(Main.SAVE_PATH);
+            try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
+                outputStream.writeInt(mainInstance.getLevel());
+                outputStream.writeInt(mainInstance.getScore());
+                outputStream.writeInt(mainInstance.getHeart());
+                outputStream.writeInt(mainInstance.getDestroyedBlockCount());
+                outputStream.writeDouble(mainInstance.getBallPosX());
+                outputStream.writeDouble(mainInstance.getBallPosY());
+                outputStream.writeDouble(mainInstance.getPaddleMoveX());
+                outputStream.writeDouble(mainInstance.getPaddleMoveY());
+                outputStream.writeDouble(mainInstance.getCenterBreakX());
+                outputStream.writeLong(mainInstance.getTime());
+                outputStream.writeLong(mainInstance.getGoldTime());
+                outputStream.writeDouble(mainInstance.getBallVelocityX());
+                outputStream.writeBoolean(mainInstance.isExistHeartBlock());
+                outputStream.writeBoolean(mainInstance.isGoldStatus());
+                outputStream.writeBoolean(mainInstance.isGoDownBall());
+                outputStream.writeBoolean(mainInstance.isGoRightBall());
+                outputStream.writeBoolean(mainInstance.isCollideToBreak());
+                outputStream.writeBoolean(mainInstance.isCollideToBreakAndMoveToRight());
+                outputStream.writeBoolean(mainInstance.isCollideToRightWall());
+                outputStream.writeBoolean(mainInstance.isCollideToLeftWall());
+                outputStream.writeBoolean(mainInstance.isCollideToRightBlock());
+                outputStream.writeBoolean(mainInstance.isCollideToBottomBlock());
+                outputStream.writeBoolean(mainInstance.isCollideToLeftBlock());
+                outputStream.writeBoolean(mainInstance.isCollideToTopBlock());
+
+                // Serialize blocks
+                ArrayList<BlockSerializable> blockSerializable = new ArrayList<>();
+                for (Block block : mainInstance.getBlocks()) {
+                    if (block.isDestroyed) continue;
+                    BlockSerializable serializedBlock = new BlockSerializable(block.row, block.column, block.type);
+                    serializedBlock.setColorIndex(mainInstance.getColors(), block.color);
+                    blockSerializable.add(serializedBlock);
+                }
+                outputStream.writeObject(blockSerializable);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
 
