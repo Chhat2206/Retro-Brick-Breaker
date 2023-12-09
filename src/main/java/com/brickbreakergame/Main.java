@@ -68,7 +68,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     double fallSpeed = 2.0;
 
     // Game Mechanics Variables
-    private boolean loadFromSave = false;
+    protected boolean loadFromSave = false;
     private volatile long time = 0;
     private volatile long goldTime = 0;
 
@@ -158,7 +158,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     /**
      * Initializes the ball object with default properties and position.
      */
-    private void initializeGameObjects() {
+    protected void initializeGameObjects() {
         initializeBall();
         createPaddle();
     }
@@ -580,76 +580,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }
     }
 
-
-    /**
-     * Loads a previously saved game state from the save file.
-     *
-     * @param primaryStage The primary stage where the loaded game will be displayed.
-     */
-    public void loadGame(Stage primaryStage) {
-        Main.primaryStage = primaryStage;
-
-        File saveFile = new File(SAVE_PATH);
-        if (!saveFile.exists()) {
-            System.out.println("Save file not found. Loading a New Game!");
-            newGame(primaryStage);
-            return;
-        }
-
-        GameState gameState = new GameState();
-        gameState.read();
-
-        isExistHeartBlock = gameState.isExistHeartBlock;
-        isGoldStatus = gameState.isGoldStatus;
-        goDownBall = gameState.goDownBall;
-        goRightBall = gameState.goRightBall;
-        collideToBreak = gameState.collideToBreak;
-        collideToBreakAndMoveToRight = gameState.collideToBreakAndMoveToRight;
-        collideToRightWall = gameState.collideToRightWall;
-        collideToLeftWall = gameState.collideToLeftWall;
-        collideToRightBlock = gameState.collideToRightBlock;
-        collideToBottomBlock = gameState.collideToBottomBlock;
-        collideToLeftBlock = gameState.collideToLeftBlock;
-        collideToTopBlock = gameState.collideToTopBlock;
-        level = gameState.level;
-        setScore(gameState.score);
-        heart = gameState.heart;
-        destroyedBlockCount = gameState.destroyedBlockCount;
-        ballPosX = gameState.xBall;
-        ballPosY = gameState.yBall;
-        paddleMoveX = gameState.xBreak;
-        paddleMoveY = gameState.yBreak;
-        centerBreakX = gameState.centerBreakX;
-        time = gameState.time;
-        goldTime = gameState.goldTime;
-        ballVelocityX = gameState.vX;
-
-        blocks.clear();
-        chocos.clear();
-
-        if (this.root == null) {
-            this.root = new Pane();
-        }
-
-        for (BlockSerializable ser : gameState.blocks) {
-            Color blockColor = colors[ser.colorIndex];
-            Block block = new Block(ser.row, ser.column, blockColor, ser.type);
-            blocks.add(block);
-            // Add block's rectangle to the UI if needed
-            Platform.runLater(() -> {
-                if (block.rect != null) {
-                    root.getChildren().add(block.rect);
-                }
-            });
-        }
-
-        paddleMoveX = SCENE_WIDTH / 2.0 - paddleWidth / 2.0; // Moves paddle back to default location for very clean look
-
-        loadFromSave = true;
-        newGame(primaryStage);
-
-    }
-
     /**
      * Updates the game objects' positions and handles collision and collision detection in each frame.
      */
@@ -1052,10 +982,11 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     public void setPaddleMoveX(double x) {
         paddleMoveX = x;
-        rect.setX(x); // Adjust the position of the paddle
+        if (rect != null) {
+            rect.setX(x); // Adjust the position of the paddle
+        }
     }
 
-    // Getter and setter for originalPaddleWidth
     public int getOriginalPaddleWidth() {
         return originalPaddleWidth;
     }
@@ -1106,16 +1037,20 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     public void setBallPosX(double posX) {
-        ball.setCenterX(posX);
+        if (ball != null) {
+            ball.setCenterX(posX);
+        }
+    }
+
+    public void setBallPosY(double posY) {
+        if (ball != null) {
+            ball.setCenterY(posY);
+        }
     }
 
     // Getter and setter for ballPosY
     public double getBallPosY() {
         return ball.getCenterY();
-    }
-
-    public void setBallPosY(double posY) {
-        ball.setCenterY(posY);
     }
 
     // Getter and setter for originalBallRadius
@@ -1236,6 +1171,55 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     public GameState getGameState() {
-        return this.gameState; // Assuming gameState is the variable name in Main class
+        return this.gameState;
+    }
+
+    public void setGoRightBall(boolean goRightBall) {
+        this.goRightBall = goRightBall;
+    }
+
+    public void setCollideToBreak(boolean collideToBreak) {
+        this.collideToBreak = collideToBreak;
+    }
+
+    public void setCollideToBreakAndMoveToRight(boolean collideToBreakAndMoveToRight) {
+        this.collideToBreakAndMoveToRight = collideToBreakAndMoveToRight;
+    }
+
+    public void setCollideToRightWall(boolean collideToRightWall) {
+        this.collideToRightWall = collideToRightWall;
+    }
+
+    public void setCollideToLeftWall(boolean collideToLeftWall) {
+        this.collideToLeftWall = collideToLeftWall;
+    }
+
+    public void setCollideToRightBlock(boolean collideToRightBlock) {
+        this.collideToRightBlock = collideToRightBlock;
+    }
+
+    public void setCollideToBottomBlock(boolean collideToBottomBlock) {
+        this.collideToBottomBlock = collideToBottomBlock;
+    }
+
+    public void setCollideToLeftBlock(boolean collideToLeftBlock) {
+        this.collideToLeftBlock = collideToLeftBlock;
+    }
+
+    public void setCollideToTopBlock(boolean collideToTopBlock) {
+        this.collideToTopBlock = collideToTopBlock;
+    }
+
+    public void setCenterBreakX(double centerBreakX) {
+        this.centerBreakX = centerBreakX;
+    }
+
+    /**
+     * Gets the ball object.
+     *
+     * @return The ball object of the game.
+     */
+    public Circle getBall() {
+        return ball;
     }
 }

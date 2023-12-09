@@ -1,4 +1,5 @@
 package com.brickbreakergame.menus;
+import com.brickbreakergame.GameState;
 import com.brickbreakergame.managers.AnimationManager;
 import com.brickbreakergame.managers.LevelManager;
 
@@ -127,9 +128,10 @@ public class PauseMenu {
         });
 
         Button loadButton = createButton("Load Game", e -> {
-            animationManager.fadeOutMenu(pauseLayout, pauseStage);
             SoundManager.buttonClickSound();
-            main.loadGame(Main.getPrimaryStage());
+            animationManager.fadeOutMenu(pauseLayout, pauseStage);
+            GameState gameState = new GameState();
+            gameState.loadGame(main, Main.getPrimaryStage());
             System.out.println("\u001B[34m" + "Game Loaded" + "\u001B[0m"); // Blue text
             pauseStage.close();
         });

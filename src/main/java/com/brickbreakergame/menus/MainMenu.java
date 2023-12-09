@@ -1,5 +1,6 @@
 package com.brickbreakergame.menus;
 
+import com.brickbreakergame.GameState;
 import com.brickbreakergame.Main;
 import com.brickbreakergame.managers.AnimationManager;
 import com.brickbreakergame.managers.SoundManager;
@@ -58,7 +59,7 @@ public class MainMenu {
        SoundManager.soundMenu();
 
         // Load and add the logo
-        ImageView logoView = createLogoView("/images/Main Menu/logo.png");
+        ImageView logoView = createLogoView();
         logoView.setTranslateX(155);
         logoView.setTranslateY(50);
         root.getChildren().add(logoView);
@@ -70,7 +71,9 @@ public class MainMenu {
 
         Button loadGameButton = createButton("/images/Main Menu/loadGame.png", e -> {
             System.out.println("\u001B[34m" + "Loading Game" + "\u001B[0m"); // Blue text
-            animationManager.startTransition(primaryStage, () -> mainGame.loadGame(primaryStage));
+            SoundManager.buttonClickSound();
+            GameState gameState = new GameState();
+            gameState.loadGame(mainGame, primaryStage);
         }, 230, 90);
 
         Button exitButton = createButton("/images/Main Menu/quitGame.png", e -> Platform.exit(), 230, 90);
@@ -84,8 +87,10 @@ public class MainMenu {
         primaryStage.show();
     }
 
-    private ImageView createLogoView(String imagePath) {
-        Image logo = loadImage(imagePath);
+
+
+    private ImageView createLogoView() {
+        Image logo = loadImage("/images/Main Menu/logo.png");
         ImageView imageView = new ImageView(logo);
         imageView.setFitWidth(200); // Set the logo size
         imageView.setFitHeight(150);

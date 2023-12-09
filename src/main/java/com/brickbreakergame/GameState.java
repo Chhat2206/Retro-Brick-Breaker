@@ -1,5 +1,10 @@
 package com.brickbreakergame;
 
+import javafx.application.Platform;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -124,5 +129,77 @@ public class GameState {
         }).start();
     }
 
+    /**
+     * Loads a previously saved game state from the save file.
+     *
+     * @param mainInstance The instance of the Main class where the loaded game will be displayed.
+     * @param primaryStage The primary stage where the game's scenes will be displayed.
+     */
+    public void loadGame(Main mainInstance, Stage primaryStage) {
+        File saveFile = new File(Main.SAVE_PATH);
+        if (!saveFile.exists()) {
+            System.out.println("Save file not found. Loading a New Game!");
+            mainInstance.newGame(primaryStage);
+            return;
+        }
 
+        read();
+
+        mainInstance.setExistHeartBlock(isExistHeartBlock);
+        mainInstance.setIsGoldStatus(isGoldStatus);
+        mainInstance.setGoDownBall(goDownBall);
+        mainInstance.setGoRightBall(goRightBall);
+        mainInstance.setCollideToBreak(collideToBreak);
+        mainInstance.setCollideToBreakAndMoveToRight(collideToBreakAndMoveToRight);
+        mainInstance.setCollideToRightWall(collideToRightWall);
+        mainInstance.setCollideToLeftWall(collideToLeftWall);
+        mainInstance.setCollideToRightBlock(collideToRightBlock);
+        mainInstance.setCollideToBottomBlock(collideToBottomBlock);
+        mainInstance.setCollideToLeftBlock(collideToLeftBlock);
+        mainInstance.setCollideToTopBlock(collideToTopBlock);
+        mainInstance.setLevel(level);
+        mainInstance.setScore(score);
+        mainInstance.setHeart(heart);
+        mainInstance.setDestroyedBlockCount(destroyedBlockCount);
+        mainInstance.setBallPosX(xBall);
+        mainInstance.setBallPosY(yBall);
+        mainInstance.setPaddleMoveX(xBreak);
+        mainInstance.setPaddleMoveY((float) yBreak);
+        mainInstance.setCenterBreakX(centerBreakX);
+        mainInstance.setTime(time);
+        mainInstance.setGoldTime(goldTime);
+        mainInstance.setBallVelocityX(vX);
+
+        mainInstance.getBlocks().clear();
+        mainInstance.getChocos().clear();
+
+        if (mainInstance.root == null) {
+            mainInstance.root = new Pane();
+        }
+
+        for (BlockSerializable ser : blocks) {
+            Color blockColor = mainInstance.getColors()[ser.colorIndex];
+            Block block = new Block(ser.row, ser.column, blockColor, ser.type);
+            mainInstance.getBlocks().add(block);
+            Platform.runLater(() -> {
+                if (block.rect != null) {
+                    mainInstance.root.getChildren().add(block.rect);
+                }
+            });
+        }
+
+        mainInstance.setPaddleMoveX(Main.SCENE_WIDTH / 2.0 - mainInstance.getPaddleWidth() / 2.0); // Moves paddle back to default location
+        mainInstance.initializeGameObjects(); // Assuming this method initializes the ball and other game objects
+
+        // Now safely set the properties of game objects
+        if (mainInstance.getBall() != null) {
+            mainInstance.getBall().setCenterX(xBall);
+            mainInstance.getBall().setCenterY(yBall);
+        } else {
+            // Handle the situation where the ball is not initialized
+            System.err.println("Error: Ball object is not initialized.");
+        }
+        mainInstance.loadFromSave = true;
+        mainInstance.newGame(primaryStage);
+    }
 }
