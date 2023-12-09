@@ -14,19 +14,13 @@ import java.io.Serializable;
  * Blocks can have different colors and types, and they can be destroyed by the ball.
  */
 public class Block implements Serializable {
-    private static final Block block = new Block(-1, -1, Color.TRANSPARENT, 99);
 
-    public int row;
-    public int column;
-    public boolean isDestroyed = false;
-    Color color;
-    public int type;
-    public int x;
-    public int y;
-    private final int width = 80;
-    private final int height = 30;
-    private final int paddingTop = height * 2;
-    private final int paddingHeight = 50;
+    // Constants for block dimensions and padding
+    private static final Block block = new Block(-1, -1, Color.TRANSPARENT, 99);
+    private final int WIDTH = 80;
+    private final int HEIGHT = 30;
+    private final int PADDING_TOP = HEIGHT * 2;
+    private final int PADDING_HEIGHT = 50;
     public Rectangle rect;
 
     // Constants for different types of block hits
@@ -37,96 +31,98 @@ public class Block implements Serializable {
     public static final int HIT_TOP = 3;
 
     // Constants for different types of blocks
-    public static int BLOCK_NORMAL = 99;
-    public static int BLOCK_RANDOM = 100;
-    public static int BLOCK_GOLDEN_TIME = 101;
-    public static int BLOCK_HEART = 102;
+    public static int NORMAL = 99;
+    public static int RANDOM = 100;
+    public static int GOLDEN_TIME = 101;
+    public static int HEART = 102;
 
+    // Block properties
+    public int row;
+    public int column;
+    public boolean isDestroyed = false;
+    Color color;
+    public int type;
+    public int x;
+    public int y;
+
+    // Images for different block types
+    private static final Image IMAGE_RANDOM = new Image("/images/blocks/chocoBlock.png");
+    private static final Image IMAGE_HEART = new Image("/images/blocks/heartBlock.png");
+    private static final Image IMAGE_GOLDEN_TIME = new Image("/images/blocks/goldenBallBlock.png");
 
     public Block(int row, int column, Color color, int type) {
         this.row = row;
         this.column = column;
         this.color = color;
         this.type = type;
-
         draw();
     }
 
     private void draw() {
-        x = (column * width) + paddingHeight;
-        y = (row * height) + paddingTop;
+        x = (column * WIDTH) + PADDING_HEIGHT;
+        y = (row * HEIGHT) + PADDING_TOP;
 
         rect = new Rectangle();
-        rect.setWidth(width);
-        rect.setHeight(height);
+        rect.setWidth(WIDTH);
+        rect.setHeight(HEIGHT);
         rect.setX(x);
         rect.setY(y);
 
-        if (type == BLOCK_RANDOM) {
+        if (type == RANDOM) {
             Image image = new Image("/images/blocks/chocoBlock.png");
             ImagePattern pattern = new ImagePattern(image);
             rect.setFill(pattern);
-        } else if (type == BLOCK_HEART) {
+        } else if (type == HEART) {
             Image image = new Image("/images/blocks/heartBlock.png");
             ImagePattern pattern = new ImagePattern(image);
             rect.setFill(pattern);
-        } else if (type == BLOCK_GOLDEN_TIME) {
+        } else if (type == GOLDEN_TIME) {
             Image image = new Image("/images/blocks/goldenBallBlock.png");
             ImagePattern pattern = new ImagePattern(image);
             rect.setFill(pattern);
         } else {
             rect.setFill(color);
         }
-
     }
 
 
     public int checkHitToBlock(double xBall, double yBall, double ballRadius) {
+        if (isDestroyed) return NO_HIT;
 
-        if (isDestroyed) {
-            return NO_HIT;
+        if (xBall >= x && xBall <= x + WIDTH) {
+            if (yBall - ballRadius <= y + HEIGHT && yBall + ballRadius > y + HEIGHT) {
+                SoundManager.blockHit();
+                return HIT_BOTTOM;
+            } else if (yBall + ballRadius >= y && yBall - ballRadius < y) {
+                SoundManager.blockHit();
+                return HIT_TOP;
+            }
         }
-
-        // Check collision with the bottom of the block
-        if (xBall >= x && xBall <= x + width && yBall - ballRadius <= y + height && yBall + ballRadius > y + height) {
-            SoundManager.blockHit();
-            return HIT_BOTTOM;
+        if (yBall >= y && yBall <= y + HEIGHT) {
+            if (xBall - ballRadius <= x + WIDTH && xBall + ballRadius > x + WIDTH) {
+                SoundManager.blockHit();
+                return HIT_RIGHT;
+            } else if (xBall + ballRadius >= x && xBall - ballRadius < x) {
+                SoundManager.blockHit();
+                return HIT_LEFT;
+            }
         }
-
-        // Check collision with the top of the block
-        if (xBall >= x && xBall <= x + width && yBall + ballRadius >= y && yBall - ballRadius < y) {
-            SoundManager.blockHit();
-            return HIT_TOP;
-        }
-
-        // Check collision with the right side of the block
-        if (yBall >= y && yBall <= y + height && xBall - ballRadius <= x + width && xBall + ballRadius > x + width) {
-            SoundManager.blockHit();
-            return HIT_RIGHT;
-        }
-
-        // Check collision with the left side of the block
-        if (yBall >= y && yBall <= y + height && xBall + ballRadius >= x && xBall - ballRadius < x) {
-            SoundManager.blockHit();
-            return HIT_LEFT;
-        }
-
         return NO_HIT;
     }
 
     public static int getPaddingTop() {
-        return block.paddingTop;
+        return block.PADDING_TOP;
     }
 
-    public static int getPaddingH() {
-        return block.paddingHeight;
+    public static int getPaddingHeight() {
+        return block.PADDING_HEIGHT;
     }
 
     public static int getHeight() {
-        return block.height;
+        return block.HEIGHT;
     }
 
     public static int getWidth() {
-        return block.width;
+        return block.WIDTH;
     }
 }

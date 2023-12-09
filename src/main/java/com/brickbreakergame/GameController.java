@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.util.ArrayList;
 
-public class GameState {
+public class GameController {
     public boolean isExistHeartBlock;
     public boolean isGoldStatus;
     public boolean goDownBall;
@@ -170,6 +170,7 @@ public class GameState {
         mainInstance.setGoldTime(goldTime);
         mainInstance.setBallVelocityX(vX);
 
+        mainInstance.setDestroyedBlockCount(0);
         mainInstance.getBlocks().clear();
         mainInstance.getChocos().clear();
 

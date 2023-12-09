@@ -80,6 +80,7 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 - [x] Custom colors when showcasing a power-up bonus for cuter ui
 - [x] Cool animation when player loses and gains a heart
 - [x] Set paddle to the middle in the new levels and when loading game
+- [x] Shrink and fades out bonus
 
 ### Pause and Sound Menu
 - [x] Both menus follow the screen when it's moved

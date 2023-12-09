@@ -4,7 +4,7 @@ import com.brickbreakergame.managers.*;
 import com.brickbreakergame.menus.MainMenu;
 import com.brickbreakergame.menus.PauseMenu;
 import com.brickbreakergame.screens.YouWinScreen;
-import javafx.animation.*;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -19,8 +19,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import java.util.*;
-import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 
 /**
@@ -33,7 +33,7 @@ import java.io.*;
  *
  * @author Chhat
  * @version 1.0
- * @since 9 December 2023
+ * @since 12 December 2023
  */
 public class Main extends Application implements EventHandler<KeyEvent>, GameEngine.OnAction {
     // Constants
@@ -48,7 +48,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     // Game State Variables
     protected int level = 1;
     private int score = 0;
-    private int heart = 1;
+    private int heart = 3;
     private int destroyedBlockCount = 0;
 
     // Paddle Variables
@@ -140,23 +140,24 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     AnimationManager animationManager = new AnimationManager();
     BonusManager bonusManager = createBonus(0, 0);
 
-    private GameState gameState = new GameState();
+    private GameController gameController = new GameController();
 
     /**
-     * The start method is the main entry point for the JavaFX application.
-     * It initializes the game by displaying the main menu.
+     * Initializes and displays the main game window.
+     * This method sets up the primary stage of the game, including the main menu and game scenes.
      *
-     * @param primaryStage The primary stage where the game's scenes will be displayed.
+     * @param primaryStage The primary stage for this application, onto which the scene is set.
      */
     @Override
     public void start(Stage primaryStage) {
         MainMenu mainMenu = new MainMenu(primaryStage, this);
         mainMenu.display();
-        gameState = new GameState();
+        gameController = new GameController();
     }
 
     /**
-     * Initializes the ball object with default properties and position.
+     * Initializes the ball object with default properties and position. The ball is a central game element
+     * used in gameplay mechanics. This method sets its initial size, appearance, and starting position.
      */
     protected void initializeGameObjects() {
         initializeBall();
@@ -164,7 +165,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Sets up the game board for the current level. This method initializes blocks and other game elements.
+     * Sets up the game board for the current level. This includes initializing blocks and other game elements
+     * as per the current level's layout and difficulty. It resets the game state for a new level or game session.
      */
     private void setUpGameBoard() {
         if (!loadFromSave) {
@@ -176,6 +178,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     /**
      * Creates the user interface components for the game, such as score labels and background images.
+     * This method sets up the visual elements that the player interacts with during gameplay.
      */
     private void createUIComponents() {
         root = new Pane();
@@ -186,7 +189,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Adds the blocks to the game UI. This method is used when starting a new level or loading a game.
+     * Adds the blocks to the game UI. This method is used when starting a new level or loading a game,
+     * and is responsible for placing the blocks in their initial positions.
      */
     private void setUpBlocks() {
         if (!loadFromSave) {
@@ -201,7 +205,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Sets up the scene for the game, including the layout and event handlers.
+     * Sets up the scene for the game, including the layout and event handlers. This method is crucial for initializing
+     * the visual and interactive components of the game window.
      */
     private void setUpScene() {
         Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
@@ -214,6 +219,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         primaryStage.show();
     }
 
+    /**
+     * Starts the game's main engine. This method initiates the game loop,
+     * handling updates and rendering of the game.
+     */
     private void startGameEngine() {
         engine = new GameEngine();
         engine.setOnAction(this);
@@ -223,9 +232,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Main method to start a new game session.
+     * Starts a new game session.
+     * This method initializes the game objects, sets up the game board, UI components, and begins the game engine.
      *
-     * @param primaryStage The primary stage for displaying the game.
+     * @param primaryStage The primary stage used to display the game.
      */
     public void newGame(Stage primaryStage) {
         Main.primaryStage = primaryStage;
@@ -252,9 +262,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Handles user keyboard input events such as moving the paddle and pausing the game.
+     * Handles keyboard input events.
+     * This method responds to paddle movement.
      *
-     * @param event The KeyEvent representing the user's keyboard input.
+     * @param event The KeyEvent representing the player's keyboard input.
      */
     @Override
     public void handle(KeyEvent event) {
@@ -311,8 +322,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Moves the paddle in the specified direction.
-     * This method controls the paddle's movement based on user input, ensuring that it stays within the game boundaries.
+     * Moves the paddle left or right. This method is responsible for controlling the paddle's
+     * movement based on user input, ensuring that it stays within the game boundaries.
      *
      * @param direction The direction to move the paddle, either LEFT or RIGHT.
      */
@@ -363,8 +374,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Resets flags that track ball collisions with various objects.
-     * Ensures proper response to new collisions after a collision has occurred.
+     * Resets flags that track ball collisions with various objects. This is essential for ensuring proper
+     * response to new collisions after a collision has occurred and to prevent incorrect collision handling.
      */
     public void resetCollideFlags() {
         collideToBreak = false;
@@ -378,16 +389,19 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Sets the physics properties to the ball, including its movement and collision behavior.
+     * Updates the position of the ball based on its current velocity and direction. This method is crucial
+     * for the movement mechanics of the ball as it calculates its new position every frame.
      */
     private void setPhysicsToBall() {
         updateBallPosition();
         checkCollisionWithWalls();
 
-        if (checkContinuousCollisionWithPaddle()) {
-            handlePaddleCollision(); // Fixes paddle randomly bugging out
+        // Enhanced collision detection
+        boolean continuousCollision = checkContinuousCollisionWithPaddle();
+        if (continuousCollision) {
+            handlePaddleCollision();
         } else {
-            checkCollisionWithPaddle(); // Fallback to original collision check
+            checkCollisionWithPaddle();
         }
 
         checkCollisionWithBlocks();
@@ -395,7 +409,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Checks and handles the ball's collision with the game walls.
+     * Checks and handles the ball's collision with the game walls. This method ensures that the ball reacts
+     * appropriately when hitting the boundaries of the game area.
      */
     private void checkCollisionWithWalls() {
         if (ballPosY <= ballRadius || ballPosY + ballRadius >= SCENE_HEIGHT) {
@@ -408,7 +423,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Handles the ball's collision with the top and bottom walls.
+     * Handles the ball's collision with the top and bottom walls. This method determines the ball's response
+     * when it comes into contact with either the top or bottom boundary of the game area.
      */
     private void handleWallCollision() {
         if (ballPosY <= ballRadius) {
@@ -418,12 +434,20 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }
     }
 
+    /**
+     * Handles the ball's bounce off the top wall. This method reverses the ball's vertical direction
+     * upon hitting the top boundary of the game area.
+     */
     private void bounceOffTopWall() {
         SoundManager.paddleBounceSound();
         resetCollideFlags();
         goDownBall = true;
     }
 
+    /**
+     * Handles the ball's bounce off the bottom wall. This method deals with the consequences of the ball
+     * hitting the bottom boundary, including life reduction and game over scenarios.
+     */
     private void bounceOffBottomWall() {
         resetCollideFlags();
         goDownBall = false;
@@ -442,7 +466,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Handles the ball's collision with the left and right walls.
+     * Handles the ball's collision with the left and right walls. This method reverses the ball's horizontal
+     * direction when it hits the side boundaries of the game area.
      */
     private void handleSideWallCollision() {
         SoundManager.paddleBounceSound();
@@ -455,7 +480,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Checks and handles the ball's collision with the paddle.
+     * Checks and handles the ball's collision with the paddle. This method determines if and how the ball
+     * interacts with the paddle, affecting its trajectory.
      */
     private void checkCollisionWithPaddle() {
         if (ballPosY + ballRadius >= paddleMoveY &&
@@ -484,7 +510,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Handles the ball's collision with the paddle, adjusting its velocity and direction.
+     * Handles the ball's collision with the paddle, adjusting its velocity and direction. This method is critical
+     * for reflecting the ball's movement when it interacts with the paddle.
      */
     private void handlePaddleCollision() {
         resetCollideFlags();
@@ -495,7 +522,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Calculates the velocity of the ball after colliding with the paddle.
+     * Calculates the velocity of the ball after colliding with the paddle. This method adjusts the speed
+     * and direction of the ball based on its point of contact with the paddle.
      */
     private void calculateBallVelocity() {
         double relation = (ballPosX - centerBreakX) / ((double) paddleWidth / 2);
@@ -524,7 +552,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Checks and handles the ball's collision with blocks.
+     * Checks for and handles the ball's collision with blocks. This method updates the game state
+     * based on the interaction between the ball and individual blocks.
      */
     private void checkCollisionWithBlocks() {
         if (collideToRightBlock) {
@@ -545,7 +574,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Determines the direction of the ball after it has collided with an object.
+     * Determines the direction of the ball after it has collided with an object. This method is essential for
+     * controlling the ball's movement logic post-collision.
      */
     private void handleBallDirection() {
         // Logic to handle the direction of the ball after collision
@@ -561,7 +591,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Updates the position of the ball based on its current velocity and direction.
+     * Updates the position of the ball based on its current velocity and direction. This method is crucial
+     * for the movement mechanics of the ball as it calculates its new position every frame.
      */
     private void updateBallPosition() {
         ballPosX += goRightBall ? ballVelocityX : -ballVelocityX;
@@ -569,7 +600,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Checks if all blocks have been destroyed to progress to the next level.
+     * Checks if all blocks have been destroyed to progress to the next level. This is an essential part of the
+     * game progression, triggering level advancement and difficulty increase.
      */
     private void checkDestroyedCount() {
         if (destroyedBlockCount == blocks.size()) {
@@ -581,7 +613,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Updates the game objects' positions and handles collision and collision detection in each frame.
+     * Called on every frame update of the game. This method updates the game state, including UI components,
+     * game object positions, and handles collisions.
      */
     @Override
     public void onUpdate() {
@@ -593,7 +626,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Updates the user interface components like score and heart labels.
+     * Updates the user interface components like score and heart labels. This method keeps the UI elements
+     * in sync with the game state.
      */
     private void updateUIComponents() {
         Platform.runLater(() -> {
@@ -604,7 +638,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Updates the positions of game objects like the paddle and ball.
+     * Updates the positions of game objects like the paddle and ball. This method is essential for ensuring
+     * that game elements are displayed correctly according to their current state.
      */
     private synchronized void updateGameObjects() {
         Platform.runLater(() -> {
@@ -619,7 +654,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Handles the collisions between the ball and blocks, including block destruction.
+     * Manages the ball's collisions with the blocks.
+     * This method is responsible for determining if the ball has collided with any block,
+     * and it handles the consequences of such collisions, such as changing the ball's direction,
+     * updating scores, or block destruction.
      */
     private void handleBlockCollisions() {
         for (final Block block : blocks) {
@@ -636,7 +674,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Repositions the ball after it has collided with a block. Makes the look very very clean.
+     * Repositions the ball after it has collided with a block. Makes the look very clean.
      *
      * @param block   The block that the ball collided with.
      * @param hitCode The code indicating the side of the block hit by the ball.
@@ -697,11 +735,11 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      * @param block The block generated by the game board
      */
     private void checkBlockTypeActions(Block block) {
-        if (block.type == Block.BLOCK_RANDOM) {
+        if (block.type == Block.RANDOM) {
             handleRandomBlock(block);
-        } else if (block.type == Block.BLOCK_GOLDEN_TIME) {
+        } else if (block.type == Block.GOLDEN_TIME) {
             handleGoldenTimeBlock();
-        } else if (block.type == Block.BLOCK_HEART) {
+        } else if (block.type == Block.HEART) {
             heart++;
             animationManager.animateHeartIncrease(uiManager.getHeartLabel());
             SoundManager.heartBonus();
@@ -735,7 +773,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Handles the collection of bonuses and updates the game state accordingly.
+     * Handles the collection of bonuses and updates the game state accordingly. This method is responsible
+     * for detecting and applying the effects of bonus items collected during gameplay.
      */
     private void handleBonusCollection() {
         Iterator<BonusManager> iterator = chocos.iterator();
@@ -749,7 +788,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
             if (choco.y >= paddleMoveY && choco.y <= paddleMoveY + PADDLE_HEIGHT
                     && choco.x >= paddleMoveX && choco.x <= paddleMoveX + paddleWidth) {
-//                applyBonusEffect(choco);
                 choco.applyBonusEffect();
                 iterator.remove();
             } else {
@@ -784,7 +822,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Callback method for tracking game time.
+     * Callback method for tracking game time. This method is used to update time-dependent aspects of the game,
+     * such as power-ups and game timers.
      *
      * @param time The current game time in milliseconds.
      */
@@ -836,16 +875,21 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Sets the velocity of the ball in the X direction.
-     * @param ballVelocityX The X velocity to be set for the ball.
+     * Sets the horizontal velocity of the ball.
+     * This method is crucial for controlling the ball's speed and direction along the X-axis,
+     * typically in response to collisions or game events.
+     *
+     * @param ballVelocityX The new horizontal velocity for the ball. Positive values move the ball to the right, negative to the left.
      */
     public void setBallVelocityX(double ballVelocityX) {
         this.ballVelocityX = ballVelocityX;
     }
 
     /**
-     * Sets the number of blocks destroyed in the game.
-     * @param destroyedBlockCount The count of destroyed blocks to be set.
+     * Updates the count of blocks destroyed in the game.
+     * This count is used to track progress and can trigger level changes or score updates.
+     *
+     * @param destroyedBlockCount The total number of blocks destroyed so far in the game.
      */
     public void setDestroyedBlockCount(int destroyedBlockCount) {
         this.destroyedBlockCount = destroyedBlockCount;
@@ -961,263 +1005,546 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         this.isExistHeartBlock = existHeartBlock;
     }
 
+    /**
+     * Sets the Y position of the paddle on the game screen.
+     * This method updates the vertical position of the paddle, typically in response to game events or player input.
+     *
+     * @param paddleMoveY The new Y position for the paddle. Should be within the game screen bounds.
+     */
     public void setPaddleMoveY(float paddleMoveY) {
         this.paddleMoveY = paddleMoveY;
     }
 
-    // Getter and setter for paddleWidth
+    /**
+     * Retrieves the current width of the paddle.
+     * This width may change during the game if the paddle encounters certain bonuses or penalties.
+     *
+     * @return The width of the paddle in pixels.
+     */
     public int getPaddleWidth() {
         return paddleWidth;
     }
 
+    /**
+     * Sets the width of the paddle.
+     *
+     * @param width The width to set for the paddle.
+     */
     public void setPaddleWidth(int width) {
         paddleWidth = width;
-        rect.setWidth(width); // Assuming rect is the Rectangle representing the paddle
+        rect.setWidth(width);
     }
 
-    // Getter and setter for paddleMoveX
+    /**
+     * Retrieves the X position of the paddle.
+     *
+     * @return The current X position of the paddle.
+     */
     public double getPaddleMoveX() {
         return paddleMoveX;
     }
 
+    /**
+     * Sets the X position of the paddle.
+     *
+     * @param x The X position to set for the paddle.
+     */
     public void setPaddleMoveX(double x) {
         paddleMoveX = x;
         if (rect != null) {
-            rect.setX(x); // Adjust the position of the paddle
+            rect.setX(x);
         }
     }
 
+    /**
+     * Retrieves the original width of the paddle.
+     *
+     * @return The original width of the paddle.
+     */
     public int getOriginalPaddleWidth() {
         return originalPaddleWidth;
     }
 
+    /**
+     * Sets the original width of the paddle.
+     *
+     * @param width The original width of the paddle to set.
+     */
     public void setOriginalPaddleWidth(int width) {
         originalPaddleWidth = width;
     }
 
-    // Getter and setter for paddleWidthChangeTime
+    /**
+     * Retrieves the time when the paddle width change occurred.
+     *
+     * @return The time of the last paddle width change.
+     */
     public long getPaddleWidthChangeTime() {
         return paddleWidthChangeTime;
     }
 
+    /**
+     * Sets the time when the paddle width change occurred.
+     *
+     * @param time The time to set for the last paddle width change.
+     */
     public void setPaddleWidthChangeTime(long time) {
         paddleWidthChangeTime = time;
     }
 
-    // Getter and setter for paddleWidthChangeDuration
+    /**
+     * Retrieves the duration of the paddle width change.
+     *
+     * @return The duration of the paddle width change.
+     */
     public long getPaddleWidthChangeDuration() {
         return paddleWidthChangeDuration;
     }
 
+    /**
+     * Sets the duration of the paddle width change.
+     *
+     * @param duration The duration to set for the paddle width change.
+     */
     public void setPaddleWidthChangeDuration(long duration) {
         paddleWidthChangeDuration = duration;
     }
 
-    // Getter and setter for paddleWidthChanged
+    /**
+     * Checks if the paddle width has been changed.
+     *
+     * @return True if the paddle width has been changed, false otherwise.
+     */
     public boolean isPaddleWidthChanged() {
         return paddleWidthChanged;
     }
 
+    /**
+     * Sets the status of the paddle width change.
+     *
+     * @param changed True if the paddle width has been changed, false otherwise.
+     */
     public void setPaddleWidthChanged(boolean changed) {
         paddleWidthChanged = changed;
     }
 
-    // Getter and setter for ballRadius
+    /**
+     * Retrieves the radius of the ball.
+     *
+     * @return The current radius of the ball.
+     */
     public double getBallRadius() {
         return ball.getRadius();
     }
 
+    /**
+     * Sets the radius of the ball.
+     *
+     * @param radius The radius to set for the ball.
+     */
     public void setBallRadius(double radius) {
         ball.setRadius(radius);
     }
 
-    // Getter and setter for ballPosX
+    /**
+     * Retrieves the X position of the ball.
+     *
+     * @return The current X position of the ball.
+     */
     public double getBallPosX() {
         return ball.getCenterX();
     }
 
+    /**
+     * Sets the X position of the ball.
+     *
+     * @param posX The X position to set for the ball.
+     */
     public void setBallPosX(double posX) {
         if (ball != null) {
             ball.setCenterX(posX);
         }
     }
 
+    /**
+     * Sets the Y position of the ball.
+     *
+     * @param posY The Y position to set for the ball.
+     */
     public void setBallPosY(double posY) {
         if (ball != null) {
             ball.setCenterY(posY);
         }
     }
 
-    // Getter and setter for ballPosY
+    /**
+     * Retrieves the Y position of the ball.
+     *
+     * @return The current Y position of the ball.
+     */
     public double getBallPosY() {
         return ball.getCenterY();
     }
 
-    // Getter and setter for originalBallRadius
+    /**
+     * Retrieves the original radius of the ball.
+     *
+     * @return The original radius of the ball.
+     */
     public double getOriginalBallRadius() {
         return originalBallRadius;
     }
 
+    /**
+     * Sets the original radius of the ball.
+     *
+     * @param radius The original radius to set for the ball.
+     */
     public void setOriginalBallRadius(double radius) {
         originalBallRadius = (int) radius;
     }
 
-    // Getter and setter for ballSizeChangeTime
+    /**
+     * Retrieves the time when the ball size change occurred.
+     *
+     * @return The time of the last ball size change.
+     */
     public long getBallSizeChangeTime() {
         return ballSizeChangeTime;
     }
 
+    /**
+     * Sets the time when the ball size change occurred.
+     *
+     * @param time The time to set for the last ball size change.
+     */
     public void setBallSizeChangeTime(long time) {
         ballSizeChangeTime = time;
     }
 
-    // Getter and setter for ballSizeChangeDuration
+    /**
+     * Retrieves the duration of the ball size change.
+     *
+     * @return The duration of the ball size change.
+     */
     public long getBallSizeChangeDuration() {
         return ballSizeChangeDuration;
     }
 
+    /**
+     * Sets the duration of the ball size change.
+     *
+     * @param duration The duration to set for the ball size change.
+     */
     public void setBallSizeChangeDuration(long duration) {
         ballSizeChangeDuration = duration;
     }
 
-    // Getter and setter for ballSizeChanged
+    /**
+     * Checks if the ball size has been changed.
+     *
+     * @return True if the ball size has been changed, false otherwise.
+     */
     public boolean isBallSizeChanged() {
         return ballSizeChanged;
     }
 
+    /**
+     * Sets the status of the ball size change.
+     *
+     * @param changed True if the ball size has been changed, false otherwise.
+     */
     public void setBallSizeChanged(boolean changed) {
         ballSizeChanged = changed;
     }
 
+    /**
+     * Retrieves the number of hearts (lives) remaining in the game.
+     *
+     * @return The current number of hearts.
+     */
     public int getHeart() {
         return heart;
     }
 
+    /**
+     * Retrieves the count of destroyed blocks in the game.
+     *
+     * @return The count of destroyed blocks.
+     */
     public int getDestroyedBlockCount() {
         return destroyedBlockCount;
     }
 
+    /**
+     * Retrieves the Y position of the paddle.
+     *
+     * @return The current Y position of the paddle.
+     */
     public double getPaddleMoveY() {
         return paddleMoveY;
     }
+
+    /**
+     * Retrieves the X position of the center of the paddle break.
+     *
+     * @return The X position of the center of the paddle break.
+     */
     public double getCenterBreakX() {
         return centerBreakX;
     }
 
-
+    /**
+     * Retrieves the current game time.
+     *
+     * @return The current game time.
+     */
     public long getTime() {
         return time;
     }
 
+    /**
+     * Retrieves the time when the golden time block was hit.
+     *
+     * @return The time when the golden time block was hit.
+     */
     public long getGoldTime() {
         return goldTime;
     }
 
+    /**
+     * Retrieves the velocity of the ball in the X direction.
+     *
+     * @return The X velocity of the ball.
+     */
     public double getBallVelocityX() {
         return ballVelocityX;
     }
 
-    // Boolean state variables
+// Boolean state variable getters
+
+    /**
+     * Checks if there is an existing heart block in the game.
+     *
+     * @return True if a heart block exists, false otherwise.
+     */
     public boolean isExistHeartBlock() {
         return isExistHeartBlock;
     }
 
+    /**
+     * Checks whether the game is currently in 'Gold' mode.
+     * In 'Gold' mode, the ball will not lose hearts when bouncing off the ground.
+     *
+     * @return True if the game is in 'Gold' mode, false otherwise.
+     */
     public boolean isGoldStatus() {
         return isGoldStatus;
     }
 
-
+    /**
+     * Checks if the ball is moving downward.
+     *
+     * @return True if the ball is moving down, false otherwise.
+     */
     public boolean isGoDownBall() {
         return goDownBall;
     }
 
+    /**
+     * Checks if the ball is moving to the right.
+     *
+     * @return True if the ball is moving right, false otherwise.
+     */
     public boolean isGoRightBall() {
         return goRightBall;
     }
 
+    /**
+     * Checks if there has been a collision leading to a break.
+     *
+     * @return True if there is a collision leading to a break, false otherwise.
+     */
     public boolean isCollideToBreak() {
         return collideToBreak;
     }
 
-
+    /**
+     * Checks if there is a collision leading to a break and a move to the right.
+     *
+     * @return True if there is such a collision, false otherwise.
+     */
     public boolean isCollideToBreakAndMoveToRight() {
         return collideToBreakAndMoveToRight;
     }
 
-
+    /**
+     * Checks if there has been a collision with the right wall.
+     *
+     * @return True if there is a collision with the right wall, false otherwise.
+     */
     public boolean isCollideToRightWall() {
         return collideToRightWall;
     }
 
-
+    /**
+     * Checks if there has been a collision with the left wall.
+     *
+     * @return True if there is a collision with the left wall, false otherwise.
+     */
     public boolean isCollideToLeftWall() {
         return collideToLeftWall;
     }
 
+    /**
+     * Checks if there has been a collision with a right block.
+     *
+     * @return True if there is a collision with a right block, false otherwise.
+     */
     public boolean isCollideToRightBlock() {
         return collideToRightBlock;
     }
 
+    /**
+     * Checks if there has been a collision with a bottom block.
+     *
+     * @return True if there is a collision with a bottom block, false otherwise.
+     */
     public boolean isCollideToBottomBlock() {
         return collideToBottomBlock;
     }
 
+    /**
+     * Checks if there has been a collision with a left block.
+     *
+     * @return True if there is a collision with a left block, false otherwise.
+     */
     public boolean isCollideToLeftBlock() {
         return collideToLeftBlock;
     }
 
+    /**
+     * Checks if there has been a collision with the top block.
+     *
+     * @return True if there is a collision with a top block, false otherwise.
+     */
     public boolean isCollideToTopBlock() {
         return collideToTopBlock;
     }
 
-    public GameState getGameState() {
-        return this.gameState;
+    /**
+     * Retrieves the current state of the game.
+     *
+     * @return The current state of the game as a GameController object.
+     */
+    public GameController getGameState() {
+        return this.gameController;
     }
 
+    /**
+     * Determines the horizontal movement direction of the ball.
+     * Setting this to true makes the ball move towards the right side of the screen.
+     *
+     * @param goRightBall True to make the ball move to the right, false for moving it to the left.
+     */
     public void setGoRightBall(boolean goRightBall) {
         this.goRightBall = goRightBall;
     }
 
+    /**
+     * Sets the collision status leading to a break.
+     *
+     * @param collideToBreak True if there is a collision leading to a break, false otherwise.
+     */
     public void setCollideToBreak(boolean collideToBreak) {
         this.collideToBreak = collideToBreak;
     }
 
+    /**
+     * Sets the collision status leading to a break and a subsequent move to the right.
+     *
+     * @param collideToBreakAndMoveToRight True if there is such a collision, false otherwise.
+     */
     public void setCollideToBreakAndMoveToRight(boolean collideToBreakAndMoveToRight) {
         this.collideToBreakAndMoveToRight = collideToBreakAndMoveToRight;
     }
 
+    /**
+     * Sets the collision status for the ball with the right wall.
+     * When set to true, it indicates that the ball has collided with the right boundary of the game area.
+     *
+     * @param collideToRightWall True to indicate a collision with the right wall, false otherwise.
+     */
     public void setCollideToRightWall(boolean collideToRightWall) {
         this.collideToRightWall = collideToRightWall;
     }
 
+    /**
+     * Sets the collision status for the ball with the left wall.
+     * When set to true, it indicates that the ball has collided with the left boundary of the game area.
+     *
+     * @param collideToLeftWall True to indicate a collision with the left wall, false otherwise.
+     */
     public void setCollideToLeftWall(boolean collideToLeftWall) {
         this.collideToLeftWall = collideToLeftWall;
     }
 
+    /**
+     * Sets the collision status for the ball with a block on the right.
+     * This status is used in the game's logic to determine the ball's movement after hitting a block on its right side.
+     *
+     * @param collideToRightBlock True if the ball collides with a block on the right, false otherwise.
+     */
     public void setCollideToRightBlock(boolean collideToRightBlock) {
         this.collideToRightBlock = collideToRightBlock;
     }
 
+    /**
+     * Sets the collision status for the ball with a block at the bottom.
+     * This is used for handling the ball's behavior after it collides with any block located below it.
+     *
+     * @param collideToBottomBlock True to indicate a collision with a block at the bottom, false otherwise.
+     */
     public void setCollideToBottomBlock(boolean collideToBottomBlock) {
         this.collideToBottomBlock = collideToBottomBlock;
     }
 
+    /**
+     * Sets the collision status for the ball with a block on the left.
+     * It controls the game mechanics in terms of how the ball reacts after hitting a block to its left.
+     *
+     * @param collideToLeftBlock True if the ball collides with a block on the left, false otherwise.
+     */
     public void setCollideToLeftBlock(boolean collideToLeftBlock) {
         this.collideToLeftBlock = collideToLeftBlock;
     }
 
+    /**
+     * Sets the status of collision between the ball and a top block.
+     * This method is crucial for determining the ball's rebound direction after hitting a block above it.
+     *
+     * @param collideToTopBlock True if there is a collision with a top block, false otherwise.
+     */
     public void setCollideToTopBlock(boolean collideToTopBlock) {
         this.collideToTopBlock = collideToTopBlock;
     }
 
+    /**
+     * Sets the X-coordinate for the center point of the paddle's breaking action.
+     * This is used to determine the impact point of the ball on the paddle and calculate the ball's rebound trajectory.
+     *
+     * @param centerBreakX The X-coordinate of the paddle's center breaking point.
+     */
     public void setCenterBreakX(double centerBreakX) {
         this.centerBreakX = centerBreakX;
     }
 
+
     /**
-     * Gets the ball object.
+     * Retrieves the ball object used in the game.
+     * The ball is a central element in gameplay, and this method provides access to its properties.
      *
-     * @return The ball object of the game.
+     * @return The Circle object representing the ball in the game.
      */
     public Circle getBall() {
         return ball;

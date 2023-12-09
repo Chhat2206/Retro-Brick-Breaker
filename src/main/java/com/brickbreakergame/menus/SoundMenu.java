@@ -25,8 +25,11 @@ public class SoundMenu {
     private static Stage soundStage;
     private static VBox soundLayout;
     private static AnimationManager animationManager = new AnimationManager();
+
     /**
-     * Displays the sound settings menu with volume controls and a mute/unmute button.
+     * Displays the sound settings menu.
+     * This method sets up and shows the sound settings menu, allowing users to adjust audio volume and mute/unmute audio.
+     * It is displayed as a modal dialog over the pause menu, providing an intuitive and user-friendly interface for sound settings.
      */
     public static void display() {
         PauseMenu.soundMenuOpen();
@@ -46,7 +49,8 @@ public class SoundMenu {
     }
 
     /**
-     * Initializes the sound stage.
+     * Initializes the sound stage with specific settings for modality and style.
+     * This stage is used for displaying the sound settings menu as a modal dialog over the game.
      */
     private static void initializeSoundStage() {
         soundStage = new Stage();
@@ -55,7 +59,8 @@ public class SoundMenu {
     }
 
     /**
-     * Configures the layout for the sound settings menu, setting alignment, spacing, and style.
+     * Configures the layout for the sound settings menu.
+     * Sets the alignment, spacing, and style of the VBox layout that contains the sound menu's UI elements.
      */
     private static void configureSoundLayout() {
         soundLayout = new VBox(10);
@@ -65,9 +70,10 @@ public class SoundMenu {
     }
 
     /**
-     * Creates a volume slider control for adjusting audio volume.
+     * Creates and returns a volume slider control for the sound settings menu.
+     * This slider allows users to adjust the audio volume dynamically during the game.
      *
-     * @return The volume slider control.
+     * @return The Slider control for adjusting audio volume.
      */
     public static Slider createVolumeSlider() {
         Slider volumeSlider = new Slider(0, 1, SoundManager.getVolume());
@@ -76,9 +82,10 @@ public class SoundMenu {
     }
 
     /**
-     * Creates a mute/unmute button with an icon for controlling audio mute status.
+     * Creates and returns a mute/unmute button for the sound settings menu.
+     * This button allows users to toggle the mute status of the game's audio.
      *
-     * @return The mute/unmute button.
+     * @return The Button control for muting/unmuting audio.
      */
     public static Button createMuteButton() {
         ImageView muteIcon = new ImageView(new Image("/images/sound menu/muteMusic.png"));
@@ -97,7 +104,8 @@ public class SoundMenu {
     }
 
     /**
-     * Adds volume controls (slider and mute button) to the sound settings menu layout.
+     * Adds volume controls, including a slider and a mute button, to the sound settings menu layout.
+     * These controls enable users to manage audio settings conveniently within the game.
      */
     private static void addVolumeControls() {
         VBox volumeControls = new VBox(10); // Changed from HBox to VBox
@@ -111,7 +119,8 @@ public class SoundMenu {
     }
 
     /**
-     * Adds a close button to the sound settings menu layout for closing the menu.
+     * Adds a close button to the sound settings menu.
+     * This button allows users to close the sound settings menu and return to the game or pause menu.
      */
     private static void addCloseButton() {
         Button closeButton = new Button("Close");
@@ -127,7 +136,8 @@ public class SoundMenu {
     }
 
     /**
-     * Positions the sound settings menu next to the pause menu.
+     * Positions the sound settings menu adjacent to the pause menu.
+     * Aligns the sound settings menu in relation to the pause menu's position and dimensions for a cohesive interface layout.
      */
     private static void positionSoundMenuNextToPauseMenu() {
         // Position the Sound Menu to the right of the Pause Menu

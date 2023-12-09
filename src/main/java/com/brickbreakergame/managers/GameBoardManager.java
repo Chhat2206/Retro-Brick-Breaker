@@ -7,8 +7,10 @@ import javafx.scene.paint.Color;
 import java.util.Random;
 
 /**
- * The GameBoardManager class manages the setup of the game board layout for different levels
- * in the Brick Game.
+ * Manages the game board layout for different levels in the Brick Breaker game.
+ * This class is responsible for creating and arranging blocks in various patterns
+ * according to the level design. It also provides functionality to determine block types
+ * based on random generation, which adds variability to the game board.
  */
 public class GameBoardManager {
     private final Main mainInstance;
@@ -16,8 +18,9 @@ public class GameBoardManager {
 
     /**
      * Constructs a new GameBoardManager with a reference to the Main instance.
+     * Initializes a Random instance for use in block type determination and layout generation.
      *
-     * @param mainInstance The Main instance of the game.
+     * @param mainInstance The Main instance of the game which holds the game state and shared resources.
      */
     public GameBoardManager(Main mainInstance) {
         this.mainInstance = mainInstance;
@@ -27,7 +30,8 @@ public class GameBoardManager {
 
     /**
      * Sets up the game board layout based on the current level.
-     * Clears existing blocks and generates a new layout.
+     * Clears existing blocks and generates a new layout according to the level.
+     * Different levels have unique designs such as space ships, patterns, and other shapes.
      */
     public void setupGameBoard() {
         mainInstance.getBlocks().clear();
@@ -73,30 +77,24 @@ public class GameBoardManager {
      * This layout consists of a space ship shape.
      */
     private void createLevel1Layout() {
-        // Create a space ship to take you on your journey
-//        int[][] spaceShip = {
-//                {0, 0, 1, 1, 1, 1, 1, 0, 0},
-//                {0, 1, 0, 0, 0, 0, 0, 1, 0},
-//                {1, 0, 0, 1, 0, 1, 0, 0, 1},
-//                {1, 0, 0, 1, 0, 1, 0, 0, 1},
-//                {1, 0, 1, 1, 1, 1, 1, 0, 1}
-//        };
-//
-//        for (int j = 0; j < 5; j++) {
-//            for (int i = 0; i < 9; i++) {
-//                if (spaceShip[j][i] == 1) {
-//                    int blockType = determineBlockType(random.nextInt(100));
-//                    mainInstance.blocks.add(new Block(i, j, mainInstance.colors[j % mainInstance.colors.length], blockType));
-//                }
-//            }
-//        }
-//    }
-        int row = 6;
-        int column = 2;
-        int blockType = determineBlockType(random.nextInt(100));
-        mainInstance.getBlocks().add(new Block(row, column, mainInstance.getColors()[column % mainInstance.getColors().length], blockType));
-    }
+//         Create a space ship to take you on your journey
+        int[][] spaceShip = {
+                {0, 0, 1, 1, 1, 1, 1, 0, 0},
+                {0, 1, 0, 0, 0, 0, 0, 1, 0},
+                {1, 0, 0, 1, 0, 1, 0, 0, 1},
+                {1, 0, 0, 1, 0, 1, 0, 0, 1},
+                {1, 0, 1, 1, 1, 1, 1, 0, 1}
+        };
 
+        for (int j = 0; j < 5; j++) {
+            for (int i = 0; i < 9; i++) {
+                if (spaceShip[j][i] == 1) {
+                    int blockType = determineBlockType(random.nextInt(100));
+                    mainInstance.getBlocks().add(new Block(i, j, mainInstance.getColors()[j % mainInstance.getColors().length], blockType));
+                }
+            }
+        }
+    }
 
     /**
      * Creates the layout for Level 2, which represents an X shape pattern.
@@ -273,20 +271,23 @@ public class GameBoardManager {
 
     /**
      * Determines the block type based on a randomized value.
+     * Different block types like normal, heart, golden time, or random are chosen
+     * based on the randomValue parameter. Specific rules are applied to ensure
+     * the rarity and uniqueness of certain block types.
      *
      * @param randomValue The random value used to determine the block type.
-     * @return The type of block to be generated.
+     * @return The type of block to be generated, represented as an integer.
      */
     private int determineBlockType(int randomValue) {
         if (randomValue < 10) {
-            return Block.BLOCK_RANDOM;
+            return Block.RANDOM;
         } else if (randomValue < 15 && !mainInstance.isHeartBlockExist()) {
             mainInstance.setExistHeartBlock(true); // Use the setter method here
-            return Block.BLOCK_HEART;
+            return Block.HEART;
         } else if (randomValue >= 15 && randomValue < 20) {
-            return Block.BLOCK_GOLDEN_TIME;
+            return Block.GOLDEN_TIME;
         }
-        return Block.BLOCK_NORMAL;
+        return Block.NORMAL;
     }
 
 }

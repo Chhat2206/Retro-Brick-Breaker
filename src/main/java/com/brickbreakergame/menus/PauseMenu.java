@@ -1,5 +1,5 @@
 package com.brickbreakergame.menus;
-import com.brickbreakergame.GameState;
+import com.brickbreakergame.GameController;
 import com.brickbreakergame.managers.AnimationManager;
 import com.brickbreakergame.managers.LevelManager;
 
@@ -23,8 +23,11 @@ import javafx.util.Duration;
 import javafx.scene.effect.GaussianBlur;
 
 /**
- * The PauseMenu class represents the in-game pause menu that provides options to resume, save, load, restart, or quit the game.
- * It also includes sound settings and blur effects for the background when the menu is displayed.
+ * Represents the in-game pause menu for the Brick Breaker game.
+ * This class is responsible for managing the pause menu interface, providing players with various options
+ * during gameplay interruption. The menu offers functionalities such as resuming the game, saving progress,
+ * loading a saved game, restarting the current game, or quitting the game entirely. Additionally, the pause menu
+ * allows players to access and modify sound settings.
  */
 public class PauseMenu {
     private static Stage pauseStage;
@@ -52,9 +55,7 @@ public class PauseMenu {
         scene.getStylesheets().addAll("/css/defaultMenu.css", "/css/pauseMenu.css");
         pauseStage.setScene(scene);
 
-
         positionPauseMenuOverGame(primaryStage);
-
 
         engine.stop();
         animationManager.fadeInMenu(pauseLayout);
@@ -66,13 +67,13 @@ public class PauseMenu {
             }
         });
 
-
         pauseStage.showAndWait();
         disablePauseMenuBlur(primaryStage);
     }
 
     /**
-     * Initializes the pause stage with appropriate settings.
+     * Initializes the pause stage with specific modality and style settings.
+     * Sets up the pause menu stage as a modal window with a transparent style.
      */
     private static void initializePauseStage() {
         pauseStage = new Stage();
@@ -81,7 +82,8 @@ public class PauseMenu {
     }
 
     /**
-     * Configures the layout for the pause menu, setting alignment and style.
+     * Configures the layout for the pause menu.
+     * Sets alignment and styling for the VBox layout that contains the pause menu's UI elements.
      */
     private static void configurePauseLayout() {
         pauseLayout = new VBox(20);
@@ -90,10 +92,12 @@ public class PauseMenu {
     }
 
     /**
-     * Adds buttons and elements to the pause menu layout.
+     * Adds buttons and interactive elements to the pause menu's layout.
+     * Configures the buttons for various functionalities like resume, save, load, restart, and quit.
      *
-     * @param main   The Main instance associated with the game.
-     * @param engine The GameEngine instance controlling the game.
+     * @param main         The Main instance associated with the game.
+     * @param engine       The GameEngine instance controlling the game.
+     * @param levelManager The LevelManager instance for handling level-related operations.
      */
     private static void addButtonsToLayout(Main main, GameEngine engine, LevelManager levelManager) {
 
@@ -108,7 +112,6 @@ public class PauseMenu {
             soundMenuOpen();
             SoundMenu.display();
         });
-
 
         Button saveButton = new Button("Save Game");
 
@@ -130,8 +133,8 @@ public class PauseMenu {
         Button loadButton = createButton("Load Game", e -> {
             SoundManager.buttonClickSound();
             animationManager.fadeOutMenu(pauseLayout, pauseStage);
-            GameState gameState = new GameState();
-            gameState.loadGame(main, Main.getPrimaryStage());
+            GameController gameController = new GameController();
+            gameController.loadGame(main, Main.getPrimaryStage());
             System.out.println("\u001B[34m" + "Game Loaded" + "\u001B[0m"); // Blue text
             pauseStage.close();
         });
@@ -151,17 +154,17 @@ public class PauseMenu {
             System.exit(0);
         });
 
-        // Add all elements to pauseLayout
         pauseLayout.getChildren().addAll(resumeButton, soundButton, saveButton, loadButton, restartButton, quitButton);
         SoundManager.pauseMenuMusic();
     }
 
     /**
-     * Creates a JavaFX button with a specified text and action handler.
+     * Creates a button with a specified label and action.
+     * Sets up a JavaFX button with the provided text and an event handler for click actions.
      *
-     * @param text   The text to be displayed on the button.
+     * @param text   The text to display on the button.
      * @param action The event handler to be executed when the button is clicked.
-     * @return The created button.
+     * @return A Button object configured with the specified text and action.
      */
     private static Button createButton(String text, EventHandler<ActionEvent> action) {
         Button button = new Button(text);
@@ -170,7 +173,8 @@ public class PauseMenu {
     }
 
     /**
-     * Positions the pause menu over the game's primary stage.
+     * Positions the pause menu stage over the game's primary stage.
+     * Aligns the pause menu in relation to the primary stage's position and size.
      *
      * @param primaryStage The primary stage of the game.
      */
@@ -180,7 +184,8 @@ public class PauseMenu {
     }
 
     /**
-     * Initializes a Gaussian blur effect on the game's primary stage, providing a visual effect for the pause menu.
+     * Initializes a Gaussian blur effect on the primary stage's scene.
+     * Applies a visual blur effect to the game window when the pause menu is displayed.
      *
      * @param primaryStage The primary stage of the game.
      */
@@ -190,7 +195,8 @@ public class PauseMenu {
     }
 
     /**
-     * Disables the Gaussian blur effect on the game's primary stage, restoring the original appearance when the pause stage has been exit.
+     * Disables the Gaussian blur effect on the primary stage's scene.
+     * Removes the blur effect from the game window when the pause menu is closed.
      *
      * @param primaryStage The primary stage of the game.
      */

@@ -9,7 +9,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The SoundManager class manages sound effects and background music for the game.
+ * Manages sound effects and background music for the Brick Breaker game.
+ * This class provides methods to play, stop, and control various sound effects and background music tracks.
+ * It supports playing different sound effects for game events like button clicks, collecting bonuses, and more.
+ * Background music can be started, stopped, and its volume can be controlled.
+ * Sound effects for specific game events are managed through individual methods.
  */
 public class SoundManager {
     private static MediaPlayer backgroundMediaPlayer;
@@ -22,8 +26,9 @@ public class SoundManager {
     }
 
     /**
-     * Starts playing a random background music track.
-     * If there are no music files available, an error message is printed, and no action is taken.
+     * Starts playing a random background music track from the available selection.
+     * If the music files list is empty, logs an error and takes no action.
+     * If music is already playing, it is stopped before starting a new track.
      */
     public static void startRandomBackgroundMusic() {
         if (musicFiles.isEmpty()) {
@@ -43,7 +48,8 @@ public class SoundManager {
     }
 
     /**
-     * Plays a sound effect from the specified sound file.
+     * Plays a sound effect from the specified file path.
+     * Handles exceptions by logging error messages. Adjusts the volume of the sound effect before playing.
      *
      * @param soundFile The file path of the sound effect to play.
      */
@@ -136,7 +142,8 @@ public class SoundManager {
     }
 
     /**
-     * Plays a sound effect when a bonus is collected.
+     * Plays a sound effect when the player collects a bonus.
+     * Sets the volume level for this specific sound effect before playing it.
      */
     // To modify the volume, the function must be re-initialized. It can't have a global variable to control every minor sound.
     public static void collectBonus() {
@@ -151,7 +158,7 @@ public class SoundManager {
     }
 
     /**
-     * Plays a sound effect for opening a menu and sets the volume.
+     * Plays a sound effect for opening a menu and sets the volume for this specific sound.
      */
     public static void soundMenu() {
         playSound("src/main/resources/Sound Effects/Menus/menuOpen.mp3");
@@ -160,6 +167,9 @@ public class SoundManager {
 
     /**
      * Starts playing background music from the specified music file.
+     * Sets the initial volume and loops the music indefinitely.
+     * If an error occurs, logs an error message.
+     *
      * @param musicFilePath The file path of the background music to start.
      */
     public static void startBackgroundMusic(String musicFilePath) {
@@ -176,6 +186,7 @@ public class SoundManager {
 
     /**
      * Toggles the mute state of the background music.
+     * Mutes the music if currently playing, or unmutes if currently muted.
      */
     public static void toggleMuteBackgroundMusic() {
         if (backgroundMediaPlayer != null) {
@@ -185,6 +196,8 @@ public class SoundManager {
 
     /**
      * Sets the volume level for the background music.
+     * Ensures that the volume is only adjusted if the background music player is not null.
+     *
      * @param volume The volume level (0.0 to 1.0) to set.
      */
     public static void setVolume(double volume) {
@@ -195,6 +208,8 @@ public class SoundManager {
 
     /**
      * Gets the current volume level of the background music.
+     * Returns 0 if the background music player is null.
+     *
      * @return The current volume level (0.0 to 1.0).
      */
     public static double getVolume() {

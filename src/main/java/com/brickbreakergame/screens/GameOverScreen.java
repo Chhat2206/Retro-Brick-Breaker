@@ -19,9 +19,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
- * The `GameOverScreen` class represents the game over screen displayed when the game ends.
- * It provides methods for displaying the screen, handling user interactions, and transitioning
- * back to the main menu or restarting the game.
+ * Represents the game over screen in the Brick Breaker game.
+ * This class is dedicated to managing and displaying the game over interface when the player loses the game.
+ * It provides a user interface that offers options to restart the game or return to the main menu, allowing
+ * players to seamlessly transition from the end of one game to the beginning of another or exit to the main menu.
  */
 public class GameOverScreen {
 
@@ -30,10 +31,12 @@ public class GameOverScreen {
     private static final AnimationManager animationManager = new AnimationManager();
 
     /**
-     * Displays the game over screen.
+     * Displays the game over screen, offering options to restart the game or return to the main menu.
+     * This method sets up and positions the game over screen, complete with UI elements like the score display,
+     * restart button, and main menu button. The game over screen is presented as a modal dialog over the primary game window.
      *
-     * @param main        The `Main` instance representing the game.
-     * @param primaryStage The primary stage of the game.
+     * @param main          The Main instance representing the game, used to access game data like the score.
+     * @param primaryStage  The primary stage of the game, used as a reference for positioning the game over screen.
      */
     public static void display(Main main, Stage primaryStage) {
         initializeGameOverStage();
@@ -55,7 +58,8 @@ public class GameOverScreen {
     }
 
     /**
-     * Initializes the game over stage.
+     * Initializes the game over stage with appropriate settings for modality, style, and title.
+     * This stage is configured to display the game over screen as a modal dialog, focusing player attention on end-game options.
      */
     private static void initializeGameOverStage() {
         gameOverStage = new Stage();
@@ -65,7 +69,8 @@ public class GameOverScreen {
     }
 
     /**
-     * Configures the layout for the game over screen.
+     * Configures the layout for the game over screen, setting the alignment, spacing, and styling.
+     * This layout is used to organize and present the game over screen's UI elements effectively.
      */
     private static void configureGameOverLayout() {
         gameOverLayout = new VBox(20);
@@ -74,10 +79,12 @@ public class GameOverScreen {
     }
 
     /**
-     * Adds a logo, restart button, score, and main menu button.
+     * Adds essential elements to the game over screen layout, such as the game over image, score label, restart button, and return button.
+     * Each element is configured for its role in the game over screen, contributing to a comprehensive and informative end-game interface.
      *
-     * @param main        The `Main` instance representing the game.
-     * @param primaryStage The primary stage of the game.
+     * @param main          The Main instance of the game, providing access to game data.
+     * @param primaryStage  The primary stage of the game, used for contextual positioning and actions.
+     * @param levelManager  The LevelManager instance, used for restarting the game and other level-related actions.
      */
     private static void addElementsToLayout(Main main, Stage primaryStage, LevelManager levelManager) {
         // Load the game over image
@@ -106,11 +113,12 @@ public class GameOverScreen {
     }
 
     /**
-     * Creates a styled button with the specified text and action.
+     * Creates a styled button with specified text and an associated action.
+     * Applies custom styles and animations to enhance the user interaction with the button.
      *
-     * @param text   The text to display on the button.
-     * @param action The action to be executed when the button is clicked.
-     * @return The created button.
+     * @param text   The text to be displayed on the button.
+     * @param action The event handler to be executed when the button is clicked.
+     * @return A Button object styled and configured with the specified text and action.
      */
     private static Button createButton(String text, EventHandler<ActionEvent> action) {
         Button button = new Button(text);
@@ -120,7 +128,8 @@ public class GameOverScreen {
     }
 
     /**
-     * Positions the game over menu over the primary game window.
+     * Positions the game over menu over the primary game window, aligning it based on the primary stage's dimensions.
+     * This positioning ensures the game over screen is prominently and appropriately displayed relative to the game window.
      *
      * @param primaryStage The primary stage of the game.
      */

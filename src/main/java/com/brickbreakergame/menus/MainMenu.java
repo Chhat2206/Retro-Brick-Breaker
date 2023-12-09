@@ -1,6 +1,6 @@
 package com.brickbreakergame.menus;
 
-import com.brickbreakergame.GameState;
+import com.brickbreakergame.GameController;
 import com.brickbreakergame.Main;
 import com.brickbreakergame.managers.AnimationManager;
 import com.brickbreakergame.managers.SoundManager;
@@ -22,22 +22,16 @@ import java.util.function.Consumer;
  */
 public class MainMenu {
 
-    /**
-     * The primary stage where the main menu is displayed.
-     */
     private final Stage primaryStage;
-    /**
-     * Reference to the main game application.
-     */
     private final Main mainGame;
-
     private final AnimationManager animationManager = new AnimationManager();
 
     /**
-     * Creates a new MainMenu instance.
+     * Constructs a MainMenu instance with a reference to the primary stage of the application and the main game.
+     * Initializes the MainMenu with the necessary context to display menu options and handle interactions.
      *
-     * @param primaryStage The primary stage of the application.
-     * @param mainGame     A reference to the main game application.
+     * @param primaryStage The primary stage of the application where the main menu will be displayed.
+     * @param mainGame     A reference to the main game application, used to initiate new games or load existing ones.
      */
     public MainMenu(Stage primaryStage, Main mainGame) {
         this.primaryStage = primaryStage;
@@ -45,7 +39,9 @@ public class MainMenu {
     }
 
     /**
-     * Displays the main menu including options to start a new game, load a saved game, or exit the application.
+     * Displays the main menu of the game, including options to start a new game, load a saved game, or exit.
+     * Sets up the UI elements for the menu, such as buttons and the logo, and configures their actions.
+     * Also applies the necessary styles and layout for the menu.
      */
     public void display() {
         Pane root = new Pane();
@@ -72,8 +68,8 @@ public class MainMenu {
         Button loadGameButton = createButton("/images/Main Menu/loadGame.png", e -> {
             System.out.println("\u001B[34m" + "Loading Game" + "\u001B[0m"); // Blue text
             SoundManager.buttonClickSound();
-            GameState gameState = new GameState();
-            gameState.loadGame(mainGame, primaryStage);
+            GameController gameController = new GameController();
+            gameController.loadGame(mainGame, primaryStage);
         }, 230, 90);
 
         Button exitButton = createButton("/images/Main Menu/quitGame.png", e -> Platform.exit(), 230, 90);
@@ -87,8 +83,12 @@ public class MainMenu {
         primaryStage.show();
     }
 
-
-
+    /**
+     * Creates and returns an ImageView for the game's logo.
+     * Configures the dimensions and other properties of the logo image to be displayed in the main menu.
+     *
+     * @return An ImageView containing the game's logo.
+     */
     private ImageView createLogoView() {
         Image logo = loadImage("/images/Main Menu/logo.png");
         ImageView imageView = new ImageView(logo);
@@ -98,13 +98,14 @@ public class MainMenu {
     }
 
     /**
-     * Creates a button with an ImageView, allowing customization of the button's appearance.
+     * Creates a customized start, load, and exit button with an image, specified dimensions, and an associated action.
+     * Sets the style of the button and configures its on-action behavior, including playing a sound and executing the given action.
      *
-     * @param imagePath The path to the button's image.
-     * @param action    The action to be executed when the button is clicked.
+     * @param imagePath The path to the image file for the button.
+     * @param action    A Consumer<Void> action that defines what occurs when the button is clicked.
      * @param width     The width of the button.
      * @param height    The height of the button.
-     * @return A customized button with the specified image and action.
+     * @return A Button object with the specified image and action behavior.
      */
     private Button createButton(String imagePath, Consumer<Void> action, int width, int height) {
         Image image = loadImage(imagePath);
@@ -116,17 +117,17 @@ public class MainMenu {
         button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 0;");
         button.setOnAction(e -> {
             SoundManager.startRandomBackgroundMusic();
-
             action.accept(null);
         });
         return button;
     }
 
     /**
-     * Loads an image from the specified path.
+     * Loads an image from a specified file path for the background if the initial fails.
+     * Handles exceptions by returning a placeholder image if the specified image cannot be loaded.
      *
-     * @param path The path to the image to be loaded.
-     * @return The loaded image, or a placeholder image if loading fails.
+     * @param path The file path of the image to be loaded.
+     * @return The loaded Image object, or a placeholder image in case of an error.
      */
     private Image loadImage(String path) {
         try {
@@ -138,8 +139,9 @@ public class MainMenu {
     }
 
     /**
-     * Initiates the transition to a new game by creating a new Main game instance.
-     * This method is called when the "Start New Game" button is clicked.
+     * Initiates the process of starting a new game.
+     * Handles the transition from the main menu to the game scene and creates a new instance of the Main game class.
+     * Verifies the primary stage's scene is not null before proceeding to start the game.
      */
     private void startNewGame() {
         if (primaryStage.getScene() == null) {

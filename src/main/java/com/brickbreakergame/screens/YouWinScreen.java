@@ -19,8 +19,9 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
- * The YouWinScreen class is responsible for displaying the "You Win" screen when the player wins the game.
- * It provides methods to configure and display this screen.
+ * Represents the "You Win" screen in the Brick Breaker game.
+ * This class is responsible for managing and displaying the victory screen when a player successfully completes the game.
+ * It offers a congratulatory interface with options for the player to either restart the game or return to the main menu.
  */
 public class YouWinScreen {
 
@@ -30,10 +31,12 @@ public class YouWinScreen {
 
 
     /**
-     * Displays the "You Win" screen, allowing the player to restart the game or return to the main menu.
+     * Displays the "You Win" screen with options to restart the game or return to the main menu.
+     * Sets up the user interface elements for the screen, such as the victory image, score display,
+     * restart button, and main menu button. This method also initializes and positions the "You Win" screen relative to the primary stage.
      *
-     * @param main        The Main instance associated with the game.
-     * @param primaryStage The primary stage of the game.
+     * @param main          The Main instance representing the game, used for accessing game data like score.
+     * @param primaryStage  The primary stage of the game, used for positioning the "You Win" screen.
      */
     public static void display(Main main, Stage primaryStage) {
         initializeYouWinStage();
@@ -54,7 +57,8 @@ public class YouWinScreen {
     }
 
     /**
-     * Initializes the "You Win" stage with a transparent background.
+     * Initializes the "You Win" stage with specific settings for modality and style.
+     * Sets up the stage to display the "You Win" screen as a modal dialog over the game.
      */
     private static void initializeYouWinStage() {
         youWinStage = new Stage();
@@ -64,7 +68,8 @@ public class YouWinScreen {
     }
 
     /**
-     * Configures the layout for the "You Win" screen, setting alignment and style.
+     * Configures the layout for the "You Win" screen.
+     * Sets alignment, spacing, and styling for the VBox layout that contains the "You Win" screen's UI elements.
      */
     private static void configureYouWinLayout() {
         youWinLayout = new VBox(20);
@@ -73,10 +78,12 @@ public class YouWinScreen {
     }
 
     /**
-     * Adds UI elements (such as images, labels, and buttons) to the "You Win" layout.
+     * Adds UI elements to the "You Win" layout, including the victory image, score label, restart button, and main menu button.
+     * Configures each element and adds them to the layout to create a comprehensive "You Win" screen.
      *
-     * @param main        The Main instance associated with the game.
-     * @param primaryStage The primary stage of the game.
+     * @param main          The Main instance representing the game, used for accessing game data.
+     * @param primaryStage  The primary stage of the game, used for positioning buttons and labels.
+     * @param levelManager  The LevelManager instance, used for handling level-related operations like restarting the game.
      */
     private static void addElementsToLayout(Main main, Stage primaryStage, LevelManager levelManager) {
         // Load the "You Win" image

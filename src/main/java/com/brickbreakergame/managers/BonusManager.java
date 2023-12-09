@@ -11,24 +11,40 @@ import javafx.scene.shape.Rectangle;
 import java.io.Serializable;
 import java.util.Random;
 
+/**
+ * Handles the management of bonuses in a Brick Breaker game.
+ * This class is responsible for creating, displaying, and managing the effects of bonuses on the game elements,
+ * such as the paddle and the ball. It integrates with the main game loop for updating the game state based on bonus interactions.
+ */
 public class BonusManager implements Serializable {
+    // Fields with basic descriptions
     public Rectangle choco;
-
     public double x;
     public double y;
     public long timeCreated;
     public boolean taken = false;
-
     private Main main; // Reference to Main class
 
+    /**
+     * Constructs a BonusManager object.
+     * Initializes the position of the bonus based on the specified row and column and links it to the Main class.
+     *
+     * @param row   The row position of the bonus.
+     * @param column The column position of the bonus.
+     * @param main   Reference to the main game class which controls the game's logic and rendering.
+     */
     public BonusManager(int row, int column, Main main) {
         this.main = main;
-        x = (column * (Block.getWidth())) + Block.getPaddingH() + ((double) Block.getWidth() / 2) - 15;
+        x = (column * (Block.getWidth())) + Block.getPaddingHeight() + ((double) Block.getWidth() / 2) - 15;
         y = (row * (Block.getHeight())) + Block.getPaddingTop() + ((double) Block.getHeight() / 2) - 15;
 
         draw();
     }
 
+    /**
+     * Initializes the graphical representation of the bonus as a rectangle.
+     * Sets the dimensions and position of the bonus, and applies an image pattern as its fill.
+     */
     private void draw() {
         choco = new Rectangle();
         choco.setWidth(20);
@@ -42,11 +58,16 @@ public class BonusManager implements Serializable {
         choco.setFill(new ImagePattern(new Image(url)));
     }
 
+    /**
+     * Activates the effect of the bonus when collected.
+     * Randomly selects a bonus effect to apply, such as changing the paddle or ball size, or increasing the score.
+     * Additionally, plays a sound effect and shows a score animation at the bonus's location.
+     */
     public void applyBonusEffect() {
         SoundManager.collectBonus();
 
         this.taken = true;
-        this.choco.setVisible(false);
+        AnimationManager.shrinkAndFadeOutBonus(choco);
 
         Random rand = new Random();
         int effect = rand.nextInt(3);
@@ -65,6 +86,12 @@ public class BonusManager implements Serializable {
         new Score().show(this.x, this.y, 3, main);
     }
 
+    /**
+     * Applies an effect that alters the size of the paddle.
+     * The size change can be an increase or decrease, and the effect lasts for a random, limited duration.
+     *
+     * @param rand An instance of {@link Random} used for generating the size change magnitude and effect duration.
+     */
     private void applyPaddleSizeEffect(Random rand) {
         // Store the original paddle width before the change
         main.setOriginalPaddleWidth(main.getPaddleWidth());
@@ -100,6 +127,12 @@ public class BonusManager implements Serializable {
         System.out.println("\u001B[35m" + "Paddle width changed from " + main.getOriginalPaddleWidth() + " to " + main.getPaddleWidth() + " for " + (paddleWidthChangeDuration / 1000) + " seconds." + "\u001B[0m");
     }
 
+    /**
+     * Increases the player's score by a random amount as a bonus effect.
+     * The range of the score increase is determined randomly.
+     *
+     * @param rand An instance of {@link Random} used for generating the bonus score amount.
+     */
     private void applyScoreEffect(Random rand) {
         // Determine the number of bonus points
         int bonusPoints = rand.nextInt(6) + 3; // Random bonus points between 3 and 8
@@ -111,6 +144,12 @@ public class BonusManager implements Serializable {
         System.out.println("\u001B[33m" + "Score increased by " + bonusPoints + " points. New score: " + main.getScore() + "\u001B[0m");
     }
 
+    /**
+     * Applies an effect that modifies the size of the ball.
+     * The ball size can increase or decrease, and this change persists for a randomly determined duration.
+     *
+     * @param rand An instance of {@link Random} used for generating the size change magnitude and effect duration.
+     */
     private void applyBallSizeEffect(Random rand) {
         // Store the original ball radius
         main.setOriginalBallRadius(main.getBallRadius());
@@ -139,6 +178,10 @@ public class BonusManager implements Serializable {
         System.out.println("\u001B[31m" + "Ball size changed from " + main.getOriginalBallRadius() + " to " + newBallRadius + " for " + (ballSizeChangeDuration / 1000) + " seconds." + "\u001B[0m");
     }
 
+    /**
+     * Resets any temporary size changes applied to the paddle and the ball when their respective effect durations expire.
+     * This method is invoked regularly to ensure timely reversion of the game elements to their original state.
+     */
     public void resetTemporaryChanges() {
         long currentTime = System.currentTimeMillis();
 
@@ -153,4 +196,3 @@ public class BonusManager implements Serializable {
         }
     }
 }
-
