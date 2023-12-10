@@ -1,75 +1,51 @@
 package com.brickbreakergame;
 
 /**
- * A game engine designed for a brick breaker game, managing game updates, physics, and time tracking.
- * It supports customization of game logic, physics, and time management through callbacks.
+ * The GameEngine class orchestrates the main game loop, physics computations,
+ * and time tracking for a brick breaker game. This modular engine allows for the implementation
+ * of customized game logic and physics through a set of defined callback interfaces.
+ * It is crafted to ensure efficient and consistent execution of game dynamics.
  */
 public class GameEngine {
-
-    /**
-     * Callback interface for handling game-related actions.
-     * Implementations of this interface will define specific actions for game updates, physics, and time tracking.
-     */
     private OnAction onAction;
-
-    /**
-     * Frame time in milliseconds, which determines the game's frame rate (FPS).
-     * Default FPS is set to 120.
-     */
     private int frameTimeMillis = 1000 / 120;
-
-    /**
-     * Threads for running the game loop, physics updates, and time tracking.
-     */
     private Thread updateThread, physicsThread, timeThread;
-
-    /**
-     * Flag indicating whether the game engine is currently running.
-     */
     private volatile boolean running = false;
-
-    /**
-     * Current game time in milliseconds.
-     */
     private long time = 0;
-
-    /**
-     * Interface for defining callback methods for game updates, physics, and time tracking.
-     */
     public interface OnAction {
 
         /**
-         * Handles game logic updates.
+         * Executes game logic updates, facilitating real-time interactions and events within the game.
          */
         void onUpdate();
 
         /**
-         * Handles physics updates.
+         * Manages physics updates, responsible for handling dynamics and kinematics of game elements.
          */
         void onPhysicsUpdate();
 
         /**
-         * Tracks and handles time updates.
+         * Monitors and updates game time, essential for time-dependent game mechanics.
          *
-         * @param time Current time in milliseconds.
+         * @param time The current time in milliseconds.
          */
         void onTime(long time);
     }
 
     /**
-     * Sets the callback interface for handling game-related actions.
+     * Assigns the implementation of the OnAction interface to handle game actions.
      *
-     * @param onAction Callback interface implementation.
+     * @param onAction The concrete implementation of the OnAction interface.
      */
     public void setOnAction(OnAction onAction) {
         this.onAction = onAction;
     }
 
     /**
-     * Sets the target frame rate (FPS) for the game.
+     * Configures the desired frame rate of the game, impacting game fluidity and responsiveness.
      *
-     * @param fps Target frames per second.
-     * @throws IllegalArgumentException If {@code fps} is less than or equal to 0.
+     * @param fps The target frames per second for the game.
+     * @throws IllegalArgumentException If {@code fps} is non-positive.
      */
     public void setFps(int fps) {
         if (fps <= 0) {
@@ -79,8 +55,8 @@ public class GameEngine {
     }
 
     /**
-     * Starts the game engine. Initializes and starts threads for game updates, physics, and time tracking.
-     * Only starts the engine if it is not already running.
+     * Initiates the game engine's operational cycle. It launches separate threads for game updates,
+     * physics, and time management. This method ensures that the engine starts only if it is not already active.
      */
     public void start() {
         if (running) {
@@ -100,8 +76,8 @@ public class GameEngine {
     }
 
     /**
-     * Stops the game engine. Interrupts and joins the update, physics, and time tracking threads.
-     * Only attempts to stop the engine if it is currently running.
+     * Halts the operation of the game engine. It safely terminates the update, physics, and time tracking threads.
+     * The shutdown process is engaged only if the engine is currently active.
      */
     public void stop() {
         if (!running) {
@@ -115,7 +91,9 @@ public class GameEngine {
     }
 
     /**
-     * Runs the main game update loop. Continuously invokes the game update callback while the engine is running.
+     * Executes the main game update loop. This method is pivotal in maintaining the continuity
+     * of the game's state. It repeatedly invokes the onUpdate method of the OnAction interface,
+     * ensuring that game logic is consistently processed at each frame.
      */
     private void runUpdateLoop() {
         while (running) {
@@ -125,7 +103,9 @@ public class GameEngine {
     }
 
     /**
-     * Runs the physics update loop. Continuously invokes the physics update callback while the engine is running.
+     * Manages the physics update loop. This method plays a critical role in the real-time simulation
+     * of physical interactions within the game. It continuously calls the onPhysicsUpdate method
+     * of the OnAction interface, providing regular updates to the game's physics.
      */
     private void runPhysicsLoop() {
         while (running) {
@@ -135,7 +115,10 @@ public class GameEngine {
     }
 
     /**
-     * Runs the time tracking loop. Continuously increments time and invokes the time update callback while the engine is running.
+     * Conducts the time tracking loop. This method is integral to the tracking of elapsed game time.
+     * It methodically increments the game time and invokes the onTime method of the OnAction interface.
+     * These actions are performed repeatedly, ensuring accurate and up-to-date time tracking
+     * for the duration of the game engine's operation.
      */
     private void runTimeLoop() {
         while (running) {
@@ -146,9 +129,11 @@ public class GameEngine {
     }
 
     /**
-     * Sleeps the current thread for a specified duration.
+     * Temporarily suspends the execution of the current thread for a specified duration.
+     * This method is used to control the timing of the game loop and other operations, allowing
+     * for consistent and controlled execution pacing.
      *
-     * @param millis Duration in milliseconds for the thread to sleep.
+     * @param millis The duration, in milliseconds, for which the thread is to be suspended.
      */
     private void sleep(int millis) {
         try {
@@ -159,9 +144,11 @@ public class GameEngine {
     }
 
     /**
-     * Safely interrupts and joins a thread.
+     * Ensures the safe termination of a specified thread. This method interrupts and then joins
+     * the given thread, facilitating a controlled and orderly shutdown of thread-based operations.
+     * It is a critical method for ensuring that the game engine's threads terminate correctly.
      *
-     * @param thread The thread to be interrupted and joined.
+     * @param thread The thread that is to be interrupted and joined.
      */
     private void interruptAndJoin(Thread thread) {
         if (thread != null) {

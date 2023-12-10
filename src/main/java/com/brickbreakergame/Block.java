@@ -10,8 +10,10 @@ import javafx.scene.shape.Rectangle;
 import java.io.Serializable;
 
 /**
- * Represents a block in the brick-breaking game.
- * Blocks can have different colors and types, and they can be destroyed by the ball.
+ * Represents an individual block in the BrickBreaker game.
+ * It encapsulates the characteristics and behaviors of a block, including its
+ * dimensions, color, type, and interaction logic with the game ball. Blocks can be
+ * of different types and are the primary targets to be destroyed by the player.
  */
 public class Block implements Serializable {
 
@@ -50,6 +52,14 @@ public class Block implements Serializable {
     private static final Image IMAGE_HEART = new Image("/images/blocks/heartBlock.png");
     private static final Image IMAGE_GOLDEN_TIME = new Image("/images/blocks/goldenBallBlock.png");
 
+    /**
+     * Constructs a new block with specified properties and parameters inputted into it.
+     *
+     * @param row The row position of the block in the grid.
+     * @param column The column position of the block in the grid.
+     * @param color The visual color of the block.
+     * @param type The type of the block, which determines its special properties.
+     */
     public Block(int row, int column, Color color, int type) {
         this.row = row;
         this.column = column;
@@ -58,6 +68,10 @@ public class Block implements Serializable {
         draw();
     }
 
+    /**
+     * Initializes and draws the block with its specified properties on the game board.
+     * Sets the size, position, and visual appearance based on the block's type.
+     */
     private void draw() {
         x = (column * WIDTH) + PADDING_HEIGHT;
         y = (row * HEIGHT) + PADDING_TOP;
@@ -85,7 +99,15 @@ public class Block implements Serializable {
         }
     }
 
-
+    /**
+     * Determines if the block has been hit by the ball.
+     * Checks the collision of the ball with the block and returns the side of the block hit.
+     *
+     * @param xBall The x-coordinate of the ball.
+     * @param yBall The y-coordinate of the ball.
+     * @param ballRadius The radius of the ball.
+     * @return An integer representing the side of the block that was hit, or {@code NO_HIT} if there was no collision.
+     */
     public int checkHitToBlock(double xBall, double yBall, double ballRadius) {
         if (isDestroyed) return NO_HIT;
 
@@ -110,18 +132,38 @@ public class Block implements Serializable {
         return NO_HIT;
     }
 
+    /**
+     * Returns the top padding of the block.
+     *
+     * @return The top padding value.
+     */
     public static int getPaddingTop() {
         return block.PADDING_TOP;
     }
 
+    /**
+     * Returns the height padding of the block.
+     *
+     * @return The height padding value.
+     */
     public static int getPaddingHeight() {
         return block.PADDING_HEIGHT;
     }
 
+    /**
+     * Returns the height of the block.
+     *
+     * @return The height of the block.
+     */
     public static int getHeight() {
         return block.HEIGHT;
     }
 
+    /**
+     * Returns the width of the block.
+     *
+     * @return The width of the block.
+     */
     public static int getWidth() {
         return block.WIDTH;
     }

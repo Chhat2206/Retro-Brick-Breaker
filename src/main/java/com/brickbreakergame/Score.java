@@ -1,4 +1,5 @@
 package com.brickbreakergame;
+import com.brickbreakergame.screens.YouWinScreen;
 
 import com.brickbreakergame.managers.SoundManager;
 import com.brickbreakergame.screens.GameOverScreen;
@@ -12,20 +13,23 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 /**
- * The Score class is responsible for displaying score-related information and animations in the game.
- * It provides methods to show score updates and in game messages.
+ * The Score class is dedicated to the presentation and animation of score-related elements within the game.
+ * This class offers functionalities for displaying score updates, in-game notifications, and executing associated animations,
+ * thereby enhancing the user experience with visual feedback on game events.
  */
 public class Score {
 
     private static final Duration ANIMATION_DURATION = Duration.millis(200);
+    private Main main;
 
     /**
-     * Creates a styled label for displaying text with specified coordinates and CSS style.
+     * Constructs and styles a label for displaying text within the game's graphical interface.
+     * This method creates a label with specified content and positions it at provided coordinates.
      *
-     * @param text The text to be displayed on the label.
-     * @param x    The X-coordinate of the label's position.
-     * @param y    The Y-coordinate of the label's position.
-     * @return A styled label with the specified text, position, and style.
+     * @param text The textual content to be displayed on the label.
+     * @param x    The X-coordinate of the label's desired position.
+     * @param y    The Y-coordinate of the label's desired position.
+     * @return A configured and styled {@code Label} object.
      */
     private Label createStyledLabel(String text, double x, double y) {
         Label label = new Label(text);
@@ -36,12 +40,22 @@ public class Score {
     }
 
     /**
-     * Shows a score update animation at the block-broken position on the screen.
+     * Constructor for the Score class.
      *
-     * @param x     The X-coordinate where the score update animation will be displayed.
-     * @param y     The Y-coordinate where the score update animation will be displayed.
-     * @param score The score value to be displayed.
-     * @param main  The Main instance associated with the game.
+     * @param main The Main instance of the game.
+     */
+    public Score(Main main) {
+        this.main = main;
+    }
+
+    /**
+     * Displays an animated score update at the specified screen coordinates.
+     * This method animates a score increment or decrement at the point of a game event, such as block destruction.
+     *
+     * @param x     The X-coordinate for the animation's screen position.
+     * @param y     The Y-coordinate for the animation's screen position.
+     * @param score The score value to be displayed in the animation.
+     * @param main  The Main instance of the game, used for graphical context.
      */
     public void show(final double x, final double y, int score, final Main main) {
         String sign = score >= 0 ? "+" : "";
@@ -66,27 +80,45 @@ public class Score {
     }
 
     /**
-     * Shows a flash message effect on the screen.
-     *
-     * @param main The Main instance associated with the game.
+     * Checks the current game level and performs actions based on the level.
+     * It may display messages, handle level progression, or trigger win/lose screens.
      */
-    public void showMessage(final Main main) {
-        Rectangle flash = new Rectangle(0, 0, main.primaryStage.getWidth(), main.primaryStage.getHeight());
+    public void checkLevels() {
+        if (main.getLevel() > 1) {
+            showMessage();
+        }
+
+        if (main.getLevel() == 2) {
+            Platform.runLater(() -> {
+                SoundManager.winSound();
+                YouWinScreen.display(main, main.getPrimaryStage());
+                main.getEngine().stop();
+            });
+        }
+    }
+
+    /**
+     * Presents a brief flash message effect on the entire game screen.
+     * This method is typically used for dramatic effect in response to significant game events.
+     */
+    public void showMessage() {
+        Rectangle flash = new Rectangle(0, 0, main.getPrimaryStage().getWidth(), main.getPrimaryStage().getHeight());
         flash.setFill(Color.WHITE); // Set color of the flash
-        Platform.runLater(() -> main.root.getChildren().add(flash));
+        Platform.runLater(() -> main.getRoot().getChildren().add(flash));
 
         // Fade out effect for the flash
         FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.5), flash);
         fadeTransition.setFromValue(1.0);
         fadeTransition.setToValue(0.0);
-        fadeTransition.setOnFinished(event -> main.root.getChildren().remove(flash));
+        fadeTransition.setOnFinished(event -> main.getRoot().getChildren().remove(flash));
         fadeTransition.play();
     }
 
     /**
-     * Shows the game over screen.
+     * Displays the game over screen.
+     * This method is invoked upon the completion of the game, transitioning to the game over interface.
      *
-     * @param main The Main instance associated with the game.
+     * @param main The Main instance of the game, used to access and modify the game's stage and scenes.
      */
     public void showGameOver(final Main main) {
         Platform.runLater(() -> {
@@ -94,4 +126,5 @@ public class Score {
             GameOverScreen.display(main, main.primaryStage); // Display the Game Over Screen
         });
     }
+
 }

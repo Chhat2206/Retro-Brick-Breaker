@@ -83,7 +83,7 @@ public class BonusManager implements Serializable {
                 Platform.runLater(() -> applyBallSizeEffect(rand));
                 break;
         }
-        new Score().show(this.x, this.y, 3, main);
+        new Score(main).show(this.x, this.y, 3, main);
     }
 
     /**

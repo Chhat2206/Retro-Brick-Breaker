@@ -8,6 +8,12 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * The GameController class is responsible for managing the game state in the BrickBreaker game.
+ * It includes methods for saving, loading, and updating the game's state based on user interaction
+ * and game events. This class is pivotal in managing the flow of the game, handling game data,
+ * and ensuring the persistence of the game state across sessions.
+ */
 public class GameController {
     public boolean isExistHeartBlock;
     public boolean isGoldStatus;
@@ -37,7 +43,10 @@ public class GameController {
 
 
     /**
-     * Reads the game state from a saved file, populating the fields of this object for the loadGame function to use.
+     * The {@code GameController} class is responsible for managing the game state in the BrickBreaker game.
+     * It includes methods for saving, loading, and updating the game's state based on user interaction
+     * and game events. This class is pivotal in managing the flow of the game, handling game data,
+     * and ensuring the persistence of the game state across sessions.
      */
     public void read() {
         try {
@@ -82,7 +91,11 @@ public class GameController {
 
     /**
      * Saves the current game state to a file for later retrieval.
-     * This method is now part of the GameState class.
+     * This method serializes the current state of the game, including all relevant data
+     * like the ball position, block states, and game scores, ensuring that the game can be resumed
+     * at a later time from the same state.
+     *
+     * @param mainInstance The instance of the Main class representing the current game.
      */
     public void saveGame(Main mainInstance) {
         new Thread(() -> {
@@ -131,9 +144,11 @@ public class GameController {
 
     /**
      * Loads a previously saved game state from the save file.
+     * This method is used to resume a game from a saved state, reconstructing the game environment
+     * and game objects based on the saved data. It ensures continuity in gameplay across sessions.
      *
      * @param mainInstance The instance of the Main class where the loaded game will be displayed.
-     * @param primaryStage The primary stage where the game's scenes will be displayed.
+     * @param primaryStage The primary stage where the game's scenes are displayed.
      */
     public void loadGame(Main mainInstance, Stage primaryStage) {
         File saveFile = new File(Main.SAVE_PATH);

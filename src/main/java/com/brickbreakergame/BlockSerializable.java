@@ -4,8 +4,10 @@ import javafx.scene.paint.Color;
 import java.io.Serializable;
 
 /**
- * Represents a serializable block used in a brick breaker game.
- * This class encapsulates the position, type, and color information of a block.
+ * Represents a block within a brick breaker game,
+ * designed for serialization. It encapsulates essential attributes of a block such as
+ * its position within a grid, type, and color information. The class is primarily used
+ * to facilitate the saving and loading of game state by retaining key block attributes.
  */
 public class BlockSerializable implements Serializable {
 
@@ -15,11 +17,12 @@ public class BlockSerializable implements Serializable {
     public int colorIndex;
 
     /**
-     * Constructs a new BlockSerializable with specified position and type.
+     * Constructs a new BlockSerializable instance with specified position and type.
+     * Initializes a block with its grid position and type, essential for recreating game state.
      *
      * @param row    The row position of the block in the grid.
      * @param column The column position of the block in the grid.
-     * @param type   The type of the block.
+     * @param type   The type identifier of the block.
      */
     public BlockSerializable(int row, int column, int type) {
         this.row = row;
@@ -28,11 +31,12 @@ public class BlockSerializable implements Serializable {
     }
 
     /**
-     * Sets the color index for this block by matching the block's color with a given array of colors.
-     * The index is set to the position of the matching color in the array.
+     * Sets the color index for this block.
+     * Determines the index of the block's color by comparing it against a predefined array of colors.
+     * The color index is used for efficient serialization and deserialization of block colors.
      *
-     * @param colors     An array of Color objects used in the game to represent different block colors.
-     * @param blockColor The actual color of this block, which will be matched against the colors array.
+     * @param colors     An array of {@code Color} objects representing the possible colors of blocks.
+     * @param blockColor The actual color of this block, to be matched against the provided colors array.
      */
     public void setColorIndex(Color[] colors, Color blockColor) {
         for (int i = 0; i < colors.length; i++) {

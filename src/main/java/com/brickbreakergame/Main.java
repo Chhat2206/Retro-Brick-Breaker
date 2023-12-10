@@ -155,6 +155,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         gameController = new GameController();
     }
 
+    public Pane getRoot() {
+        return root;
+    }
+
     /**
      * Initializes the ball object with default properties and position. The ball is a central game element
      * used in gameplay mechanics. This method sets its initial size, appearance, and starting position.
@@ -251,14 +255,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
 
     private void checkLevels() {
-        if (level > 1) {
-            new Score().showMessage(this);
-        }
-
-        if (level == 11) {
-            SoundManager.winSound();
-            YouWinScreen.display(this, primaryStage);
-        }
+        Score score = new Score(this);
+        score.checkLevels();
     }
 
     /**
@@ -454,10 +452,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         if (!isGoldStatus) {
             heart--;
             SoundManager.ballHitFloor();
-            new Score().show((double) SCENE_WIDTH / 2, (double) SCENE_HEIGHT / 2, -1, this);
+            new Score(this).show((double) SCENE_WIDTH / 2, (double) SCENE_HEIGHT / 2, -1, this);
 
             if (heart <= 0) {
-                new Score().showGameOver(this);
+                new Score(this).showGameOver(this);
                 engine.stop();
             } else {
                 animationManager.animateHeartLoss(uiManager.getHeartLabel());
@@ -704,7 +702,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
      */
     private void handleBlockHit(Block block, int hitCode) {
         setScore(getScore() + 1);
-        new Score().show(block.x, block.y, 1, this);
+        new Score(this).show(block.x, block.y, 1, this);
 
         block.rect.setVisible(false);
         block.isDestroyed = true;
