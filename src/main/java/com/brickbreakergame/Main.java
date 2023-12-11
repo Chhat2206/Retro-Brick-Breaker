@@ -3,7 +3,6 @@ package com.brickbreakergame;
 import com.brickbreakergame.managers.*;
 import com.brickbreakergame.menus.MainMenu;
 import com.brickbreakergame.menus.PauseMenu;
-import com.brickbreakergame.screens.YouWinScreen;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;

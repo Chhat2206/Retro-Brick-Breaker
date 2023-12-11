@@ -47,11 +47,6 @@ public class Block implements Serializable {
     public int x;
     public int y;
 
-    // Images for different block types
-    private static final Image IMAGE_RANDOM = new Image("/images/blocks/chocoBlock.png");
-    private static final Image IMAGE_HEART = new Image("/images/blocks/heartBlock.png");
-    private static final Image IMAGE_GOLDEN_TIME = new Image("/images/blocks/goldenBallBlock.png");
-
     /**
      * Constructs a new block with specified properties and parameters inputted into it.
      *
@@ -83,7 +78,7 @@ public class Block implements Serializable {
         rect.setY(y);
 
         if (type == RANDOM) {
-            Image image = new Image("/images/blocks/chocoBlock.png");
+            Image image = new Image("/images/blocks/randomBlock.png");
             ImagePattern pattern = new ImagePattern(image);
             rect.setFill(pattern);
         } else if (type == HEART) {

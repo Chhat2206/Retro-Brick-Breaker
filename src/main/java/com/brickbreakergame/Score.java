@@ -88,13 +88,26 @@ public class Score {
             showMessage();
         }
 
-        if (main.getLevel() == 2) {
+        if (main.getLevel() == 11) {
             Platform.runLater(() -> {
                 SoundManager.winSound();
+                main.getEngine().stop(); // Stop the game engine
                 YouWinScreen.display(main, main.getPrimaryStage());
-                main.getEngine().stop();
             });
         }
+    }
+
+    /**
+     * Displays the game over screen.
+     * This method is invoked upon the completion of the game, transitioning to the game over interface.
+     *
+     * @param main The Main instance of the game, used to access and modify the game's stage and scenes.
+     */
+    public void showGameOver(final Main main) {
+        Platform.runLater(() -> {
+            SoundManager.gameOver();
+            GameOverScreen.display(main, main.primaryStage); // Display the Game Over Screen
+        });
     }
 
     /**
@@ -112,19 +125,6 @@ public class Score {
         fadeTransition.setToValue(0.0);
         fadeTransition.setOnFinished(event -> main.getRoot().getChildren().remove(flash));
         fadeTransition.play();
-    }
-
-    /**
-     * Displays the game over screen.
-     * This method is invoked upon the completion of the game, transitioning to the game over interface.
-     *
-     * @param main The Main instance of the game, used to access and modify the game's stage and scenes.
-     */
-    public void showGameOver(final Main main) {
-        Platform.runLater(() -> {
-            SoundManager.gameOver();
-            GameOverScreen.display(main, main.primaryStage); // Display the Game Over Screen
-        });
     }
 
 }

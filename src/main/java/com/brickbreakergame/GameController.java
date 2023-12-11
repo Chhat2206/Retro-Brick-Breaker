@@ -204,17 +204,16 @@ public class GameController {
             });
         }
 
-        mainInstance.setPaddleMoveX(Main.SCENE_WIDTH / 2.0 - mainInstance.getPaddleWidth() / 2.0); // Moves paddle back to default location
-        mainInstance.initializeGameObjects(); // Assuming this method initializes the ball and other game objects
+        mainInstance.setPaddleMoveX(Main.SCENE_WIDTH / 2.0 - mainInstance.getPaddleWidth() / 2.0);
+        mainInstance.initializeGameObjects();
 
-        // Now safely set the properties of game objects
         if (mainInstance.getBall() != null) {
             mainInstance.getBall().setCenterX(xBall);
             mainInstance.getBall().setCenterY(yBall);
         } else {
-            // Handle the situation where the ball is not initialized
             System.err.println("Error: Ball object is not initialized.");
         }
+
         mainInstance.loadFromSave = true;
         mainInstance.newGame(primaryStage);
     }
