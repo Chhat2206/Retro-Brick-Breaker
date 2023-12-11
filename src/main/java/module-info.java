@@ -3,10 +3,12 @@ module brickGame {
     requires javafx.controls;
     requires javafx.media;
 
-    opens brickGame to javafx.fxml;
-    exports brickGame;
-    exports brickGame.screens;
-    opens brickGame.screens to javafx.fxml;
-    exports brickGame.menus;
-    opens brickGame.menus to javafx.fxml;
+    opens com.brickbreakergame to javafx.fxml;
+    exports com.brickbreakergame;
+    exports com.brickbreakergame.screens;
+    opens com.brickbreakergame.screens to javafx.fxml;
+    exports com.brickbreakergame.menus;
+    opens com.brickbreakergame.menus to javafx.fxml;
+    exports com.brickbreakergame.managers;
+    opens com.brickbreakergame.managers to javafx.fxml;
 }
