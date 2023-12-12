@@ -20,7 +20,7 @@ import javafx.util.Duration;
 public class Score {
 
     private static final Duration ANIMATION_DURATION = Duration.millis(200);
-    private Main main;
+    private final Main main;
 
     /**
      * Constructs and styles a label for displaying text within the game's graphical interface.
@@ -87,14 +87,6 @@ public class Score {
         if (main.getLevel() > 1) {
             showMessage();
         }
-
-        if (main.getLevel() == 11) {
-            Platform.runLater(() -> {
-                SoundManager.winSound();
-                main.getEngine().stop(); // Stop the game engine
-                YouWinScreen.display(main, main.getPrimaryStage());
-            });
-        }
     }
 
     /**
@@ -106,7 +98,25 @@ public class Score {
     public void showGameOver(final Main main) {
         Platform.runLater(() -> {
             SoundManager.gameOver();
-            GameOverScreen.display(main, main.primaryStage); // Display the Game Over Screen
+            GameOverScreen.display(main, main.getPrimaryStage()); // Display the Game Over Screen
+        });
+    }
+
+    /**
+     * Displays the "You Win" screen when the player successfully completes the game.
+     * This method stops the game engine and then initiates the display of the win screen.
+     * It's designed to be invoked when the player meets the win condition of the game,
+     * such as completing all levels or achieving a specific objective.
+     *
+     * @param main The Main instance of the game, which contains the game's state and
+     *             controls, including the game engine. It's used to access the game's
+     *             primary stage for displaying the win screen.
+     */
+    public void showYouWinScreen(final Main main) {
+        main.getEngine().stop();
+        Platform.runLater(() -> {
+            SoundManager.winSound();
+            YouWinScreen.display(main, main.getPrimaryStage());
         });
     }
 

@@ -7,6 +7,12 @@ package com.brickbreakergame;
  * It is crafted to ensure efficient and consistent execution of game dynamics.
  */
 public class GameEngine {
+    /**
+     * The OnAction interface defines callbacks for key game engine actions.
+     * Implementations of this interface provide specific behaviors for updating game logic,
+     * managing physics, and tracking game time. These methods are invoked at regular intervals
+     * by the GameEngine to maintain a smooth and responsive game experience.
+     */
     private OnAction onAction;
     private int frameTimeMillis = 1000 / 120;
     private Thread updateThread, physicsThread, timeThread;

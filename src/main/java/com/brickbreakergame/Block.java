@@ -77,7 +77,7 @@ public class Block implements Serializable {
         rect.setX(x);
         rect.setY(y);
 
-        if (type == RANDOM) {
+        if (type == RANDOM) { // Attempted to use switch case statements to help reduce code waste, but the blocks dominated the entire screen and weren't positioned properly
             Image image = new Image("/images/blocks/randomBlock.png");
             ImagePattern pattern = new ImagePattern(image);
             rect.setFill(pattern);

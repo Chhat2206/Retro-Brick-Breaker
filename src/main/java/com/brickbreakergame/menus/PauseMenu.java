@@ -113,7 +113,7 @@ public class PauseMenu {
             SoundMenu.display();
         });
 
-        Button saveButton = new Button("Save Game");
+        Button saveButton = new Button("Save Game"); // Initializes directly because of problems with detecting primarystage
 
         saveButton.setOnAction(e -> {
             SoundManager.buttonClickSound();
@@ -125,7 +125,7 @@ public class PauseMenu {
             pause.setOnFinished(event -> {
                 SoundManager.buttonClickSound();
                 saveButton.setText("Save Game");
-                saveButton.setStyle(""); // Reset to original style
+                saveButton.setStyle("");
             });
             pause.play();
         });

@@ -170,7 +170,7 @@ public class AnimationManager {
      * @throws IllegalArgumentException if the stage or its scene is null.
      */
     public void initializeBlur(Stage stage) {
-        GaussianBlur blur = new GaussianBlur(4); // Blur intensity
+        GaussianBlur blur = new GaussianBlur(4);
         if (stage != null && stage.getScene() != null) {
             stage.getScene().getRoot().setEffect(blur);
         }

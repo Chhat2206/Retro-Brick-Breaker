@@ -13,7 +13,6 @@ import javafx.scene.layout.*;
  * creation and arrangement of UI components on the game screen.
  */
 public class UIManager {
-
     private final Pane root;
     private Label heartLabel;
     private Label scoreLabel;
@@ -39,16 +38,9 @@ public class UIManager {
      * @param level The current level to display.
      */
     public void makeHeartScore(int heart, int score, int level) {
-        // Level label setup
         createLevelLabel(level);
-
-        // Score label setup
         createScoreLabel(score);
-
-        // Heart label setup
         createHeartLabel(heart);
-
-        // Create an HBox container for the labels and add them to the root
         arrangeLabelsOnUI();
     }
 

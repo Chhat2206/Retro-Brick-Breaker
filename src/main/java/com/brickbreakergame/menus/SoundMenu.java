@@ -1,8 +1,7 @@
 package com.brickbreakergame.menus;
 import com.brickbreakergame.managers.AnimationManager;
-import com.brickbreakergame.menus.PauseMenu;
-
 import com.brickbreakergame.managers.SoundManager;
+
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,11 +19,10 @@ import javafx.stage.StageStyle;
  * It is displayed as a modal dialog over the pause menu.
  */
 public class SoundMenu {
-
     private static boolean isMuted = false;
     private static Stage soundStage;
     private static VBox soundLayout;
-    private static AnimationManager animationManager = new AnimationManager();
+    private static final AnimationManager animationManager = new AnimationManager();
 
     /**
      * Displays the sound settings menu.
@@ -108,7 +106,7 @@ public class SoundMenu {
      * These controls enable users to manage audio settings conveniently within the game.
      */
     private static void addVolumeControls() {
-        VBox volumeControls = new VBox(10); // Changed from HBox to VBox
+        VBox volumeControls = new VBox(10);
         volumeControls.setAlignment(Pos.CENTER);
 
         Slider volumeSlider = createVolumeSlider();
@@ -126,10 +124,10 @@ public class SoundMenu {
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> {
             SoundManager.buttonClickSound();
-            PauseMenu.resetSoundButtonStyle(); // Assuming this resets the sound button style in PauseMenu
+            PauseMenu.resetSoundButtonStyle();
             soundStage.close();
             // Use AnimationManager to fade in the PauseMenu
-            animationManager.fadeInMenu(PauseMenu.getPauseLayout()); // Replace with correct layout
+            animationManager.fadeInMenu(PauseMenu.getPauseLayout());
         });
 
         soundLayout.getChildren().add(closeButton);
@@ -144,5 +142,4 @@ public class SoundMenu {
         soundStage.setX(PauseMenu.getPauseStageX() + PauseMenu.getPauseStageWidth());
         soundStage.setY(PauseMenu.getPauseStageY());
     }
-
 }

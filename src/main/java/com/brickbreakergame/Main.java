@@ -38,20 +38,29 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     // Constants
     private static final int LEFT  = 1;
     private static final int RIGHT = 2;
-    private static int paddleWidth = 90;
     private static final int PADDLE_HEIGHT = 14;
-    private static final int ballRadius = 10;
+    private static final int PADDLE_SPEED = 3; //8
+    private static final double MAX_VELOCITY_X = 3.0; // Maximum horizontal velocity of the ball
+    private static final double MAX_VELOCITY = 4.0;   // Maximum overall velocity of the ball
+    private static final double SPIN_EFFECT = 0.5;    // Effect of spin on ball's trajectory
     public static final int SCENE_WIDTH = 500;
     public static final int SCENE_HEIGHT = 700;
+    public static final String SAVE_PATH = "./save/save.mdds";
+    public static final String SAVE_PATH_DIR = "./save/";
 
     // Game State Variables
     protected int level = 1;
     private int score = 0;
     private int heart = 3;
     private int destroyedBlockCount = 0;
+    protected boolean loadFromSave = false;
+    private volatile long time = 0;
+    private volatile long goldTime = 0;
+    private boolean isGoldStatus = false;
+    protected boolean isExistHeartBlock = false;
 
     // Paddle Variables
-    private static final int PADDLE_SPEED = 3; //8
+    private static int paddleWidth = 90;
     private double paddleMoveX = 220.0;
     private double paddleMoveY = 683.0f;
     private final int halfPaddleWidth = paddleWidth / 2;
@@ -62,25 +71,16 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     // Ball Variables
     private Circle ball;
+    private static final int ballRadius = 10;
     private double ballPosX;
     private double ballPosY;
+    private double ballVelocityX = 1.000;
+    protected double ballVelocityY = 1.000;
     double fallSpeed = 2.0;
-
-    // Game Mechanics Variables
-    protected boolean loadFromSave = false;
-    private volatile long time = 0;
-    private volatile long goldTime = 0;
-
-    // UI Components
-    Pane root;
-    protected static Stage primaryStage;
-
-    // Game Engine, GameBoardManager and Media
-    private GameEngine engine;
-
-    // Ball Movement and Collision Flags
     private boolean goDownBall = true;
     private boolean goRightBall = true;
+
+    // Ball Mechanics Variables
     private boolean collideToBreak = false;
     private boolean collideToBreakAndMoveToRight = true;
     private boolean collideToRightWall = false;
@@ -89,21 +89,17 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private boolean collideToBottomBlock = false;
     private boolean collideToLeftBlock = false;
     private boolean collideToTopBlock = false;
-    private double ballVelocityX = 1.000;
-    double ballVelocityY = 1.000;
-    private static final double MAX_VELOCITY_X = 3.0; // Maximum horizontal velocity of the ball
-    private static final double MAX_VELOCITY = 4.0;   // Maximum overall velocity of the ball
-    private static final double SPIN_EFFECT = 0.5;    // Effect of spin on ball's trajectory
 
-    // Bonus Variables
-    protected long paddleWidthChangeTime;
-    protected volatile boolean paddleWidthChanged;
-    protected long ballSizeChangeTime;
-    protected volatile boolean ballSizeChanged;
-    protected int originalPaddleWidth;
-    protected int originalBallRadius;
-    protected long paddleWidthChangeDuration = 0;
-    protected long ballSizeChangeDuration = 0;
+    // UI Components
+    Pane root;
+    protected static Stage primaryStage;
+
+    // Game Engine, GameBoardManager and Media
+    private GameEngine engine;
+    private UIManager uiManager;
+    AnimationManager animationManager = new AnimationManager();
+    BonusManager bonusManager = createBonus(0, 0);
+    private GameController gameController = new GameController();
 
     // Game Objects
     private Rectangle rect;
@@ -122,24 +118,15 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             Color.rgb(176, 196, 222)       // Light Steel Blue
     };
 
-    // File Paths for Saving and Loading
-    public static final String SAVE_PATH = "./save/save.mdds";
-    public static final String savePathDir = "./save/";
-
-
-    // Other Instance Variables
-    private boolean isGoldStatus = false;
-    protected boolean isExistHeartBlock = false;
-
-    protected GameEngine getGameEngine() {
-        return engine;
-    }
-
-    private UIManager uiManager;
-    AnimationManager animationManager = new AnimationManager();
-    BonusManager bonusManager = createBonus(0, 0);
-
-    private GameController gameController = new GameController();
+    // Bonus Variables
+    protected long paddleWidthChangeTime;
+    protected volatile boolean paddleWidthChanged;
+    protected long ballSizeChangeTime;
+    protected volatile boolean ballSizeChanged;
+    protected int originalPaddleWidth;
+    protected int originalBallRadius;
+    protected long paddleWidthChangeDuration = 0;
+    protected long ballSizeChangeDuration = 0;
 
     /**
      * Initializes and displays the main game window.
@@ -154,6 +141,16 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         gameController = new GameController();
     }
 
+    /**
+     * Retrieves the root pane of the game's user interface.
+     * <p>
+     * This method returns the primary container for all graphical elements in the game.
+     * The root pane is where all UI components like the paddle, ball, blocks, and other
+     * interactive elements are added and managed. It serves as the main canvas for the game's
+     * graphical rendering and user interaction.
+     *
+     * @return The root {@link Pane} object containing the game's UI elements.
+     */
     public Pane getRoot() {
         return root;
     }
@@ -597,15 +594,20 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     /**
-     * Checks if all blocks have been destroyed to progress to the next level. This is an essential part of the
-     * game progression, triggering level advancement and difficulty increase.
+     * Checks whether all blocks on the current level have been destroyed and handles the game progression accordingly.
+     * This method is a crucial part of the game's level management system. It determines whether the player has
+     * completed the current level by comparing the count of destroyed blocks against the total number of blocks.
      */
     private void checkDestroyedCount() {
         if (destroyedBlockCount == blocks.size()) {
-            LevelManager levelManager = new LevelManager(this, primaryStage);
-            SoundManager.levelUp();
-            level++;
-            levelManager.nextLevel();
+            if (level == 10) {
+                new Score(this).showYouWinScreen(this);
+            } else {
+                LevelManager levelManager = new LevelManager(this, primaryStage);
+                SoundManager.levelUp();
+                level++;
+                levelManager.nextLevel();
+            }
         }
     }
 
@@ -645,7 +647,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             ball.setCenterX(ballPosX);
             ball.setCenterY(ballPosY);
             for (BonusManager choco : chocos) {
-                choco.choco.setY(choco.y);
+                choco.bonusImage.setY(choco.y);
             }
         });
     }
@@ -753,7 +755,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         Platform.runLater(() -> {
             final BonusManager choco = new BonusManager(block.row, block.column, this);
             choco.timeCreated = time;
-            root.getChildren().add(choco.choco);
+            root.getChildren().add(choco.bonusImage);
             chocos.add(choco);
         });
     }
@@ -791,7 +793,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 // Update the Y position to simulate falling
                 choco.y += fallSpeed;
 
-                Platform.runLater(() -> choco.choco.setY(choco.y));
+                Platform.runLater(() -> choco.bonusImage.setY(choco.y));
             }
         }
     }
@@ -1546,4 +1548,20 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public Circle getBall() {
         return ball;
     }
+
+    /**
+     * Retrieves the instance of the GameEngine used in the Main class.
+     * <p>
+     * The GameEngine is a critical component that drives the game's main loop,
+     * handling the timing and sequencing of game events, updates, and rendering.
+     * This method provides access to the GameEngine, allowing other components
+     * or classes within the game to interact with the central game loop,
+     * such as starting or stopping the game, or querying the game's current state.
+     *
+     * @return The GameEngine instance currently in use by the Main class.
+     */
+    protected GameEngine getGameEngine() {
+        return engine;
+    }
 }
+

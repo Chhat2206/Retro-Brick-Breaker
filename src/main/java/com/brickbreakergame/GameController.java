@@ -99,7 +99,7 @@ public class GameController {
      */
     public void saveGame(Main mainInstance) {
         new Thread(() -> {
-            new File(Main.savePathDir);
+            new File(Main.SAVE_PATH_DIR);
             File file = new File(Main.SAVE_PATH);
             try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
                 outputStream.writeInt(mainInstance.getLevel());

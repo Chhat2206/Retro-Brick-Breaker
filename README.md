@@ -99,13 +99,14 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 
 ### YouWinScreen and GameOverScreen
 - [x] Custom gradients and dark background
+- [x] Blurred game screen
 - [x] Centered on the screen and follows the primary stage
 - [x] Custom score display with images and sound effects for win/lose scenarios
 - [x] Restart and main menu buttons with custom UI and clean design
-- [x] Custom animation when clicking the restart button or main menu button, both fading the button in and transitioning the scene cleanly in two seperate concurrent animations.
+- [x] Custom animation when clicking the restart button or main menu button, both fading the button in and transitioning the scene cleanly in two separate concurrent animations.
 
 ## Implemented but Not Working Properly:
-- **Issue**: Visual Errors: Ball and Paddle very rarely glitch out. 1/10 times while playing (I thought it was fixed but during final checks it popped up). They work as expected but visually only half the paddle is stuck while the paddle i control is behind it. Other times, they cut and show up at intervals. Issue is usually solved when opening the pause menu (stopping and restarting the game engine) or progressing levels
+- **Issue**: Visual Errors: Ball and Paddle very rarely glitch out. 1/20 times while playing (I thought it was fixed but during final checks it popped up). They work as expected but visually only half the paddle is stuck while the paddle I control is behind it. Other times, they cut and show up at intervals. Issue is usually solved when opening the pause menu (stopping and restarting the game engine) or progressing levels
     - **Potential Solution 1**: I added additional threads to the ball and paddle. It caused memory leaks and made the game unplayable very quickly.
     - **Potential Solution 2**: I added it to the current threads. The issue subsided but still showed up very rarely.
     - **Potential Solution 3**: I added many checks to make sure both the paddle and the ball stays in the scene after changing width and not out of the screen, set it to float to account for integer overflows and so on.
@@ -122,7 +123,7 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
   - **Issue**: The features above (and those unmentioned) were implemented but did not fit the theme and style of the game, as such were removed. The music in particular was removed if the loop got annoying after level 3. Many pieces were removed as a result. The ones left were modified and recreated to fit the game's theme.
 
 - **Feature**: Custom animation while changing the ball and paddle size
-  - **Issue**: I couldn't find anything that looked good.
+  - **Issue**: I couldn't find animations that looked smooth.
 
 # New Java Classes
 
@@ -302,6 +303,7 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 ### Bonus Class
 - **Modifications:**
   - The class has been moved from the `brickGame` package to `com.brickbreakergame.managers`, indicating a shift in its structural organization within the project.
+    Block type names have been updated from `choco` to `bonusImage` for improved clarity.
   - Renamed from `Bonus` to `BonusManager`, reflecting its enhanced role in managing bonuses in the game.
   - Added a reference to the `Main` class (`private Main main;`), integrating the bonus management more closely with the main game logic.
   - Changed the bonus drawing logic in the `draw()` method, standardizing the bonus appearance with a single image URL instead of random selection.
@@ -335,66 +337,45 @@ Your Java application should now compile and run seamlessly using JavaFX 21.01 a
 - **Reason for Changes:**
   - Renaming to `LevelManager` and integrating with `Main` and `Stage` represents a more focused approach to managing game levels and progression. The new `restartGame` and `nextLevel` methods provide a clear and direct way to reset and advance the game, aligning with the class's revised purpose. Improved exception handling and platform compatibility ensure that the game runs smoothly across different environments. The restructured class now serves as a central point for managing game levels and state transitions, providing a cleaner and more maintainable codebase.
 
-### Overview
-The `Main` class underwent significant changes to enhance gameplay mechanics, user interface, game state management, and overall code organization and readability.
 
-### Major Changes
-1. **Code Refactoring:** The class structure was reorganized for better readability and maintainability. This includes the separation of concerns, where specific functionalities are handled by dedicated methods, and the addition of inline comments for clarity.
+### Main Class
+- **Modifications:**
+  - Refactored code for enhanced readability and maintainability, including separation of concerns and addition of inline comments.
+  - Improved integration with `GameEngine` for efficient game loop management, including frame rate control and smoother updates.
+  - Enhanced User Interface (UI), with updated visuals for gameplay elements and improved responsiveness.
+  - Introduced new game mechanics and power-ups, such as variable paddle and ball sizes, 'Gold' mode, and advanced collision detection.
+  - Refined paddle and ball movement logic for smoother control and more realistic physics.
+  - Overhauled collision detection system for more accurate interactions between game elements.
+  - Implemented a more comprehensive scoring system and heart (life) management, enhancing the game's challenge and player engagement.
+  - Introduced a more structured level progression system with the ability to handle transitions between levels, restart the game, and load saved games.
+  - Integrated sound effects and animations to enhance the gaming experience, making the game more immersive and enjoyable.
+  - Added a system to manage bonuses (bonus.png), including their creation, effects, and collection.
+  - Improved game state management to keep track of various aspects like game level, score, heart count, block count, and paddle and ball properties.
 
-2. **Game Engine Integration:** Enhanced integration with the `GameEngine` class to manage the game loop more efficiently. This includes improved frame rate control and smoother game updates.
+- **Reason for Changes:**
+  - The refactoring and enhancements were necessary to improve the game's performance, scalability, and player experience.
+  - The UI enhancements and new game mechanics were implemented to make the game more engaging, challenging, and enjoyable for players.
+  - The improved paddle and ball movement, along with the refined collision system, offer a more realistic and responsive gameplay experience. 
+  - The structured level management and game state tracking allow for smoother transitions between game states and levels, providing a more cohesive gaming experience.
+  - The addition of sound and animation enriches the overall game atmosphere, making it more immersive.
+  - The bonus management system adds an extra layer of strategy and excitement to the gameplay.
 
-3. **User Interface Enhancements:** Major improvements in the UI components to provide a more engaging and intuitive user experience. This includes updated visuals for the paddle, ball, blocks, and the game background, along with better UI responsiveness to game events.
+### Score Class
+- **Modifications:**
+  - **Refactored Method Structures:** Reorganized class methods for clearer logic and better readability, focusing on specific tasks like creating labels, displaying score, and showing messages.
+  - **Enhanced Animations:** Advanced animation techniques using JavaFX's `ScaleTransition` and `FadeTransition` for a dynamic and visually appealing representation of score changes and game messages.
+  - **Game Engine Integration:** Improved interaction with `GameEngine` for synchronized score updates and game event notifications.
+  - **Improved Game Event Handling:** More sophisticated methods for displaying game-over and win scenarios, using dedicated screens and sound effects.
+  - **Styling and Theming:** Enhanced visual presentation of score labels and messages with CSS styling.
+  - **New Flash Message Effect:** Introduction of a flash message effect to highlight significant game events, adding dramatic impact.
+  - **Level Check Method:** `checkLevels` method to handle actions based on the game's current level, important for game progression and stage transitions.
 
-4. **Enhanced Game Mechanics:** Introduced new game mechanics and power-ups, such as changing paddle and ball sizes, adding 'Gold' mode, and more intricate collision detection and handling. These changes make the gameplay more dynamic and challenging.
-
-5. **Paddle and Ball Movement Improvements:** Refined the logic for paddle and ball movement, including smoother and more responsive paddle control and more realistic ball physics.
-
-6. **Collision Detection and Handling:** Overhauled the collision detection system for more accurate and consistent interactions between the ball, paddle, blocks, and game boundaries.
-
-7. **Score and Heart System:** Implemented a more comprehensive scoring system and heart (life) management, enhancing the game's challenge and player engagement.
-
-8. **Level Progression and Management:** Introduced a more structured level progression system with the ability to handle transitions between levels, restart the game, and load saved games.
-
-9. **Sound and Animation Integration:** Integrated sound effects and animations to enhance the gaming experience, making the game more immersive and enjoyable.
-
-10. **Bonus Management:** Added a system to manage bonuses (chocos), including their creation, effects, and collection.
-
-11. **Game State Management:** Improved game state management to keep track of various aspects like game level, score, heart count, block count, and paddle and ball properties.
-
-### Reason for Changes
-- The refactoring and enhancements were necessary to improve the game's performance, scalability, and player experience.
-- The UI enhancements and new game mechanics were implemented to make the game more engaging, challenging, and enjoyable for players.
-- The improved paddle and ball movement, along with the refined collision system, offer a more realistic and responsive gameplay experience.
-- The structured level management and game state tracking allow for smoother transitions between game states and levels, providing a more cohesive gaming experience.
-- The addition of sound and animation enriches the overall game atmosphere, making it more immersive.
-- The bonus management system adds an extra layer of strategy and excitement to the gameplay.
-
-## Score Class Modifications
-
-### Overview
-The `Score` class in the Brick Breaker game has been significantly refactored and enhanced for better performance, animation effects, and integration with the game's main logic.
-
-### Key Changes
-1. **Refactored Method Structures:** The class methods have been reorganized for clearer logic and better readability. Method responsibilities are more defined, focusing on specific tasks like creating labels, displaying score, and showing messages.
-
-2. **Enhanced Animations:** Introduced advanced animation techniques using JavaFX's `ScaleTransition` and `FadeTransition`. These animations provide a more dynamic and visually appealing representation of score changes and important game messages.
-
-3. **Integration with Game Engine:** The class now interacts more effectively with the `GameEngine`, ensuring that score updates and game event notifications are in sync with the game's progress.
-
-4. **Improved Game Event Handling:** The methods for displaying game-over and win scenarios are now more sophisticated, leveraging dedicated screens and sound effects for a more immersive experience.
-
-5. **Styling and Theming:** The visual presentation of score labels and messages has been enhanced with CSS styling, improving the overall aesthetic appeal of the game's interface.
-
-6. **New Flash Message Effect:** Added a new flash message effect to highlight significant game events. This effect briefly flashes the entire screen, adding dramatic impact to the gameplay.
-
-7. **Level Check Method:** Introduced a `checkLevels` method that handles actions based on the game's current level. This method plays a key role in determining the progression and transition between different stages of the game.
-
-### Reason for Changes
-- The refactoring and introduction of new methods were aimed at improving the modularity and maintainability of the code.
-- The advanced animations and enhanced styling were implemented to make the game more engaging and visually appealing to players.
-- Better integration with the game engine and improved event handling ensure that the game's score system is accurately and promptly updated, reflecting the player's progress and achievements.
-- The introduction of thematic elements, like specific screens for game-over and winning scenarios, enriches the player's experience and adds depth to the game.
-- The new flash message effect serves as a powerful tool to highlight crucial moments in the game, further engaging the player.
+- **Reason for Changes:**
+  - **Code Modularity and Maintainability:** To improve the modularity and maintainability of the code.
+  - **Player Engagement:** To make the game more engaging and visually appealing with advanced animations and enhanced styling.
+  - **Accurate Score Tracking:** To ensure accurate and prompt updates of the game's score system, reflecting player progress.
+  - **Enhanced Player Experience:** To provide thematic elements like specific screens for game-over and winning scenarios, enriching the gaming experience.
+  - **Dramatic Gameplay Impact:** To utilize the new flash message effect as a powerful tool for highlighting crucial game moments.
 
 ## Unexpected Problems:
 These are the major issues and fixes with unique solutions.
