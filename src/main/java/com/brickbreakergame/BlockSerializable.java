@@ -10,7 +10,6 @@ import java.io.Serializable;
  * to facilitate the saving and loading of game state by retaining key block attributes.
  */
 public class BlockSerializable implements Serializable {
-
     public final int row;
     public final int column;
     public final int type;

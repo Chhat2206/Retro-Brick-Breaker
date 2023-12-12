@@ -12,7 +12,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -21,7 +20,6 @@ import java.util.function.Consumer;
  * It displays options to start a new game, load a saved game, or exit the application.
  */
 public class MainMenu {
-
     private final Stage primaryStage;
     private final Main mainGame;
     private final AnimationManager animationManager = new AnimationManager();
@@ -63,16 +61,16 @@ public class MainMenu {
         Button startNewGameButton = createButton("/images/Main Menu/newGame.png", e -> {
             System.out.println("\u001B[32m" + "Starting New Game" + "\u001B[0m"); // Green text
             startNewGame();
-        }, 230, 90);
+        });
 
         Button loadGameButton = createButton("/images/Main Menu/loadGame.png", e -> {
             System.out.println("\u001B[34m" + "Loading Game" + "\u001B[0m"); // Blue text
             SoundManager.buttonClickSound();
             GameController gameController = new GameController();
             gameController.loadGame(mainGame, primaryStage);
-        }, 230, 90);
+        });
 
-        Button exitButton = createButton("/images/Main Menu/quitGame.png", e -> Platform.exit(), 230, 90);
+        Button exitButton = createButton("/images/Main Menu/quitGame.png", e -> Platform.exit());
 
         menuOptions.getChildren().addAll(startNewGameButton, loadGameButton, exitButton);
         root.getChildren().add(menuOptions);
@@ -92,7 +90,7 @@ public class MainMenu {
     private ImageView createLogoView() {
         Image logo = loadImage("/images/Main Menu/logo.png");
         ImageView imageView = new ImageView(logo);
-        imageView.setFitWidth(200); // Set the logo size
+        imageView.setFitWidth(200);
         imageView.setFitHeight(150);
         return imageView;
     }
@@ -103,15 +101,13 @@ public class MainMenu {
      *
      * @param imagePath The path to the image file for the button.
      * @param action    A Consumer<Void> action that defines what occurs when the button is clicked.
-     * @param width     The width of the button.
-     * @param height    The height of the button.
      * @return A Button object with the specified image and action behavior.
      */
-    private Button createButton(String imagePath, Consumer<Void> action, int width, int height) {
+    private Button createButton(String imagePath, Consumer<Void> action) {
         Image image = loadImage(imagePath);
         ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(width);
-        imageView.setFitHeight(height);
+        imageView.setFitWidth(230);
+        imageView.setFitHeight(90);
 
         Button button = new Button("", imageView);
         button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 0;");
@@ -154,5 +150,4 @@ public class MainMenu {
             game.newGame(primaryStage);
         });
     }
-
 }

@@ -48,6 +48,8 @@ public class LevelManager {
                 mainApp.getChocos().clear();
                 mainApp.setPaddleMoveX(220.0);
                 mainApp.setPaddleMoveY(683.0f);
+                mainApp.setPaddleWidth(90);
+                mainApp.setBallRadius(10);
 
                 mainApp.newGame(primaryStage);
             } catch (Exception e) {
@@ -79,6 +81,7 @@ public class LevelManager {
                 mainApp.newGame(primaryStage);
                 mainApp.setPaddleMoveX(220.0);
                 mainApp.setPaddleMoveY(683.0f);
+                mainApp.setBallRadius(10);
             } catch (Exception e) {
                 e.printStackTrace();
             }

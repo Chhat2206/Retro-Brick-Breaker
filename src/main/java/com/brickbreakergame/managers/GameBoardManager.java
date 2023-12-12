@@ -3,7 +3,6 @@ package com.brickbreakergame.managers;
 import com.brickbreakergame.Block;
 import com.brickbreakergame.Main;
 import javafx.scene.paint.Color;
-
 import java.util.Random;
 
 /**
@@ -25,7 +24,7 @@ public class GameBoardManager {
     public GameBoardManager(Main mainInstance) {
         this.mainInstance = mainInstance;
         this.random = new Random();
-        Color[] gameColors = mainInstance.getColors(); // Initialize here
+        Color[] gameColors = mainInstance.getColors();
     }
 
     /**
@@ -241,13 +240,6 @@ public class GameBoardManager {
             }
         }
     }
-
-
-//        int row = 6;
-//        int column = 2;
-//        int blockType = determineBlockType(random.nextInt(100));
-//        mainInstance.blocks.add(new Block(row, column, mainInstance.colors[column % mainInstance.colors.length], blockType));
-//    }
 
     /**
      * Creates the default game board layout when the level is not recognized or specified.

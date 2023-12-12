@@ -2,12 +2,10 @@ package com.brickbreakergame.managers;
 
 import com.brickbreakergame.Block;
 import com.brickbreakergame.Main;
-import com.brickbreakergame.Score;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-
 import java.io.Serializable;
 import java.util.Random;
 
@@ -17,13 +15,12 @@ import java.util.Random;
  * such as the paddle and the ball. It integrates with the main game loop for updating the game state based on bonus interactions.
  */
 public class BonusManager implements Serializable {
-    // Fields with basic descriptions
-    public Rectangle choco;
+    public Rectangle bonusImage;
     public double x;
     public double y;
     public long timeCreated;
     public boolean taken = false;
-    private Main main; // Reference to Main class
+    private final Main main;
 
     /**
      * Constructs a BonusManager object.
@@ -46,16 +43,16 @@ public class BonusManager implements Serializable {
      * Sets the dimensions and position of the bonus, and applies an image pattern as its fill.
      */
     private void draw() {
-        choco = new Rectangle();
-        choco.setWidth(20);
-        choco.setHeight(20);
-        choco.setX(x);
-        choco.setY(y);
+        bonusImage = new Rectangle();
+        bonusImage.setWidth(20);
+        bonusImage.setHeight(20);
+        bonusImage.setX(x);
+        bonusImage.setY(y);
 
         String url;
         url = "/images/bonus.png";
 
-        choco.setFill(new ImagePattern(new Image(url)));
+        bonusImage.setFill(new ImagePattern(new Image(url)));
     }
 
     /**
@@ -67,7 +64,7 @@ public class BonusManager implements Serializable {
         SoundManager.collectBonus();
 
         this.taken = true;
-        AnimationManager.shrinkAndFadeOutBonus(choco);
+        AnimationManager.shrinkAndFadeOutBonus(bonusImage);
 
         Random rand = new Random();
         int effect = rand.nextInt(3);
@@ -83,7 +80,6 @@ public class BonusManager implements Serializable {
                 Platform.runLater(() -> applyBallSizeEffect(rand));
                 break;
         }
-        new Score(main).show(this.x, this.y, 3, main);
     }
 
     /**
@@ -123,7 +119,6 @@ public class BonusManager implements Serializable {
         paddleMoveX = Math.min(paddleMoveX, Main.SCENE_WIDTH - main.getPaddleWidth());
         main.setPaddleMoveX(paddleMoveX);
 
-        // Logging for debugging
         System.out.println("\u001B[35m" + "Paddle width changed from " + main.getOriginalPaddleWidth() + " to " + main.getPaddleWidth() + " for " + (paddleWidthChangeDuration / 1000) + " seconds." + "\u001B[0m");
     }
 
