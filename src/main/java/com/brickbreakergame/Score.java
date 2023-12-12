@@ -113,8 +113,8 @@ public class Score {
      *             primary stage for displaying the win screen.
      */
     public void showYouWinScreen(final Main main) {
-        main.getEngine().stop();
         Platform.runLater(() -> {
+            main.getEngine().stop();
             SoundManager.winSound();
             YouWinScreen.display(main, main.getPrimaryStage());
         });

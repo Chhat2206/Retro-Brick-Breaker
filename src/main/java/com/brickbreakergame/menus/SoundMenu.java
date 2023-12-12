@@ -86,10 +86,12 @@ public class SoundMenu {
      * @return The Button control for muting/unmuting audio.
      */
     public static Button createMuteButton() {
-        ImageView muteIcon = new ImageView(new Image("/images/sound menu/muteMusic.png"));
+        Image iconImage = isMuted ? new Image("/images/sound menu/playMusic.png") : new Image("/images/sound menu/muteMusic.png");
+        ImageView muteIcon = new ImageView(iconImage);
         muteIcon.setFitWidth(60);
         muteIcon.setFitHeight(60);
         muteIcon.setPreserveRatio(true);
+
         Button muteButton = new Button("", muteIcon);
         muteButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 0;");
         muteButton.setOnAction(e -> {

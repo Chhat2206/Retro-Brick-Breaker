@@ -21,7 +21,6 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-
 /**
  * The Main class represents the main entry point for the Brick Game application.
  * It handles the game's logic, UI components, and user input.
@@ -31,7 +30,7 @@ import java.util.Iterator;
  * This class extends the Application class and implements EventHandler<KeyEvent> and GameEngine.OnAction interfaces.
  *
  * @author Chhat
- * @version 1.0
+ * @version 1.
  * @since 12 December 2023
  */
 public class Main extends Application implements EventHandler<KeyEvent>, GameEngine.OnAction {
@@ -39,7 +38,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private static final int LEFT  = 1;
     private static final int RIGHT = 2;
     private static final int PADDLE_HEIGHT = 14;
-    private static final int PADDLE_SPEED = 3; //8
+    private static final int PADDLE_SPEED = 8;
     private static final double MAX_VELOCITY_X = 3.0; // Maximum horizontal velocity of the ball
     private static final double MAX_VELOCITY = 4.0;   // Maximum overall velocity of the ball
     private static final double SPIN_EFFECT = 0.5;    // Effect of spin on ball's trajectory
@@ -1564,4 +1563,3 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         return engine;
     }
 }
-
