@@ -1,0 +1,5 @@
+module:brickGame
+com.brickbreakergame
+com.brickbreakergame.managers
+com.brickbreakergame.menus
+com.brickbreakergame.screens
