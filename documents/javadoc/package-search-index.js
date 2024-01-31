@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"brickGame","l":"com.brickbreakergame"},{"m":"brickGame","l":"com.brickbreakergame.managers"},{"m":"brickGame","l":"com.brickbreakergame.menus"},{"m":"brickGame","l":"com.brickbreakergame.screens"}];updateSearchResults();
